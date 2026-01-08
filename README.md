@@ -1,18 +1,45 @@
-# 🏥 Medical Chatbot - Sağlık Asistanı
+# 🏥 3D Medical Chatbot - Sağlık Asistanı
 
-Türkçe sağlık odaklı bilgilendirme chatbot'u. Kullanıcıların sağlıkla ilgili sorularını yanıtlar, genel bilgi ve yönlendirme sağlar.
+Türkçe sağlık odaklı bilgilendirme chatbot'u. 3D insan modeli üzerinde etkileşimli bölge seçimi ile yapısal semptom raporlama ve AI destekli sağlık bilgilendirme.
 
-> ⚠️ **Önemli:** Bu bot teşhis koymaz, sadece bilgilendirme ve yönlendirme yapar.
+> ⚠️ **Önemli:** Bu uygulama teşhis koymaz, sadece bilgilendirme ve yönlendirme yapar.
 
 ## 🎯 Özellikler
 
+### 3D Etkileşim (v2.0)
+- ✅ 3D insan modeli üzerinde tıklanabilir vücut bölgeleri
+- ✅ Hover efektleri ve seçim animasyonları
+- ✅ 24 farklı vücut bölgesi (baş, boyun, göğüs, karın, kollar, bacaklar vb.)
+- ✅ OrbitControls ile döndürme ve yakınlaştırma
+- ✅ Yapısal semptom seçimi (ağrı, şişlik, uyuşma, morluk vb.)
+- ✅ Şiddet skalası (0-10)
+- ✅ Başlangıç zamanı ve tetikleyici seçimi
+- ✅ Kırmızı bayrak (acil durum) işaretleme
+
+### Chatbot
 - ✅ Sağlık sorularını yanıtlama
+- ✅ Yapısal semptom context'i ile zenginleştirilmiş yanıtlar
 - ✅ Sağlık dışı soruları filtreleme
 - ✅ Acil durum tespiti ve yönlendirme
 - ✅ Selamlaşma türlerine göre özel yanıtlar
 - ✅ Follow-up soru desteği
-- ✅ Modern chat arayüzü
 - ✅ Groq LLM + Translation Pipeline (TR → EN → LLM → TR)
+
+## 🏗️ Teknoloji Stack
+
+### Frontend (React + Three.js)
+- **React 18** + TypeScript
+- **Vite** - Build tool
+- **@react-three/fiber (R3F)** - Three.js React entegrasyonu
+- **@react-three/drei** - Hazır 3D bileşenler (OrbitControls, Environment)
+- **Zustand** - State management
+- **Tailwind CSS** - Styling
+
+### Backend (Python + FastAPI)
+- **FastAPI** - API framework
+- **Groq** - LLM API (Llama 3.3)
+- **Deep Translator** - Çeviri pipeline
+- **Pydantic** - Data validation
 
 ## 📁 Proje Yapısı
 
@@ -24,11 +51,24 @@ medical_chatbot/
 │   │   ├── main.py          # FastAPI ana uygulama
 │   │   ├── health_filter.py # Sağlık filtresi
 │   │   └── prompts.py       # LLM prompt şablonları
-│   └── requirements.txt
-├── frontend/
-│   ├── index.html           # Ana sayfa
-│   ├── styles.css           # Stiller
-│   └── app.js               # JavaScript uygulaması
+│   ├── requirements.txt
+│   └── .env
+├── frontend-new/            # React + Three.js frontend
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── HumanModel.tsx   # 3D insan modeli
+│   │   │   ├── Scene3D.tsx      # Three.js sahne
+│   │   │   ├── SymptomPanel.tsx # Semptom seçim paneli
+│   │   │   └── ChatPanel.tsx    # Chat arayüzü
+│   │   ├── store/
+│   │   │   └── useAppStore.ts   # Zustand store
+│   │   ├── types/
+│   │   │   └── index.ts         # TypeScript tipleri
+│   │   └── data/
+│   │       └── bodyData.ts      # Vücut bölgeleri verisi
+│   ├── package.json
+│   └── vite.config.ts
+├── frontend-old/            # Eski basit frontend (yedek)
 └── README.md
 ```
 
@@ -44,59 +84,67 @@ medical_chatbot/
 
 ```bash
 cd backend
-
-# Virtual environment oluştur
-python3 -m venv venv
-source venv/bin/activate  # macOS/Linux
-# venv\Scripts\activate   # Windows
-
-# Bağımlılıkları yükle
+source venv/bin/activate
 pip install -r requirements.txt
-
-# .env dosyası oluştur
-cp .env.example .env
-# .env dosyasına GROQ_API_KEY'inizi ekleyin
+# .env dosyasına GROQ_API_KEY ekle
 ```
 
-### 3. Backend'i Çalıştır
+### 3. Frontend Kurulumu (React)
 
 ```bash
-cd backend
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+cd frontend-new
+npm install
+npm run dev
 ```
 
-### 4. Frontend'i Çalıştır
+### 4. Uygulamayı Çalıştır
 
+**Terminal 1 - Backend:**
 ```bash
-cd frontend
+cd backend && ./venv/bin/python -m uvicorn app.main:app --port 8000
+```
 
-# Basit HTTP server ile
-python3 -m http.server 3000
-
-# veya
-npx serve .
+**Terminal 2 - Frontend:**
+```bash
+cd frontend-new && npm run dev
 ```
 
 Tarayıcıda aç: http://localhost:3000
 
-## 🔧 Yapılandırma
+## 📡 API - Yapısal Semptom Context
 
-### Ortam Değişkenleri (.env)
+**POST /chat** - Yapısal semptom bilgisi ile istek:
 
-```bash
-GROQ_API_KEY="your-groq-api-key-here"
-GROQ_MODEL="llama-3.3-70b-versatile"  # veya llama-3.1-70b-versatile, mixtral-8x7b-32768
+```json
+{
+  "message": "Sol kaval kemiğimde ağrı var",
+  "history": [],
+  "symptom_context": {
+    "region": "left_shin",
+    "region_name_tr": "Sol Kaval Kemiği",
+    "region_name_en": "Left Shin (Tibia)",
+    "symptom": "pain",
+    "symptom_name_tr": "Ağrı",
+    "symptom_name_en": "Pain",
+    "severity_0_10": 7,
+    "onset": "2_3_days",
+    "trigger": "after_running",
+    "red_flags": ["cannot_bear_weight"]
+  }
+}
 ```
 
-### Desteklenen Groq Modelleri
+## 🎨 Vücut Bölgeleri
 
-- `llama-3.3-70b-versatile` (önerilen)
-- `llama-3.1-70b-versatile`
-- `mixtral-8x7b-32768`
+24 farklı bölge: Baş, Boyun, Göğüs, Karın, Üst/Alt Sırt, Omuzlar, Üst Kollar, Ön Kollar, Eller, Kalçalar, Üst Bacaklar, Dizler, Kaval Kemikleri, Ayaklar
 
-## 📡 API Endpoints
+## 🚨 Semptom Türleri
 
-### POST /chat
+Ağrı 🤕 | Şişlik 🔴 | Uyuşma 😶 | Karıncalanma ✨ | Morluk 💜 | Kesik 🩹 | Yanık 🔥 | Döküntü 🔶 | Sertlik 🔒 | Güçsüzlük 💫 | Kramp ⚡ | Kanama 🩸
+
+---
+
+🏥 **Uyarı:** Bu uygulama sadece bilgilendirme amaçlıdır. Acil durumlarda **112**'yi arayın!
 
 ```json
 {

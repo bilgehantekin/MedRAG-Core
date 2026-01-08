@@ -54,10 +54,25 @@ class Message(BaseModel):
     content: str
 
 
+class SymptomContext(BaseModel):
+    """3D modelden gelen yapılandırılmış semptom bilgisi"""
+    region: str  # örn: "left_shin"
+    region_name_tr: str  # örn: "Sol Kaval Kemiği"
+    region_name_en: str  # örn: "Left Shin (Tibia)"
+    symptom: str  # örn: "pain"
+    symptom_name_tr: str  # örn: "Ağrı"
+    symptom_name_en: str  # örn: "Pain"
+    severity_0_10: int
+    onset: str  # örn: "2_3_days"
+    trigger: Optional[str] = None  # örn: "after_running"
+    red_flags: Optional[List[str]] = []
+
+
 class ChatRequest(BaseModel):
     message: str
     history: Optional[List[Message]] = []
     detailed_response: Optional[bool] = False
+    symptom_context: Optional[SymptomContext] = None  # 3D modelden gelen yapısal bilgi
 
 
 class ChatResponse(BaseModel):
@@ -153,12 +168,36 @@ Answer only YES or NO. If unsure, answer NO."""
         return False
 
 
-def get_english_system_prompt(detailed: bool = False, has_history: bool = False) -> str:
-    """İngilizce sistem prompt'u döndürür - ilk soru vs takip soruları için farklı"""
+def get_english_system_prompt(detailed: bool = False, has_history: bool = False, symptom_context: SymptomContext = None) -> str:
+    """İngilizce sistem prompt'u döndürür - ilk soru vs takip soruları için farklı
+    
+    Eğer symptom_context varsa, 3D modelden gelen yapısal bilgiyi prompt'a ekler.
+    """
+    
+    # Yapısal context varsa, prompt'a ekle
+    context_section = ""
+    if symptom_context:
+        context_section = f"""
+=== STRUCTURED SYMPTOM DATA FROM 3D BODY MODEL ===
+The user has selected the following through the interactive 3D human body interface:
+
+BODY REGION: {symptom_context.region_name_en} ({symptom_context.region})
+SYMPTOM TYPE: {symptom_context.symptom_name_en} ({symptom_context.symptom})
+SEVERITY: {symptom_context.severity_0_10}/10
+ONSET: {symptom_context.onset}
+TRIGGER: {symptom_context.trigger or 'Not specified'}
+RED FLAGS REPORTED: {', '.join(symptom_context.red_flags) if symptom_context.red_flags else 'None'}
+
+Use this structured data to provide more accurate and targeted guidance.
+Focus on the specific body region and symptom type.
+If red flags are present, emphasize seeking immediate medical attention.
+=================================================
+
+"""
     
     if not has_history:
         # İLK SORU - Kapsamlı yanıt
-        return """You are a medical health assistant. Your role is to provide health education and general guidance.
+        return context_section + """You are a medical health assistant. Your role is to provide health education and general guidance.
 
 IMPORTANT: This is the user's FIRST question. Provide a COMPREHENSIVE response with this EXACT structure:
 
@@ -197,7 +236,7 @@ FORMATTING RULES:
     
     else:
         # TAKİP SORUSU - Odaklı yanıt
-        return """You are a medical health assistant continuing a conversation.
+        return context_section + """You are a medical health assistant continuing a conversation.
 
 IMPORTANT: This is a FOLLOW-UP question. Be CONCISE and FOCUSED.
 
@@ -272,7 +311,17 @@ async def chat(request: ChatRequest):
             is_emergency=False
         )
     
-    # 2. Acil durum kontrolü (Türkçe)
+    # 2. Acil durum kontrolü (Türkçe + Yapısal context)
+    # Red flag'leri kontrol et (yapısal context'ten)
+    if request.symptom_context and request.symptom_context.red_flags:
+        critical_flags = ['loss_of_consciousness', 'difficulty_breathing', 'chest_pain', 'severe_bleeding']
+        if any(flag in critical_flags for flag in request.symptom_context.red_flags):
+            return ChatResponse(
+                response=f"🚨 **ACİL DURUM UYARISI** 🚨\n\nBildirdiğiniz belirtiler ({request.symptom_context.region_name_tr} - {request.symptom_context.symptom_name_tr}) acil tıbbi müdahale gerektirebilir!\n\n**HEMEN 112'yi arayın veya en yakın acil servise gidin!**\n\n⚠️ Bu durumu ciddiye alın ve beklemeden profesyonel yardım alın.",
+                is_emergency=True,
+                disclaimer="🚨 ACİL DURUM - Hemen 112'yi arayın!"
+            )
+    
     is_emergency, emergency_response = check_emergency_symptoms(user_message)
     if is_emergency:
         return ChatResponse(
@@ -282,10 +331,13 @@ async def chat(request: ChatRequest):
         )
     
     # 3. Sağlık domain kontrolü
+    # Eğer symptom_context varsa, otomatik olarak sağlık konusu kabul et
     # - İlk sağlık sorusu: tam sağlık kontrolü yap
     # - Follow-up'larda: sadece açıkça alakasız konuları reddet (kara delik, yemek tarifi vs.)
     #   "gelip geçici", "evet", "3 gündür" gibi kısa cevaplar kabul edilir
-    if not is_greeting(user_message):
+    has_symptom_context = request.symptom_context is not None
+    
+    if not is_greeting(user_message) and not has_symptom_context:
         if has_health_context:
             # Follow-up: sadece açıkça sağlık dışı konu değişikliğini reddet
             if is_non_health_topic(user_message):
@@ -320,11 +372,12 @@ async def chat(request: ChatRequest):
     # Kullanıcı mesajını ekle
     messages_en.append({"role": "user", "content": user_message_en})
     
-    # 4c. İngilizce sistem prompt'u al
+    # 4c. İngilizce sistem prompt'u al (yapısal context ile)
     # has_health_context: True ise follow-up (kısa), False ise ilk sağlık sorusu (detaylı)
     system_prompt_en = get_english_system_prompt(
         detailed=request.detailed_response, 
-        has_history=has_health_context
+        has_history=has_health_context,
+        symptom_context=request.symptom_context
     )
     
     # 4d. Groq'tan İngilizce yanıt al

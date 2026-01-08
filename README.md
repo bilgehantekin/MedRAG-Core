@@ -9,9 +9,10 @@ Türkçe sağlık odaklı bilgilendirme chatbot'u. Kullanıcıların sağlıkla 
 - ✅ Sağlık sorularını yanıtlama
 - ✅ Sağlık dışı soruları filtreleme
 - ✅ Acil durum tespiti ve yönlendirme
-- ✅ Detaylı/kısa yanıt modu
+- ✅ Selamlaşma türlerine göre özel yanıtlar
+- ✅ Follow-up soru desteği
 - ✅ Modern chat arayüzü
-- ✅ Lokal LLM desteği (Ollama)
+- ✅ Groq LLM + Translation Pipeline (TR → EN → LLM → TR)
 
 ## 📁 Proje Yapısı
 
@@ -33,32 +34,13 @@ medical_chatbot/
 
 ## 🚀 Kurulum
 
-### 1. Ollama Kurulumu (Lokal LLM)
+### 1. Groq API Key Alın
 
-```bash
-# macOS
-brew install ollama
+1. [Groq Console](https://console.groq.com/)'a gidin
+2. Ücretsiz hesap oluşturun
+3. API Keys bölümünden yeni bir key oluşturun
 
-# veya curl ile
-curl -fsSL https://ollama.com/install.sh | sh
-```
-
-### 2. Model İndirme
-
-```bash
-# Ollama servisini başlat
-ollama serve
-
-# Başka bir terminalde model indir (önerilen)
-ollama pull llama3.2
-
-# Alternatif modeller:
-# ollama pull phi3
-# ollama pull mistral
-# ollama pull gemma2
-```
-
-### 3. Backend Kurulumu
+### 2. Backend Kurulumu
 
 ```bash
 cd backend
@@ -70,16 +52,20 @@ source venv/bin/activate  # macOS/Linux
 
 # Bağımlılıkları yükle
 pip install -r requirements.txt
+
+# .env dosyası oluştur
+cp .env.example .env
+# .env dosyasına GROQ_API_KEY'inizi ekleyin
 ```
 
-### 4. Backend'i Çalıştır
+### 3. Backend'i Çalıştır
 
 ```bash
 cd backend
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### 5. Frontend'i Çalıştır
+### 4. Frontend'i Çalıştır
 
 ```bash
 cd frontend
@@ -95,18 +81,18 @@ Tarayıcıda aç: http://localhost:3000
 
 ## 🔧 Yapılandırma
 
-### Ortam Değişkenleri
+### Ortam Değişkenleri (.env)
 
 ```bash
-export OLLAMA_BASE_URL="http://localhost:11434"
-export OLLAMA_MODEL="llama3.2"
+GROQ_API_KEY="your-groq-api-key-here"
+GROQ_MODEL="llama-3.3-70b-versatile"  # veya llama-3.1-70b-versatile, mixtral-8x7b-32768
 ```
 
-### Frontend Ayarları
+### Desteklenen Groq Modelleri
 
-Arayüzdeki ayarlar butonundan:
-- **Detaylı Yanıtlar:** Daha kapsamlı açıklamalar için
-- **API Adresi:** Backend URL'ini değiştirmek için
+- `llama-3.3-70b-versatile` (önerilen)
+- `llama-3.1-70b-versatile`
+- `mixtral-8x7b-32768`
 
 ## 📡 API Endpoints
 
@@ -133,7 +119,7 @@ Arayüzdeki ayarlar butonundan:
 API sağlık kontrolü
 
 ### GET /models
-Mevcut Ollama modellerini listele
+Mevcut Groq modellerini listele
 
 ## 🛡️ Güvenlik Özellikleri
 

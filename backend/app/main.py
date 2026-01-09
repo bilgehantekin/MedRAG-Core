@@ -9,10 +9,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
-# .env dosyasını yükle
-load_dotenv()
+# .env dosyasını backend dizininden yükle
+env_path = Path(__file__).parent.parent / ".env"
+load_dotenv(dotenv_path=env_path)
 
 from groq import Groq
 from deep_translator import GoogleTranslator
@@ -303,9 +305,13 @@ async def chat(request: ChatRequest):
     # Sağlık konulu bir geçmiş var mı? (merhaba/nasılsın değil, gerçek sağlık sorusu)
     has_health_context = has_health_context_in_history(request.history)
     
+    # Symptom context var mı? (3D modelden gelen yapısal bilgi)
+    has_symptom_context = request.symptom_context is not None
+    
     # 1. Selamlaşma kontrolü (Türkçe)
+    # SADECE symptom_context YOKSA ve sağlık bağlamı YOKSA selamlaşma yanıtı ver
     greeting_type = get_greeting_type(user_message)
-    if greeting_type and not has_health_context:
+    if greeting_type and not has_health_context and not has_symptom_context:
         return ChatResponse(
             response=get_greeting_response(greeting_type),
             is_emergency=False

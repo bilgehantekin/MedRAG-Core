@@ -52,7 +52,7 @@ Kullanıcılar şikayetlerini anlatmak için iki farklı yöntem seçebilir:
 
 ## 📁 Proje Yapısı
 
-\`\`\`
+```
 medical_chatbot/
 ├── backend/
 │   ├── app/
@@ -79,7 +79,7 @@ medical_chatbot/
 │   └── vite.config.ts
 ├── frontend-old/            # Eski basit frontend (yedek)
 └── README.md
-\`\`\`
+```
 
 ## 🚀 Kurulum
 
@@ -91,7 +91,7 @@ medical_chatbot/
 
 ### 2. Backend Kurulumu
 
-\`\`\`bash
+```bash
 cd backend
 python3 -m venv venv
 source venv/bin/activate
@@ -99,26 +99,26 @@ pip install -r requirements.txt
 
 # .env dosyası oluşturun
 echo "GROQ_API_KEY=your_api_key_here" > .env
-\`\`\`
+```
 
 ### 3. Frontend Kurulumu
 
-\`\`\`bash
+```bash
 cd frontend-3d
 npm install
-\`\`\`
+```
 
 ### 4. Uygulamayı Çalıştır
 
 **Terminal 1 - Backend:**
-\`\`\`bash
+```bash
 cd backend && source venv/bin/activate && python -m uvicorn app.main:app --port 8000
-\`\`\`
+```
 
 **Terminal 2 - Frontend:**
-\`\`\`bash
+```bash
 cd frontend-3d && npm run dev
-\`\`\`
+```
 
 Tarayıcıda aç: http://localhost:3000
 
@@ -127,7 +127,7 @@ Tarayıcıda aç: http://localhost:3000
 ### POST /chat
 Yapısal semptom bilgisi ile istek:
 
-\`\`\`json
+```json
 {
   "message": "Sol kaval kemiğimde ağrı var. Şiddeti 10 üzerinden 7. 2-3 gündür devam ediyor.",
   "history": [],
@@ -144,16 +144,16 @@ Yapısal semptom bilgisi ile istek:
     "red_flags": ["cannot_bear_weight"]
   }
 }
-\`\`\`
+```
 
 **Yanıt:**
-\`\`\`json
+```json
 {
   "response": "...",
   "is_emergency": false,
   "disclaimer": "⚠️ Bu bilgiler eğitim amaçlıdır..."
 }
-\`\`\`
+```
 
 ### GET /health
 API sağlık kontrolü
@@ -215,9 +215,9 @@ MIT License
 ## 🤝 Katkıda Bulunma
 
 1. Fork yapın
-2. Feature branch oluşturun (\`git checkout -b feature/amazing-feature\`)
-3. Commit edin (\`git commit -m 'Add amazing feature'\`)
-4. Push edin (\`git push origin feature/amazing-feature\`)
+2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
+3. Commit edin (`git commit -m 'Add amazing feature'`)
+4. Push edin (`git push origin feature/amazing-feature`)
 5. Pull Request açın
 
 ---

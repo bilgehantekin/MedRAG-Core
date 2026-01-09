@@ -1,21 +1,29 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useAppStore } from '../store/useAppStore';
-import { BODY_REGIONS, SYMPTOMS, ONSET_OPTIONS, TRIGGER_OPTIONS, RED_FLAGS } from '../data/bodyData';
+import { BODY_REGIONS, SYMPTOMS } from '../data/bodyData';
 import { SymptomReport } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
+// Streaming hızı (ms cinsinden karakter başına gecikme)
+const STREAM_SPEED = 8; // Hızlı ama okunabilir
+
 export function ChatPanel() {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const initialMessageSent = useRef(false); // Çift mesaj gönderimini önlemek için
+  const initialMessageSent = useRef(false);
+  const isUserScrolledUp = useRef(false);
   
   const {
     messages,
     addMessage,
+    updateLastMessage,
     isLoading,
     setIsLoading,
+    isStreaming,
+    setIsStreaming,
     getCurrentSymptomReport,
     selectedRegion,
     selectedSymptom,
@@ -28,18 +36,74 @@ export function ChatPanel() {
   const symptomReport = getCurrentSymptomReport();
   const isDirectChatMode = interactionMode === 'direct_chat';
 
-  // Auto-scroll
+  // Kullanıcı scroll durumunu takip et
+  const handleScroll = useCallback(() => {
+    if (messagesContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
+      // Eğer kullanıcı en alttan 100px'den fazla yukarıdaysa
+      isUserScrolledUp.current = scrollHeight - scrollTop - clientHeight > 100;
+    }
+  }, []);
+
+  // Akıllı auto-scroll - sadece kullanıcı yukarı scroll yapmadıysa
+  const scrollToBottom = useCallback((force = false) => {
+    if (force || !isUserScrolledUp.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, []);
+
+  // Yeni mesaj geldiğinde scroll
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    // Kullanıcı mesajı geldiğinde her zaman scroll yap
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.role === 'user') {
+      scrollToBottom(true);
+    }
+  }, [messages.length]);
+
+  // Streaming efekti ile mesaj göster
+  const streamMessage = useCallback(async (fullContent: string, isEmergency?: boolean) => {
+    setIsStreaming(true);
+    
+    // Boş mesaj ile başla
+    addMessage({
+      role: 'assistant',
+      content: '',
+      isEmergency
+    });
+
+    // Karakterleri kademeli olarak ekle
+    let currentIndex = 0;
+    const totalLength = fullContent.length;
+    
+    // Chunk boyutu - daha hızlı görünmesi için birkaç karakter birden
+    const chunkSize = 3;
+    
+    while (currentIndex < totalLength) {
+      const nextIndex = Math.min(currentIndex + chunkSize, totalLength);
+      const currentContent = fullContent.slice(0, nextIndex);
+      
+      updateLastMessage(currentContent);
+      currentIndex = nextIndex;
+      
+      // Scroll - her 50 karakterde bir kontrol et
+      if (currentIndex % 50 === 0 || currentIndex >= totalLength) {
+        scrollToBottom();
+      }
+      
+      // Gecikme
+      await new Promise(resolve => setTimeout(resolve, STREAM_SPEED));
+    }
+    
+    setIsStreaming(false);
+    scrollToBottom();
+  }, [addMessage, updateLastMessage, setIsStreaming, scrollToBottom]);
 
   // Direkt chat modunda hoş geldin mesajı göster
   useEffect(() => {
     if (isDirectChatMode && messages.length === 0 && !initialMessageSent.current) {
       initialMessageSent.current = true;
-      addMessage({
-        role: 'assistant',
-        content: `Merhaba! 👋 Ben sağlık asistanınızım.
+      const welcomeMessage = `Merhaba! 👋 Ben sağlık asistanınızım.
 
 Size yardımcı olmak için buradayım. Lütfen şikayetlerinizi kendi cümlelerinizle anlatın. Örneğin:
 
@@ -48,10 +112,10 @@ Size yardımcı olmak için buradayım. Lütfen şikayetlerinizi kendi cümleler
 • "Sol dizim şişti, hareket ettiremiyorum"
 • "Bir haftadır öksürüğüm var, ateşim çıkıyor"
 
-Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz nedir?`
-      });
+Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz nedir?`;
+      streamMessage(welcomeMessage);
     }
-  }, [isDirectChatMode]);
+  }, [isDirectChatMode, streamMessage]);
 
   // 3D model modunda ilk mesajı gönder (symptom report ile) - sadece 1 kere
   useEffect(() => {
@@ -61,20 +125,67 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
     }
   }, [symptomReport, isDirectChatMode]);
 
+  // Başlangıç zamanı için Türkçe cümle oluştur
+  const getOnsetMessage = (onsetId: string): string => {
+    const onsetMessages: Record<string, string> = {
+      'just_now': 'Az önce başladı.',
+      'few_hours': 'Birkaç saat önce başladı.',
+      'today': 'Bugün başladı.',
+      '1_day': 'Yaklaşık 1 gündür var.',
+      '2_3_days': '2-3 gündür devam ediyor.',
+      '1_week': 'Yaklaşık 1 haftadır var.',
+      'more_than_week': '1 haftadan uzun süredir devam ediyor.',
+      'chronic': 'Kronik bir şikayetim, sürekli yaşıyorum.'
+    };
+    return onsetMessages[onsetId] || '';
+  };
+
+  // Tetikleyici için Türkçe cümle oluştur
+  const getTriggerMessage = (triggerId: string): string => {
+    const triggerMessages: Record<string, string> = {
+      'injury': 'Bir darbe veya yaralanma sonrası oluştu.',
+      'after_exercise': 'Egzersiz yaptıktan sonra ortaya çıktı.',
+      'after_running': 'Koştuktan sonra başladı.',
+      'after_eating': 'Yemek yedikten sonra başladı.',
+      'stress': 'Stresli bir dönemde ortaya çıktı.',
+      'morning': 'Genellikle sabahları daha belirgin.',
+      'evening': 'Genellikle akşamları daha belirgin.',
+      'unknown': 'Ne zaman veya neden başladığını bilmiyorum.'
+    };
+    return triggerMessages[triggerId] || '';
+  };
+
+  // Kırmızı bayraklar için Türkçe cümle oluştur
+  const getRedFlagMessage = (flagId: string): string => {
+    const flagMessages: Record<string, string> = {
+      'cannot_bear_weight': 'Üzerine basamıyorum.',
+      'severe_pain': 'Ağrı çok şiddetli.',
+      'visible_deformity': 'Görünür bir şekil bozukluğu var.',
+      'loss_of_consciousness': 'Bilinç kaybı yaşadım.',
+      'difficulty_breathing': 'Nefes almakta zorlanıyorum.',
+      'chest_pain': 'Göğsümde ağrı var.',
+      'high_fever': 'Yüksek ateşim var.',
+      'confusion': 'Bilinç bulanıklığı yaşıyorum.',
+      'severe_bleeding': 'Şiddetli kanama var.',
+      'numbness_spreading': 'Uyuşukluk yayılıyor.'
+    };
+    return flagMessages[flagId] || '';
+  };
+
   // İlk otomatik mesaj
   const sendInitialMessage = async (report: SymptomReport) => {
     const region = BODY_REGIONS[report.region];
     const symptom = SYMPTOMS[report.symptom];
-    const onset = ONSET_OPTIONS.find(o => o.id === report.onset);
-    const trigger = report.trigger ? TRIGGER_OPTIONS.find(t => t.id === report.trigger) : null;
-    const flags = report.redFlags.map(f => RED_FLAGS.find(r => r.id === f)?.name_tr).filter(Boolean);
 
     // Kullanıcı mesajını oluştur
     let userMessage = `${region.name_tr} bölgemde ${symptom.name_tr.toLowerCase()} var.`;
     userMessage += ` Şiddeti 10 üzerinden ${report.severity}.`;
-    userMessage += ` ${onset?.name_tr || ''} başladı.`;
-    if (trigger) userMessage += ` ${trigger.name_tr} sonrası ortaya çıktı.`;
-    if (flags.length > 0) userMessage += ` Ayrıca: ${flags.join(', ')}.`;
+    userMessage += ` ${getOnsetMessage(report.onset)}`;
+    if (report.trigger) userMessage += ` ${getTriggerMessage(report.trigger)}`;
+    if (report.redFlags.length > 0) {
+      const flagMessages = report.redFlags.map(f => getRedFlagMessage(f)).filter(Boolean);
+      userMessage += ` ${flagMessages.join(' ')}`;
+    }
     if (report.additionalNotes) userMessage += ` ${report.additionalNotes}`;
 
     addMessage({
@@ -134,18 +245,12 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
 
       const data = await response.json();
 
-      addMessage({
-        role: 'assistant',
-        content: data.response,
-        isEmergency: data.is_emergency
-      });
+      // Streaming ile mesajı göster
+      await streamMessage(data.response, data.is_emergency);
 
     } catch (error) {
       console.error('Chat error:', error);
-      addMessage({
-        role: 'assistant',
-        content: '❌ Bir hata oluştu. Lütfen tekrar deneyin.'
-      });
+      await streamMessage('❌ Bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setIsLoading(false);
     }
@@ -154,10 +259,11 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
   // Mesaj gönder
   const handleSend = async () => {
     const text = input.trim();
-    if (!text || isLoading) return;
+    if (!text || isLoading || isStreaming) return;
 
     setInput('');
     addMessage({ role: 'user', content: text });
+    scrollToBottom(true); // Kullanıcı mesajında her zaman scroll
     await sendToAPI(text);
   };
 
@@ -241,7 +347,11 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div 
+        ref={messagesContainerRef}
+        onScroll={handleScroll}
+        className="flex-1 overflow-y-auto p-4 space-y-4"
+      >
         {messages.map((message) => (
           <div
             key={message.id}
@@ -266,7 +376,7 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
                 className={message.role === 'user' ? '' : 'text-slate-700'}
                 dangerouslySetInnerHTML={{ __html: formatMessage(message.content) }}
               />
-              {message.role === 'assistant' && !message.isEmergency && (
+              {message.role === 'assistant' && !message.isEmergency && !isStreaming && message.content.length > 0 && (
                 <div className="mt-3 pt-2 border-t border-slate-200 text-xs text-slate-500">
                   ⚠️ Bu bilgiler eğitim amaçlıdır, tıbbi tavsiye değildir.
                 </div>
@@ -275,8 +385,8 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
           </div>
         ))}
 
-        {/* Loading indicator */}
-        {isLoading && (
+        {/* Loading indicator - sadece API beklerken, streaming sırasında değil */}
+        {isLoading && !isStreaming && (
           <div className="flex justify-start">
             <div className="bg-slate-100 rounded-2xl px-4 py-3">
               <div className="flex items-center gap-2">
@@ -302,14 +412,16 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Sorunuzu yazın..."
+            placeholder={isStreaming ? "Yanıt yazılıyor..." : "Sorunuzu yazın..."}
             rows={1}
+            disabled={isStreaming}
             className="flex-1 px-4 py-3 border border-slate-200 rounded-xl resize-none
-                       focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                       focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                       disabled:bg-slate-100 disabled:cursor-not-allowed"
           />
           <button
             onClick={handleSend}
-            disabled={!input.trim() || isLoading}
+            disabled={!input.trim() || isLoading || isStreaming}
             className="px-5 py-3 bg-primary-600 text-white rounded-xl hover:bg-primary-700
                        disabled:opacity-50 disabled:cursor-not-allowed transition"
           >

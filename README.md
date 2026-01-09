@@ -1,27 +1,36 @@
 # 🏥 3D Medical Chatbot - Sağlık Asistanı
 
-Türkçe sağlık odaklı bilgilendirme chatbot'u. 3D insan modeli üzerinde etkileşimli bölge seçimi ile yapısal semptom raporlama ve AI destekli sağlık bilgilendirme.
+Türkçe sağlık odaklı bilgilendirme chatbot'u. 3D insan modeli üzerinde etkileşimli bölge seçimi veya direkt sohbet ile AI destekli sağlık bilgilendirme.
 
 > ⚠️ **Önemli:** Bu uygulama teşhis koymaz, sadece bilgilendirme ve yönlendirme yapar.
 
 ## 🎯 Özellikler
 
-### 3D Etkileşim (v2.0)
-- ✅ 3D insan modeli üzerinde tıklanabilir vücut bölgeleri
-- ✅ Hover efektleri ve seçim animasyonları
-- ✅ 24 farklı vücut bölgesi (baş, boyun, göğüs, karın, kollar, bacaklar vb.)
-- ✅ OrbitControls ile döndürme ve yakınlaştırma
-- ✅ Yapısal semptom seçimi (ağrı, şişlik, uyuşma, morluk vb.)
-- ✅ Şiddet skalası (0-10)
-- ✅ Başlangıç zamanı ve tetikleyici seçimi
-- ✅ Kırmızı bayrak (acil durum) işaretleme
+### İki Farklı Etkileşim Modu (v2.1)
+Kullanıcılar şikayetlerini anlatmak için iki farklı yöntem seçebilir:
 
-### Chatbot
+#### 🧍 3D Model ile Göster
+- 3D insan modeli üzerinde tıklanabilir vücut bölgeleri
+- 24 farklı vücut bölgesi (baş, boyun, göğüs, karın, kollar, bacaklar vb.)
+- Yapısal semptom seçimi (ağrı, şişlik, uyuşma, morluk vb.)
+- Şiddet skalası (0-10)
+- Başlangıç zamanı ve tetikleyici seçimi
+- Kırmızı bayrak (acil durum) işaretleme
+- OrbitControls ile döndürme ve yakınlaştırma
+
+#### 💬 Direkt Yazarak Anlat
+- Serbest metin girişi ile doğal dil anlatımı
+- Hızlı başlangıç - form doldurmadan sohbet
+- Sorulu cevaplı interaktif diyalog
+
+### Chatbot Özellikleri
+- ✅ Streaming yanıt efekti (harf harf yazım animasyonu)
+- ✅ Akıllı auto-scroll (kullanıcı yukarı bakarken scroll etmez)
 - ✅ Sağlık sorularını yanıtlama
 - ✅ Yapısal semptom context'i ile zenginleştirilmiş yanıtlar
+- ✅ Türkçe dilbilgisine uygun otomatik mesaj oluşturma
 - ✅ Sağlık dışı soruları filtreleme
 - ✅ Acil durum tespiti ve yönlendirme
-- ✅ Selamlaşma türlerine göre özel yanıtlar
 - ✅ Follow-up soru desteği
 - ✅ Groq LLM + Translation Pipeline (TR → EN → LLM → TR)
 
@@ -43,7 +52,7 @@ Türkçe sağlık odaklı bilgilendirme chatbot'u. 3D insan modeli üzerinde etk
 
 ## 📁 Proje Yapısı
 
-```
+\`\`\`
 medical_chatbot/
 ├── backend/
 │   ├── app/
@@ -53,13 +62,13 @@ medical_chatbot/
 │   │   └── prompts.py       # LLM prompt şablonları
 │   ├── requirements.txt
 │   └── .env
-├── frontend-new/            # React + Three.js frontend
+├── frontend-3d/             # React + Three.js frontend
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── HumanModel.tsx   # 3D insan modeli
 │   │   │   ├── Scene3D.tsx      # Three.js sahne
 │   │   │   ├── SymptomPanel.tsx # Semptom seçim paneli
-│   │   │   └── ChatPanel.tsx    # Chat arayüzü
+│   │   │   └── ChatPanel.tsx    # Chat arayüzü (streaming)
 │   │   ├── store/
 │   │   │   └── useAppStore.ts   # Zustand store
 │   │   ├── types/
@@ -70,7 +79,7 @@ medical_chatbot/
 │   └── vite.config.ts
 ├── frontend-old/            # Eski basit frontend (yedek)
 └── README.md
-```
+\`\`\`
 
 ## 🚀 Kurulum
 
@@ -82,42 +91,45 @@ medical_chatbot/
 
 ### 2. Backend Kurulumu
 
-```bash
+\`\`\`bash
 cd backend
+python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-# .env dosyasına GROQ_API_KEY ekle
-```
 
-### 3. Frontend Kurulumu (React)
+# .env dosyası oluşturun
+echo "GROQ_API_KEY=your_api_key_here" > .env
+\`\`\`
 
-```bash
-cd frontend-new
+### 3. Frontend Kurulumu
+
+\`\`\`bash
+cd frontend-3d
 npm install
-npm run dev
-```
+\`\`\`
 
 ### 4. Uygulamayı Çalıştır
 
 **Terminal 1 - Backend:**
-```bash
-cd backend && ./venv/bin/python -m uvicorn app.main:app --port 8000
-```
+\`\`\`bash
+cd backend && source venv/bin/activate && python -m uvicorn app.main:app --port 8000
+\`\`\`
 
 **Terminal 2 - Frontend:**
-```bash
-cd frontend-new && npm run dev
-```
+\`\`\`bash
+cd frontend-3d && npm run dev
+\`\`\`
 
 Tarayıcıda aç: http://localhost:3000
 
-## 📡 API - Yapısal Semptom Context
+## 📡 API Endpoints
 
-**POST /chat** - Yapısal semptom bilgisi ile istek:
+### POST /chat
+Yapısal semptom bilgisi ile istek:
 
-```json
+\`\`\`json
 {
-  "message": "Sol kaval kemiğimde ağrı var",
+  "message": "Sol kaval kemiğimde ağrı var. Şiddeti 10 üzerinden 7. 2-3 gündür devam ediyor.",
   "history": [],
   "symptom_context": {
     "region": "left_shin",
@@ -132,36 +144,16 @@ Tarayıcıda aç: http://localhost:3000
     "red_flags": ["cannot_bear_weight"]
   }
 }
-```
-
-## 🎨 Vücut Bölgeleri
-
-24 farklı bölge: Baş, Boyun, Göğüs, Karın, Üst/Alt Sırt, Omuzlar, Üst Kollar, Ön Kollar, Eller, Kalçalar, Üst Bacaklar, Dizler, Kaval Kemikleri, Ayaklar
-
-## 🚨 Semptom Türleri
-
-Ağrı 🤕 | Şişlik 🔴 | Uyuşma 😶 | Karıncalanma ✨ | Morluk 💜 | Kesik 🩹 | Yanık 🔥 | Döküntü 🔶 | Sertlik 🔒 | Güçsüzlük 💫 | Kramp ⚡ | Kanama 🩸
-
----
-
-🏥 **Uyarı:** Bu uygulama sadece bilgilendirme amaçlıdır. Acil durumlarda **112**'yi arayın!
-
-```json
-{
-  "message": "Baş ağrısı için ne yapabilirim?",
-  "history": [],
-  "detailed_response": false
-}
-```
+\`\`\`
 
 **Yanıt:**
-```json
+\`\`\`json
 {
-  "response": "Baş ağrısı için...",
+  "response": "...",
   "is_emergency": false,
   "disclaimer": "⚠️ Bu bilgiler eğitim amaçlıdır..."
 }
-```
+\`\`\`
 
 ### GET /health
 API sağlık kontrolü
@@ -169,20 +161,52 @@ API sağlık kontrolü
 ### GET /models
 Mevcut Groq modellerini listele
 
+## 🎨 Vücut Bölgeleri
+
+24 farklı bölge: Baş, Boyun, Göğüs, Karın, Üst/Alt Sırt, Omuzlar, Üst Kollar, Ön Kollar, Eller, Kalçalar, Üst Bacaklar, Dizler, Kaval Kemikleri, Ayaklar
+
+## 🚨 Semptom Türleri
+
+| Semptom | İkon |
+|---------|------|
+| Ağrı | 🤕 |
+| Şişlik | 🔴 |
+| Uyuşma | 😶 |
+| Karıncalanma | ✨ |
+| Morluk | 💜 |
+| Kesik | 🩹 |
+| Yanık | 🔥 |
+| Döküntü | 🔶 |
+| Sertlik/Tutulma | 🔒 |
+| Güçsüzlük | 💫 |
+| Kramp | ⚡ |
+| Kanama | 🩸 |
+
 ## 🛡️ Güvenlik Özellikleri
 
 1. **Domain Filtresi:** Sağlık dışı sorular reddedilir
 2. **Acil Durum Tespiti:** Kritik semptomlar için 112 yönlendirmesi
 3. **Uyarı Mesajları:** Her yanıtta bilgilendirme disclaimeri
-4. **Teşhis Engeli:** LLM teşhis koymamak üzere eğitilmiş
+4. **Teşhis Engeli:** LLM teşhis koymamak üzere yapılandırılmış
 
-## 🎨 Ekran Görüntüleri
+## 📝 Sürüm Geçmişi
 
-- Modern chat arayüzü
-- Mesaj baloncukları (kullanıcı/asistan)
-- Yazıyor animasyonu
-- Acil durum uyarıları
-- Mobil uyumlu tasarım
+### v2.1 (Ocak 2026)
+- ✨ Direkt chat modu eklendi
+- ✨ Hoş geldin ekranında mod seçimi
+- ✨ Streaming yanıt efekti (harf harf yazım)
+- ✨ Akıllı auto-scroll
+- 🐛 Türkçe dilbilgisine uygun mesaj formatları
+
+### v2.0
+- 3D insan modeli entegrasyonu
+- Yapısal semptom raporlama
+- 24 vücut bölgesi desteği
+
+### v1.0
+- Temel chatbot işlevselliği
+- Sağlık filtresi
+- Acil durum tespiti
 
 ## 📝 Lisans
 
@@ -191,11 +215,11 @@ MIT License
 ## 🤝 Katkıda Bulunma
 
 1. Fork yapın
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Commit edin (`git commit -m 'Add amazing feature'`)
-4. Push edin (`git push origin feature/amazing-feature`)
+2. Feature branch oluşturun (\`git checkout -b feature/amazing-feature\`)
+3. Commit edin (\`git commit -m 'Add amazing feature'\`)
+4. Push edin (\`git push origin feature/amazing-feature\`)
 5. Pull Request açın
 
 ---
 
-⚠️ **Uyarı:** Bu uygulama sadece bilgilendirme amaçlıdır. Tıbbi tavsiye yerine geçmez. Acil durumlarda 112'yi arayın.
+⚠️ **Uyarı:** Bu uygulama sadece bilgilendirme amaçlıdır. Tıbbi tavsiye yerine geçmez. Acil durumlarda **112**'yi arayın!

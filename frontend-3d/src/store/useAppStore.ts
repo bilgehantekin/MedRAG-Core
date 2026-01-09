@@ -44,9 +44,12 @@ interface AppState {
   // Chat
   messages: ChatMessage[];
   addMessage: (message: Omit<ChatMessage, 'id' | 'timestamp'>) => void;
+  updateLastMessage: (content: string) => void;
   clearMessages: () => void;
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
+  isStreaming: boolean;
+  setIsStreaming: (streaming: boolean) => void;
 
   // Geçerli semptom raporu
   getCurrentSymptomReport: () => SymptomReport | null;
@@ -98,9 +101,21 @@ export const useAppStore = create<AppState>((set, get) => ({
       timestamp: new Date()
     }]
   })),
+  updateLastMessage: (content) => set((state) => {
+    const newMessages = [...state.messages];
+    if (newMessages.length > 0) {
+      newMessages[newMessages.length - 1] = {
+        ...newMessages[newMessages.length - 1],
+        content
+      };
+    }
+    return { messages: newMessages };
+  }),
   clearMessages: () => set({ messages: [] }),
   isLoading: false,
   setIsLoading: (loading) => set({ isLoading: loading }),
+  isStreaming: false,
+  setIsStreaming: (streaming) => set({ isStreaming: streaming }),
 
   // Geçerli semptom raporu
   getCurrentSymptomReport: () => {
@@ -142,6 +157,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     redFlags: [],
     additionalNotes: '',
     messages: [],
-    isLoading: false
+    isLoading: false,
+    isStreaming: false
   })
 }));

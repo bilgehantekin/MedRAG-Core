@@ -20,23 +20,46 @@ export function ChatPanel() {
     selectedRegion,
     selectedSymptom,
     setCurrentStep,
-    resetSymptomSelection
+    resetSymptomSelection,
+    interactionMode,
+    resetAll
   } = useAppStore();
 
   const symptomReport = getCurrentSymptomReport();
+  const isDirectChatMode = interactionMode === 'direct_chat';
 
   // Auto-scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // İlk mesajı gönder (symptom report ile) - sadece 1 kere
+  // Direkt chat modunda hoş geldin mesajı göster
   useEffect(() => {
-    if (symptomReport && messages.length === 0 && !initialMessageSent.current) {
+    if (isDirectChatMode && messages.length === 0 && !initialMessageSent.current) {
+      initialMessageSent.current = true;
+      addMessage({
+        role: 'assistant',
+        content: `Merhaba! 👋 Ben sağlık asistanınızım.
+
+Size yardımcı olmak için buradayım. Lütfen şikayetlerinizi kendi cümlelerinizle anlatın. Örneğin:
+
+• "Başım çok ağrıyor, midem bulanıyor"
+• "Dün akşamdan beri sırtımda ağrı var"  
+• "Sol dizim şişti, hareket ettiremiyorum"
+• "Bir haftadır öksürüğüm var, ateşim çıkıyor"
+
+Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz nedir?`
+      });
+    }
+  }, [isDirectChatMode]);
+
+  // 3D model modunda ilk mesajı gönder (symptom report ile) - sadece 1 kere
+  useEffect(() => {
+    if (!isDirectChatMode && symptomReport && messages.length === 0 && !initialMessageSent.current) {
       initialMessageSent.current = true;
       sendInitialMessage(symptomReport);
     }
-  }, [symptomReport]);
+  }, [symptomReport, isDirectChatMode]);
 
   // İlk otomatik mesaj
   const sendInitialMessage = async (report: SymptomReport) => {
@@ -149,8 +172,21 @@ export function ChatPanel() {
   // Yeni şikayet
   const handleNewComplaint = () => {
     initialMessageSent.current = false; // Yeni şikayet için ref'i sıfırla
-    resetSymptomSelection();
-    setCurrentStep('body_selection');
+    if (isDirectChatMode) {
+      // Direkt chat modunda: sadece mesajları temizle ve yeni hoş geldin mesajı göster
+      resetSymptomSelection();
+      useAppStore.getState().clearMessages();
+    } else {
+      // 3D model modunda: başa dön
+      resetSymptomSelection();
+      setCurrentStep('body_selection');
+    }
+  };
+
+  // Ana sayfaya dön
+  const handleBackToHome = () => {
+    initialMessageSent.current = false;
+    resetAll();
   };
 
   // Mesaj formatla
@@ -175,18 +211,32 @@ export function ChatPanel() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="font-semibold text-lg">🏥 Sağlık Asistanı</h2>
-            {region && symptom && (
+            {isDirectChatMode ? (
+              <p className="text-primary-100 text-sm">
+                💬 Serbest yazım modu
+              </p>
+            ) : region && symptom ? (
               <p className="text-primary-100 text-sm">
                 📍 {region.name_tr} • {symptom.icon} {symptom.name_tr}
               </p>
-            )}
+            ) : null}
           </div>
-          <button
-            onClick={handleNewComplaint}
-            className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm transition"
-          >
-            + Yeni Şikayet
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleNewComplaint}
+              className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm transition"
+              title={isDirectChatMode ? "Sohbeti sıfırla" : "Yeni şikayet"}
+            >
+              {isDirectChatMode ? '🔄 Sıfırla' : '+ Yeni Şikayet'}
+            </button>
+            <button
+              onClick={handleBackToHome}
+              className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm transition"
+              title="Ana sayfaya dön"
+            >
+              🏠 Ana Sayfa
+            </button>
+          </div>
         </div>
       </div>
 

@@ -8,10 +8,15 @@ import {
   RedFlag, 
   ChatMessage, 
   AppStep,
-  SymptomReport 
+  SymptomReport,
+  InteractionMode 
 } from '../types';
 
 interface AppState {
+  // Etkileşim modu
+  interactionMode: InteractionMode | null;
+  setInteractionMode: (mode: InteractionMode | null) => void;
+
   // Uygulama aşaması
   currentStep: AppStep;
   setCurrentStep: (step: AppStep) => void;
@@ -52,6 +57,10 @@ interface AppState {
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
+  // Etkileşim modu
+  interactionMode: null,
+  setInteractionMode: (mode) => set({ interactionMode: mode }),
+
   // Uygulama aşaması
   currentStep: 'welcome',
   setCurrentStep: (step) => set({ currentStep: step }),
@@ -122,6 +131,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   }),
   
   resetAll: () => set({
+    interactionMode: null,
     currentStep: 'welcome',
     selectedRegion: null,
     hoveredRegion: null,

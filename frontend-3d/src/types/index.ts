@@ -117,6 +117,11 @@ export interface ChatMessage {
   isEmergency?: boolean;
 }
 
+// Etkileşim modu
+export type InteractionMode = 
+  | 'model'      // 3D model ile bölge seçerek
+  | 'direct_chat'; // Direkt chatbot ile yazarak
+
 // Uygulama aşaması
 export type AppStep = 
   | 'welcome'

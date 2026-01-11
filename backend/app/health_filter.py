@@ -7,33 +7,28 @@ Sağlık Filtresi Modülü
 import re
 from typing import Tuple
 
-# Sağlık DIŞI anahtar kelimeler - bunlar varsa direkt reddet
-NON_HEALTH_KEYWORDS = {
-    # Yemek/Tarif
+# İlaç isimlerini tek kaynaktan al
+from app.medicines import MEDICINE_BRANDS
+
+# Sağlık DIŞI anahtar kelimeler - İKİ SEVİYE
+# HARD: Kesinlikle sağlık dışı - direkt NO
+# SOFT: Bağlama bağlı - sadece puan katar, direkt NO yaptırmaz
+
+HARD_NON_HEALTH_KEYWORDS = {
+    # Yemek/Tarif (sağlık diyeti değilse)
     "tarif", "tarifi", "yemek tarifi", "nasıl yapılır yemek", "malzemeler",
     "pişir", "pişirme", "fırın", "tencere", "tava", "ocak",
     "makarna", "pilav", "çorba tarifi", "kek", "pasta", "kurabiye",
     "yemek yap", "aşçı", "mutfak", "restoran önerisi",
     
     # Spor/Fitness (sağlık dışı bağlam)
-    "maç skoru", "maç sonucu", "lig", "şampiyon", "futbol", "basketbol",
+    "maç skoru", "maç sonucu", "lig", "şampiyon",
     "transfer", "teknik direktör", "gol", "penaltı",
     
     # Teknoloji
     "telefon önerisi", "bilgisayar önerisi", "laptop", "tablet",
     "uygulama önerisi", "oyun önerisi", "yazılım", "programlama",
     "kod yaz", "python", "javascript",
-    
-    # Genel
-    "hava durumu", "hava nasıl", "sıcaklık kaç derece",
-    "film önerisi", "dizi önerisi", "kitap önerisi", "müzik önerisi",
-    "şarkı sözleri", "çeviri yap", "tercüme",
-    "fiyat", "ne kadar", "kaç para", "ucuz", "pahalı",
-    "tatil", "otel", "uçak bileti", "seyahat",
-    "araba", "otomobil", "motor", "benzin",
-    "politika", "seçim", "parti", "cumhurbaşkanı", "başbakan",
-    "borsa", "dolar", "euro", "kripto", "bitcoin",
-    "astroloji", "burç", "fal", "rüya tabiri",
     
     # Astronomi/Uzay/Bilim
     "kara delik", "yıldız nasıl", "gezegen", "uzay", "galaksi",
@@ -46,7 +41,35 @@ NON_HEALTH_KEYWORDS = {
     # Tarih/Coğrafya
     "dünya savaşı", "osmanlı", "tarihte", "hangi yılda",
     "başkenti", "nüfusu kaç", "hangi kıtada",
+    
+    # Eğlence
+    "film önerisi", "dizi önerisi", "kitap önerisi", "müzik önerisi",
+    "şarkı sözleri",
+    
+    # Politika/Finans
+    "politika", "seçim", "parti", "cumhurbaşkanı", "başbakan",
+    "borsa", "dolar", "euro", "kripto", "bitcoin",
+    
+    # Astroloji
+    "astroloji", "burç", "fal", "rüya tabiri",
 }
+
+# SOFT: Bağlama bağlı kelimeler - sağlık içinde de geçebilir
+SOFT_NON_HEALTH_KEYWORDS = {
+    # Bunlar sağlık bağlamında da kullanılabilir
+    "fiyat",  # ilaç fiyatı
+    "ne kadar",  # ne kadar sürer (sağlık), ne kadar (fiyat)
+    "kaç para",  # ilaç kaç para
+    "ucuz", "pahalı",  # ucuz/pahalı ilaç
+    "hava durumu", "hava nasıl", "sıcaklık kaç derece",  # ama genelde sağlık dışı
+    "tatil", "otel", "uçak bileti", "seyahat",
+    "araba", "otomobil", "motor", "benzin",
+    "çeviri yap", "tercüme",
+    "futbol", "basketbol",  # spor yaparken yaralanma olabilir
+}
+
+# Eski uyumluluk için birleşik set
+NON_HEALTH_KEYWORDS = HARD_NON_HEALTH_KEYWORDS | SOFT_NON_HEALTH_KEYWORDS
 
 # Selamlaşma kelimeleri - kategorilere ayrıldı
 GREETING_HELLO = {
@@ -56,7 +79,8 @@ GREETING_HELLO = {
 
 GREETING_HOWRU = {
     "nasılsın", "naber", "nasıl gidiyor", "ne haber", "nabır",
-    "ne var ne yok", "naptın", "nasıl hissediyorsun",
+    "ne var ne yok", "naptın",
+    # NOT: "nasıl hissediyorsun" sağlık bağlamında da kullanılabiliyor, bu yüzden çıkarıldı
 }
 
 GREETING_THANKS = {
@@ -81,19 +105,47 @@ GREETING_KEYWORDS = GREETING_HELLO | GREETING_HOWRU | GREETING_THANKS | GREETING
 
 # Sağlıkla ilgili anahtar kelimeler
 HEALTH_KEYWORDS = {
-    # Semptomlar
-    "ağrı", "ağrısı", "acı", "sızı", "sancı", "yanma", "batma",
-    "baş ağrısı", "karın ağrısı", "göğüs ağrısı", "bel ağrısı", "sırt ağrısı",
-    "ateş", "yüksek ateş", "titreme", "üşüme",
-    "öksürük", "öksürme", "hapşırma", "burun akıntısı", "burun tıkanıklığı",
-    "bulantı", "kusma", "mide bulantısı", "ishal", "kabızlık",
-    "baş dönmesi", "sersemlik", "bayılma", "halsizlik", "yorgunluk",
-    "kaşıntı", "döküntü", "kızarıklık", "şişlik", "morarma",
-    "nefes darlığı", "nefes almak", "soluk", "ödem",
-    "çarpıntı", "kalp çarpıntısı", "tansiyon",
-    "uyku problemi", "uykusuzluk", "uyku bozukluğu",
-    "kilo", "zayıflama", "kilo kaybı", "iştahsızlık",
-    "kanama", "kan", "yara",
+    # Semptomlar - isim ve fiil çekimleri
+    "ağrı", "ağrısı", "ağrıyor", "ağrıyorum", "ağrıyordu", "ağrır", "ağrımaya",
+    "acı", "acıyor", "acıyorum", "acır",
+    "sızı", "sızlıyor", "sızlama", "sızladı",
+    "sancı", "sancılanıyor", "sancılandı",
+    "yanma", "yanıyor", "yanıyorum", "yanar",
+    "batma", "batıyor", "batıyorum",
+    "baş ağrısı", "başım ağrıyor", "başı ağrıyor", "başımda ağrı",
+    "karın ağrısı", "karnım ağrıyor", "karnımda ağrı",
+    "göğüs ağrısı", "göğsüm ağrıyor", "göğsümde ağrı",
+    "bel ağrısı", "belim ağrıyor", "belimde ağrı",
+    "sırt ağrısı", "sırtım ağrıyor", "sırtımda ağrı",
+    "ateş", "yüksek ateş", "ateşim var", "ateşim çıktı", "ateşlenme",
+    "titreme", "titriyorum", "titriyor", "titredi",
+    "üşüme", "üşüyorum", "üşüyor",
+    "öksürük", "öksürme", "öksürüyorum", "öksürüyor", "öksürdüm",
+    "hapşırma", "hapşırıyorum", "hapşırdım",
+    "burun akıntısı", "burun tıkanıklığı", "burnum akıyor", "burnum tıkalı",
+    "bulantı", "bulantım var", "midem bulanıyor",
+    "kusma", "kusuyorum", "kustu", "kustum",
+    "mide bulantısı", "midem bulanıyor",
+    "ishal", "ishale yakalandım", "ishal oldum",
+    "kabızlık", "kabız oldum",
+    "baş dönmesi", "başım dönüyor", "başım döndü",
+    "sersemlik", "sersem hissediyorum",
+    "bayılma", "bayılacak gibi", "bayıldım",
+    "halsizlik", "halsizim", "halim yok",
+    "yorgunluk", "yorgunum", "yoruldum", "yorgun hissediyorum",
+    "kaşıntı", "kaşınıyor", "kaşınıyorum",
+    "döküntü", "döküntüm var",
+    "kızarıklık", "kızarıyor", "kızardı",
+    "şişlik", "şiş", "şişti", "şişiyor", "şişmiş",
+    "morarma", "morarıyor", "morardı",
+    "nefes darlığı", "nefes alamıyorum", "nefes almak", "soluk", "soluk alamıyorum",
+    "ödem", "şişme",
+    "çarpıntı", "kalp çarpıntısı", "kalbim çarpıyor",
+    "tansiyon", "tansiyonum yüksek", "tansiyonum düşük",
+    "uyku problemi", "uykusuzluk", "uyku bozukluğu", "uyuyamıyorum",
+    "kilo", "zayıflama", "kilo kaybı", "kilo aldım", "kilo verdim",
+    "iştahsızlık", "iştahım yok",
+    "kanama", "kan", "yara", "kanıyor", "kanadı",
     
     # Hastalıklar
     "hastalık", "rahatsızlık", "şikayet", "belirti", "semptom",
@@ -134,7 +186,77 @@ HEALTH_KEYWORDS = {
     "normal mi", "endişelenmeli", "acil mi", "ciddi mi",
     "bulaşıcı mı", "geçer mi", "ne kadar sürer",
     "iyi gelir", "zararlı mı", "yan etki",
+    
+    # Türkçe ilaç markaları ve isimleri
+    # Ağrı kesiciler / Ateş düşürücüler
+    "parol", "tylol", "minoset", "vermidon", "nurofen", "calpol", "pedifen",
+    "apranax", "naprosyn", "majezik", "arveles", "dikloron", "voltaren",
+    "aspirin", "disprin", "ecopirin", "coraspin",
+    "parasetamol", "parasedamol", "ibuprofen", "naproksen", "diklofenak",
+    
+    # Antibiyotikler
+    "augmentin", "amoklavin", "klamoks", "amoksisilin", "duocid",
+    "cipro", "ciproxin", "siprofloksasin",
+    "klacid", "macrol", "azitromisin", "zitromax",
+    "iesef", "cefaks", "sefuroksim", "cefixime", "suprax",
+    "flagyl", "metronidazol", "ornidazol",
+    
+    # Mide / Sindirim ilaçları
+    "nexium", "lansor", "controloc", "pantpas", "losec",
+    "gaviscon", "rennie", "talcid", "maalox", "mylanta",
+    "motilium", "metpamid", "itoprid",
+    "buscopan", "spazmol",
+    
+    # Alerji ilaçları
+    "zyrtec", "aerius", "xyzal", "cetrin", "allerset",
+    "setrizin", "desloratadin", "loratadin", "histazin",
+    "avil", "fenadril",
+    
+    # Grip / Soğuk algınlığı
+    "gripin", "tylol hot", "theraflu", "fervex", "coldrex",
+    "deflu", "peditus", "otrivin", "iliadin",
+    
+    # Öksürük şurupları
+    "prospan", "mucosolvan", "bromeks", "tusso", "sudafed",
+    "ekinezya", "sinecod", "codifen", "codeine",
+    
+    # Kas gevşeticiler
+    "muscoril", "thiocolchicoside", "myoril", "sirdalud", "tizanidin",
+    "diklogesic", "relaxyl",
+    
+    # Vitamin / Takviyeler
+    "supradyn", "centrum", "pharmaton", "berocca", "elevit",
+    "bemiks", "benexol", "b12", "d vitamini", "demir ilacı",
+    "magnezyum", "çinko", "omega3", "balık yağı",
+    
+    # Göz / Kulak damlaları
+    "refresh", "systane", "visine", "tobrex", "ciloxan",
+    "otomisin", "otorin",
+    
+    # Cilt kremleri
+    "fucidin", "bactroban", "triderm", "advantan", "elocon",
+    "bepanthen", "sudocrem", "psoriasis",
+    
+    # Diğer yaygın ilaçlar
+    "xanax", "lexapro", "prozac", "lustral", "cipralex",  # Psikiyatrik
+    "concerta", "ritalin",  # DEHB
+    "ventolin", "seretide", "symbicort",  # Astım
+    "coumadin", "plavix", "kardegic",  # Kan sulandırıcı
+    "metformin", "glucophage", "diamicron",  # Diyabet
+    "beloc", "concor", "norvasc", "amlodipin",  # Tansiyon
+    "lipitor", "crestor", "atorvastatin",  # Kolesterol
+    
+    # İlaç kullanım soruları
+    "ilaç almalı", "ilaç kullanmalı", "ilaç almam", "ilaç içmeli",
+    "hangi ilaç", "ilaç önerisi", "ilaç tavsiye",
+    "almalı mıyım", "içmeli miyim", "kullanmalı mıyım",
+    "kaç tane", "kaç mg", "dozaj", "doz", "günde kaç",
+    
+    # NOT: İlaç markaları MEDICINE_BRANDS'den otomatik ekleniyor (aşağıda birleştiriliyor)
 }
+
+# HEALTH_KEYWORDS'e tüm ilaç markalarını ekle (tek kaynak: medicines.py)
+HEALTH_KEYWORDS = HEALTH_KEYWORDS | MEDICINE_BRANDS
 
 # Acil durum anahtar kelimeleri
 EMERGENCY_KEYWORDS = {
@@ -193,6 +315,10 @@ Eğer konuşamıyorsanız, yanınızdaki birisinden yardım isteyin.
 """
 
 
+# Kısa kısaltmalar - bunlar için kelime sınırı kontrolü yapılacak
+SHORT_GREETINGS = {"sa", "slm", "mrb", "bb"}
+
+
 def is_greeting(message: str) -> bool:
     """
     Mesajın selamlaşma olup olmadığını kontrol eder.
@@ -204,13 +330,26 @@ def is_greeting(message: str) -> bool:
         bool: Selamlaşma ise True
     """
     message_lower = message.lower().strip()
+    words = set(re.findall(r'\b\w+\b', message_lower))
     
-    # Kısa selamlaşma kontrolü
-    for keyword in GREETING_KEYWORDS:
+    # Kısa kısaltmalar için tam kelime eşleşmesi kontrol et
+    for keyword in SHORT_GREETINGS:
+        if keyword in words:
+            return True
+    
+    # Diğer selamlaşma kelimeleri için substring kontrolü
+    for keyword in GREETING_KEYWORDS - SHORT_GREETINGS:
         if keyword in message_lower:
             return True
     
     return False
+
+
+def _check_keyword_in_message(keyword: str, message_lower: str, words: set) -> bool:
+    """Keyword'ün mesajda olup olmadığını kontrol eder. Kısa kısaltmalar için kelime sınırı kontrolü yapar."""
+    if keyword in SHORT_GREETINGS:
+        return keyword in words
+    return keyword in message_lower
 
 
 def get_greeting_type(message: str) -> str:
@@ -218,53 +357,123 @@ def get_greeting_type(message: str) -> str:
     Selamlaşma türünü döndürür: 'hello', 'howru', 'thanks', 'bye', 'trust', None
     """
     message_lower = message.lower().strip()
+    words = set(re.findall(r'\b\w+\b', message_lower))
     
     # Önce trust kontrolü (daha uzun ifadeler)
     for keyword in GREETING_TRUST:
-        if keyword in message_lower:
+        if _check_keyword_in_message(keyword, message_lower, words):
             return 'trust'
     
     for keyword in GREETING_HOWRU:
-        if keyword in message_lower:
+        if _check_keyword_in_message(keyword, message_lower, words):
             return 'howru'
     
     for keyword in GREETING_THANKS:
-        if keyword in message_lower:
+        if _check_keyword_in_message(keyword, message_lower, words):
             return 'thanks'
     
     for keyword in GREETING_BYE:
-        if keyword in message_lower:
+        if _check_keyword_in_message(keyword, message_lower, words):
             return 'bye'
     
     for keyword in GREETING_HELLO:
-        if keyword in message_lower:
+        if _check_keyword_in_message(keyword, message_lower, words):
             return 'hello'
     
     return None
 
 
-def is_non_health_topic(message: str) -> bool:
+def count_non_health_signals(message: str) -> tuple:
     """
-    Mesajın kesinlikle sağlık DIŞI olup olmadığını kontrol eder.
+    Mesajdaki sağlık DIŞI sinyalleri sayar ve bulduklarını döndürür.
+    Hard ve soft ayrımı yapar.
     
     Args:
         message: Kullanıcı mesajı
         
     Returns:
-        bool: Sağlık dışı ise True
+        tuple: (hard_sayı, soft_sayı, bulunan_hard, bulunan_soft)
     """
     message_lower = message.lower()
+    found_hard = []
+    found_soft = []
     
-    for keyword in NON_HEALTH_KEYWORDS:
+    for keyword in HARD_NON_HEALTH_KEYWORDS:
         if keyword in message_lower:
-            return True
+            found_hard.append(keyword)
     
-    return False
+    for keyword in SOFT_NON_HEALTH_KEYWORDS:
+        if keyword in message_lower:
+            found_soft.append(keyword)
+    
+    return len(found_hard), len(found_soft), found_hard, found_soft
+
+
+def is_non_health_topic(message: str) -> bool:
+    """
+    Mesajın kesinlikle sağlık DIŞI olup olmadığını kontrol eder.
+    Sadece HARD non-health keywords direkt reddettirir.
+    
+    Args:
+        message: Kullanıcı mesajı
+        
+    Returns:
+        bool: Kesinlikle sağlık dışı ise True
+    """
+    hard_count, _, _, _ = count_non_health_signals(message)
+    return hard_count > 0
+
+
+def count_health_signals(message: str) -> tuple:
+    """
+    Mesajdaki sağlık sinyallerini sayar ve bulduklarını döndürür.
+    
+    Args:
+        message: Kullanıcı mesajı
+        
+    Returns:
+        tuple: (keyword_sayısı, pattern_sayısı, bulunan_keywordler, eşleşen_patternler)
+    """
+    message_lower = message.lower()
+    found_keywords = []
+    found_patterns = []
+    
+    # Anahtar kelimeleri kontrol et
+    for keyword in HEALTH_KEYWORDS:
+        if keyword in message_lower:
+            found_keywords.append(keyword)
+    
+    # Soru kalıplarını kontrol et - Türkçe semptom ifadeleri
+    health_patterns = [
+        (r"ne\s+yapmalı", "ne yapmalı"),
+        (r"doktora\s+git", "doktora git"),
+        (r"tedavi\s+(?:ne|nasıl)", "tedavi sorusu"),
+        (r"ilaç\s+(?:öner|kullan)", "ilaç kullanımı"),
+        (r"(?:bu|şu)\s+normal\s+mi", "normal mi sorusu"),
+        (r"endişelen(?:meli|iyorum)", "endişe ifadesi"),
+        (r"(?:ne|hangi)\s+(?:hastalık|rahatsızlık)", "hastalık sorusu"),
+        (r"\b\w+[ıiuü]m\s+ağrıyor", "X ağrıyor kalıbı"),
+        (r"\b\w+[ıiuü]mda\s+ağrı", "X'da ağrı kalıbı"),
+        (r"\b\w+[ıiuü]m\s+(?:şiş|uyuş|yanıyor|acıyor|sızlıyor|zonkluyor)", "semptom fiili"),
+        (r"(?:sağ|sol)\s+(?:taraf|kol|bacak|göz|kulak)\w*\s+ağrıyor", "sağ/sol ağrı"),
+        (r"(?:ne|neden)\s+olmuş\s+olabilir", "ne olmuş olabilir"),
+        (r"neden\s+(?:ağrıyor|acıyor|şişti|kanıyor)", "neden ağrıyor"),
+        (r"(?:bir|iki|üç|\d+)\s+gündür\s+\w+", "süre ifadesi"),
+        (r"(?:sabah|akşam|gece)\s+\w+\s+(?:ağrı|acı|şiş)", "zaman+ağrı"),
+        (r"\w+(?:ım|im|um|üm)\s+(?:ağrıyor|acıyor|yanıyor|kanıyor|şişti)", "fiil kalıbı"),
+    ]
+    
+    for pattern, name in health_patterns:
+        if re.search(pattern, message_lower):
+            found_patterns.append(name)
+    
+    return len(found_keywords), len(found_patterns), found_keywords, found_patterns
 
 
 def is_health_related(message: str) -> bool:
     """
     Mesajın sağlıkla ilgili olup olmadığını keyword bazlı kontrol eder.
+    Hard/soft non-health ayrımı yapar.
     
     Args:
         message: Kullanıcı mesajı
@@ -274,28 +483,62 @@ def is_health_related(message: str) -> bool:
     """
     message_lower = message.lower()
     
-    # Önce sağlık dışı mı kontrol et
-    if is_non_health_topic(message_lower):
+    # Sağlık sinyallerini say
+    keyword_count, pattern_count, _, _ = count_health_signals(message_lower)
+    health_score = keyword_count + pattern_count
+    
+    # Sağlık dışı sinyalleri say (hard ve soft ayrı)
+    hard_count, soft_count, _, _ = count_non_health_signals(message_lower)
+    
+    # Sağlık sinyali varsa:
+    # - Hard non-health'e rağmen sağlık sinyali >= hard ise kabul et
+    # - Soft non-health sadece tie-breaker olarak kullanılır
+    if health_score > 0:
+        # Sağlık sinyali hard non-health'ten fazla veya eşitse → sağlık
+        if health_score >= hard_count:
+            return True
+        # Hard non-health baskın → sağlık değil
         return False
     
-    # Anahtar kelimeleri kontrol et
-    for keyword in HEALTH_KEYWORDS:
-        if keyword in message_lower:
-            return True
+    # Sağlık sinyali yoksa:
+    # - Hard non-health varsa → kesin sağlık değil
+    # - Sadece soft non-health varsa → belirsiz (False döner ama LLM'e gider)
+    if hard_count > 0:
+        return False
     
-    # Soru kalıplarını kontrol et
-    health_patterns = [
-        r"ne\s+yapmalı",
-        r"doktora\s+git",
-        r"tedavi\s+(?:ne|nasıl)",
-        r"ilaç\s+(?:öner|kullan)",
-        r"(?:bu|şu)\s+normal\s+mi",
-        r"endişelen(?:meli|iyorum)",
-        r"(?:ne|hangi)\s+(?:hastalık|rahatsızlık)",
-    ]
+    # Hiçbir sinyal yoksa False
+    return False
+
+
+# Negasyon kelimeleri - acil durum false positive önleme
+NEGATION_WORDS = ["yok", "değil", "olmadı", "yoktu", "geçti", "kalmadı", "bitmiş", "bitti"]
+
+
+def has_negation_nearby(text: str, keyword: str, window: int = 30) -> bool:
+    """
+    Keyword'ün yakınında negasyon kelimesi var mı kontrol eder.
     
-    for pattern in health_patterns:
-        if re.search(pattern, message_lower):
+    Args:
+        text: Tam metin
+        keyword: Aranan anahtar kelime
+        window: Karakter penceresi (önce ve sonra)
+    """
+    text_lower = text.lower()
+    keyword_lower = keyword.lower()
+    
+    # Keyword'ün pozisyonunu bul
+    pos = text_lower.find(keyword_lower)
+    if pos == -1:
+        return False
+    
+    # Pencere içindeki metni al
+    start = max(0, pos - window)
+    end = min(len(text_lower), pos + len(keyword_lower) + window)
+    context = text_lower[start:end]
+    
+    # Negasyon kontrolü
+    for neg in NEGATION_WORDS:
+        if neg in context:
             return True
     
     return False
@@ -304,6 +547,7 @@ def is_health_related(message: str) -> bool:
 def check_emergency_symptoms(message: str) -> Tuple[bool, str]:
     """
     Acil durum semptomlarını kontrol eder.
+    Negasyon kontrolü ile false positive'leri önler.
     
     Args:
         message: Kullanıcı mesajı
@@ -315,6 +559,10 @@ def check_emergency_symptoms(message: str) -> Tuple[bool, str]:
     
     for keyword, reason in EMERGENCY_KEYWORDS.items():
         if keyword in message_lower:
+            # Negasyon kontrolü - "göğüs ağrım yok" gibi durumları filtrele
+            if has_negation_nearby(message, keyword):
+                print(f"[EMERGENCY] '{keyword}' bulundu ama negasyon var, atlaniyor")
+                continue
             return True, EMERGENCY_RESPONSE_TEMPLATE.format(reason=reason)
     
     # Çoklu acil belirti kontrolü

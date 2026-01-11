@@ -6,9 +6,18 @@ Türkçe sağlık odaklı bilgilendirme chatbot'u. 3D insan modeli üzerinde etk
 
 ## 📸 Ekran Görüntüleri
 
+### Hoş Geldin Ekranı
+Kullanıcılar iki farklı mod arasında seçim yapabilir: 3D Model ile göster veya Direkt yazarak anlat.
+
 ![Hoş Geldin Ekranı](docs/screenshots/welcome-screen.png)
+
+### 3D Model ile Bölge Seçimi
+İnteraktif 3D insan modeli üzerinde ağrıyan veya şikayetin olduğu bölgeye tıklayarak başlayın.
+
 ![3D Model Görünümü](docs/screenshots/3d-model-view.png)
-![Chat Paneli](docs/screenshots/chat-panel.png)
+
+### Serbest Yazım Modu (Chat)
+Chatbot'a doğrudan yazarak şikayetlerinizi kendi cümlelerinizle anlatın.
 
 ## ✨ Özellikler
 

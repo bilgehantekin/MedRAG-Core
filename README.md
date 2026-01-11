@@ -92,7 +92,6 @@ Tarayıcıda: **http://localhost:3000**
 
 - **Domain Filtresi:** Sağlık dışı sorular reddedilir
 - **Acil Durum Tespiti:** Kritik semptomlar için 112 yönlendirmesi
-- **Negasyon Kontrolü:** "Göğüs ağrım yok" gibi ifadeler false positive tetiklemez
 - **Teşhis Engeli:** LLM teşhis koymamak üzere yapılandırılmış
 
 ## 📝 Sürüm Geçmişi
@@ -100,27 +99,25 @@ Tarayıcıda: **http://localhost:3000**
 ### v2.2 (Ocak 2026)
 - ✨ `medicines.py` - İlaç veritabanı tek kaynakta toplandı
 - ✨ Çoklu kelime ilaç tespiti (n-gram: tylol hot, aferin forte)
-- ✨ Hard/soft non-health ayrımı (fiyat, ne kadar artık soft)
+- ✨ Hard/soft non-health ayrımı 
 - ✨ Acil durum negasyon kontrolü (false positive önleme)
 - ✨ temperature=0 classifier (deterministik sınıflandırma)
-- 🐛 "nasıl hissediyorsun" greeting bug düzeltildi
-- 🐛 "aferin ya" pattern düzeltmesi (sadece cümle sonunda)
 
 ### v2.1 (Ocak 2026)
 - ✨ Direkt chat modu eklendi
 - ✨ Hoş geldin ekranında mod seçimi
 - ✨ Streaming yanıt efekti
-- 🐛 Türkçe dilbilgisine uygun mesaj formatları
+- ✨ Türkçe dilbilgisine uygun mesaj formatları
 
 ### v2.0
-- 3D insan modeli entegrasyonu
-- Yapısal semptom raporlama
-- 24 vücut bölgesi desteği
+- ✨ 3D insan modeli entegrasyonu
+- ✨ Yapısal semptom raporlama
+- ✨ 24 vücut bölgesi desteği
 
 ### v1.0
-- Temel chatbot işlevselliği
-- Sağlık filtresi
-- Acil durum tespiti
+- ✨ Temel chatbot işlevselliği
+- ✨ Sağlık filtresi
+- ✨ Acil durum tespiti
 
 ## 📝 Lisans
 

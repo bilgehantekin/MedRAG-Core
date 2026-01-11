@@ -6,7 +6,7 @@ TR → EN → LLM → EN → TR
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List
 import os
 from pathlib import Path
@@ -43,10 +43,11 @@ app = FastAPI(
 )
 
 # CORS ayarları
+# NOT: Prod'da allow_origins'i whitelist'e çevirin veya allow_credentials=False yapın
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,  # "*" ile kullanıldığında False olmalı
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -69,13 +70,13 @@ class SymptomContext(BaseModel):
     severity_0_10: int
     onset: str  # örn: "2_3_days"
     trigger: Optional[str] = None  # örn: "after_running"
-    red_flags: Optional[List[str]] = []
+    red_flags: List[str] = Field(default_factory=list)
 
 
 class ChatRequest(BaseModel):
     message: str
-    history: Optional[List[Message]] = []
-    detailed_response: Optional[bool] = False
+    history: List[Message] = Field(default_factory=list)
+    detailed_response: bool = False
     symptom_context: Optional[SymptomContext] = None  # 3D modelden gelen yapısal bilgi
 
 
@@ -542,7 +543,7 @@ def call_groq_classifier(messages: list, system_prompt: str) -> str:
             model=GROQ_MODEL,
             messages=groq_messages,
             temperature=0,  # Deterministik
-            max_tokens=10,  # Kısa yanıt (YES/NO/UNCERTAIN)
+            max_tokens=3,   # Kısa yanıt (YES/NO/UNCERTAIN)
             stop=["\n"],    # Tek satır
         )
         
@@ -820,16 +821,20 @@ async def chat(request: ChatRequest):
             # Follow-up: sadece açıkça sağlık dışı konu değişikliğini reddet
             # Ama önce sağlık sinyali var mı kontrol et (örn: "dizim ağrıyor ama futbol")
             health_kw, health_pat, _, _ = count_health_signals(user_message)
-            non_health_count, _ = count_non_health_signals(user_message)
+            hard_nh, soft_nh, _, _ = count_non_health_signals(user_message)
             
             # Sağlık sinyali varsa geçir
             if health_kw + health_pat > 0:
                 pass  # Devam et
-            elif non_health_count > 0:
+            # Follow-up'ta sadece HARD konu değişimini reddet
+            elif hard_nh > 0:
                 return ChatResponse(
                     response="Anladım, konu değiştirmek istiyorsunuz. 😊\n\nAncak ben sadece sağlık konularında yardımcı olabiliyorum. Eğer sağlıkla ilgili başka bir sorunuz varsa, sormaktan çekinmeyin!\n\nÖnceki konuya devam etmek isterseniz de yanınızdayım.",
                     is_emergency=False
                 )
+            # Soft non-health (fiyat/ne kadar/futbol) gördüysen bile follow-up'ta direkt reddetme
+            else:
+                pass  # Devam et
         else:
             # İlk sağlık sorusu (veya sadece selamlaşma geçmişi var): tam sağlık kontrolü
             domain_result = check_health_domain_simple(user_message)

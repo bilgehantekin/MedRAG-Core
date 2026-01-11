@@ -187,65 +187,6 @@ HEALTH_KEYWORDS = {
     "bulaşıcı mı", "geçer mi", "ne kadar sürer",
     "iyi gelir", "zararlı mı", "yan etki",
     
-    # Türkçe ilaç markaları ve isimleri
-    # Ağrı kesiciler / Ateş düşürücüler
-    "parol", "tylol", "minoset", "vermidon", "nurofen", "calpol", "pedifen",
-    "apranax", "naprosyn", "majezik", "arveles", "dikloron", "voltaren",
-    "aspirin", "disprin", "ecopirin", "coraspin",
-    "parasetamol", "parasedamol", "ibuprofen", "naproksen", "diklofenak",
-    
-    # Antibiyotikler
-    "augmentin", "amoklavin", "klamoks", "amoksisilin", "duocid",
-    "cipro", "ciproxin", "siprofloksasin",
-    "klacid", "macrol", "azitromisin", "zitromax",
-    "iesef", "cefaks", "sefuroksim", "cefixime", "suprax",
-    "flagyl", "metronidazol", "ornidazol",
-    
-    # Mide / Sindirim ilaçları
-    "nexium", "lansor", "controloc", "pantpas", "losec",
-    "gaviscon", "rennie", "talcid", "maalox", "mylanta",
-    "motilium", "metpamid", "itoprid",
-    "buscopan", "spazmol",
-    
-    # Alerji ilaçları
-    "zyrtec", "aerius", "xyzal", "cetrin", "allerset",
-    "setrizin", "desloratadin", "loratadin", "histazin",
-    "avil", "fenadril",
-    
-    # Grip / Soğuk algınlığı
-    "gripin", "tylol hot", "theraflu", "fervex", "coldrex",
-    "deflu", "peditus", "otrivin", "iliadin",
-    
-    # Öksürük şurupları
-    "prospan", "mucosolvan", "bromeks", "tusso", "sudafed",
-    "ekinezya", "sinecod", "codifen", "codeine",
-    
-    # Kas gevşeticiler
-    "muscoril", "thiocolchicoside", "myoril", "sirdalud", "tizanidin",
-    "diklogesic", "relaxyl",
-    
-    # Vitamin / Takviyeler
-    "supradyn", "centrum", "pharmaton", "berocca", "elevit",
-    "bemiks", "benexol", "b12", "d vitamini", "demir ilacı",
-    "magnezyum", "çinko", "omega3", "balık yağı",
-    
-    # Göz / Kulak damlaları
-    "refresh", "systane", "visine", "tobrex", "ciloxan",
-    "otomisin", "otorin",
-    
-    # Cilt kremleri
-    "fucidin", "bactroban", "triderm", "advantan", "elocon",
-    "bepanthen", "sudocrem", "psoriasis",
-    
-    # Diğer yaygın ilaçlar
-    "xanax", "lexapro", "prozac", "lustral", "cipralex",  # Psikiyatrik
-    "concerta", "ritalin",  # DEHB
-    "ventolin", "seretide", "symbicort",  # Astım
-    "coumadin", "plavix", "kardegic",  # Kan sulandırıcı
-    "metformin", "glucophage", "diamicron",  # Diyabet
-    "beloc", "concor", "norvasc", "amlodipin",  # Tansiyon
-    "lipitor", "crestor", "atorvastatin",  # Kolesterol
-    
     # İlaç kullanım soruları
     "ilaç almalı", "ilaç kullanmalı", "ilaç almam", "ilaç içmeli",
     "hangi ilaç", "ilaç önerisi", "ilaç tavsiye",
@@ -517,6 +458,7 @@ NEGATION_WORDS = ["yok", "değil", "olmadı", "yoktu", "geçti", "kalmadı", "bi
 def has_negation_nearby(text: str, keyword: str, window: int = 30) -> bool:
     """
     Keyword'ün yakınında negasyon kelimesi var mı kontrol eder.
+    Tüm keyword eşleşmelerini kontrol eder (sadece ilkini değil).
     
     Args:
         text: Tam metin
@@ -526,20 +468,24 @@ def has_negation_nearby(text: str, keyword: str, window: int = 30) -> bool:
     text_lower = text.lower()
     keyword_lower = keyword.lower()
     
-    # Keyword'ün pozisyonunu bul
-    pos = text_lower.find(keyword_lower)
-    if pos == -1:
-        return False
-    
-    # Pencere içindeki metni al
-    start = max(0, pos - window)
-    end = min(len(text_lower), pos + len(keyword_lower) + window)
-    context = text_lower[start:end]
-    
-    # Negasyon kontrolü
-    for neg in NEGATION_WORDS:
-        if neg in context:
+    start = 0
+    while True:
+        # Keyword'ün pozisyonunu bul
+        pos = text_lower.find(keyword_lower, start)
+        if pos == -1:
+            return False
+        
+        # Pencere içindeki metni al
+        left = max(0, pos - window)
+        right = min(len(text_lower), pos + len(keyword_lower) + window)
+        context = text_lower[left:right]
+        
+        # Negasyon kontrolü
+        if any(neg in context for neg in NEGATION_WORDS):
             return True
+        
+        # Sonraki eşleşmeye geç
+        start = pos + len(keyword_lower)
     
     return False
 

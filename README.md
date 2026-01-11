@@ -19,6 +19,8 @@ Kullanıcılar iki farklı mod arasında seçim yapabilir: 3D Model ile göster 
 ### Serbest Yazım Modu (Chat)
 Chatbot'a doğrudan yazarak şikayetlerinizi kendi cümlelerinizle anlatın.
 
+![Chat Paneli](docs/screenshots/chat-panel.png)
+
 ## ✨ Özellikler
 
 ### İki Farklı Etkileşim Modu

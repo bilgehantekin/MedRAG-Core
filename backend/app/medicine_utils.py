@@ -177,6 +177,7 @@ def find_medicine_match(word: str, max_distance: int = 2) -> Tuple[Optional[str]
             if corrected in TURKISH_MEDICINE_DICTIONARY:
                 return (corrected, TURKISH_MEDICINE_DICTIONARY[corrected])
 
+    # Fuzzy matching - daha konservatif
     best_match = None
     best_distance = max_distance + 1
 
@@ -190,10 +191,21 @@ def find_medicine_match(word: str, max_distance: int = 2) -> Tuple[Optional[str]
 
             distance = levenshtein_distance(candidate, medicine)
 
-            if len(medicine) <= 5 or len(candidate) <= 5:
+            # Daha sıkı kurallar:
+            # 1. Kısa kelimeler (<=5): max 1 mesafe
+            # 2. Orta kelimeler (6-7): max 1 mesafe (daha konservatif)
+            # 3. Uzun kelimeler (>=8): max 2 mesafe
+            min_len = min(len(medicine), len(candidate))
+            if min_len <= 5:
                 adjusted_max = 1
+            elif min_len <= 7:
+                adjusted_max = 1  # Önerin/aferin gibi durumları önle
             else:
                 adjusted_max = max_distance
+
+            # Ek kontrol: İlk 2 karakter eşleşmeli (typo genelde ortada/sonda olur)
+            if distance > 0 and candidate[:2] != medicine[:2]:
+                continue
 
             if distance <= adjusted_max and distance < best_distance:
                 best_distance = distance

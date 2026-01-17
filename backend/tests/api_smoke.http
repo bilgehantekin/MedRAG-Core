@@ -1,0 +1,74 @@
+### ============ MAIN CHAT: non-health should be rejected ============
+POST http://localhost:8000/chat
+Content-Type: application/json
+
+{
+  "message": "React'te useEffect nasıl çalışır?",
+  "history": []
+}
+
+### ============ MAIN CHAT: health should pass ============
+POST http://localhost:8000/chat
+Content-Type: application/json
+
+{
+  "message": "3 gündür başım ağrıyor, ne önerirsin?",
+  "history": []
+}
+
+### ============ MAIN CHAT: ambiguous should ask clarify (or pass) ============
+POST http://localhost:8000/chat
+Content-Type: application/json
+
+{
+  "message": "Kötüyüm.",
+  "history": []
+}
+
+### ============ FOLLOW-UP topic switch should be rejected (main) ============
+POST http://localhost:8000/chat
+Content-Type: application/json
+
+{
+  "message": "Bu arada en iyi laptop hangisi?",
+  "history": [
+    { "role": "user", "content": "Dizim ağrıyor.", "content_en": "My knee hurts." },
+    { "role": "assistant", "content": "Diz ağrısı için...", "content_en": "For knee pain..." }
+  ]
+}
+
+### ============ RAG CHAT: non-health should be rejected ============
+POST http://localhost:8000/rag/chat
+Content-Type: application/json
+
+{
+  "message": "Bugün hava nasıl?",
+  "history": [],
+  "use_rag": true,
+  "max_sources": 3
+}
+
+### ============ RAG CHAT: health should pass ============
+POST http://localhost:8000/rag/chat
+Content-Type: application/json
+
+{
+  "message": "Boğazım ağrıyor ve ateşim var.",
+  "history": [],
+  "use_rag": true,
+  "max_sources": 3
+}
+
+### ============ RAG CHAT: follow-up topic switch should be rejected ============
+POST http://localhost:8000/rag/chat
+Content-Type: application/json
+
+{
+  "message": "Bu arada maç kaç kaç bitti?",
+  "history": [
+    { "role": "user", "content": "Midem bulanıyor.", "content_en": "I feel nauseous." },
+    { "role": "assistant", "content": "Mide bulantısı için...", "content_en": "For nausea..." }
+  ],
+  "use_rag": true,
+  "max_sources": 3
+}

@@ -135,7 +135,6 @@ Tarayıcıda: **http://localhost:3000**
 - ✨ Lazy init for Groq/Translator (startup crash önleme)
 - ✨ Stricter classifier (max_tokens=3, stop newline, startswith parsing)
 - ✨ Frontend drift önleme (`content_en` saklama ve geri gönderme)
-- 🧹 Kod temizliği (~385 satır duplikasyon kaldırıldı)
 
 ### v3.0 (Ocak 2026) - RAG Entegrasyonu 🚀
 - ✨ **RAG (Retrieval-Augmented Generation)** sistemi eklendi

@@ -15,7 +15,7 @@ from app.rag.rag_chain import get_rag_chain
 from app.rag.knowledge_base import get_knowledge_base
 
 # İlaç isim işleme (main.py ile aynı gelişmiş versiyon)
-from app.medicine_utils import preprocess_turkish_medicine_names
+from app.medicine_utils import mask_medicines, unmask_medicines, convert_english_medicines_to_turkish
 
 # Sağlık filtresi - selamlaşma ve sağlık konusu tespiti için
 from app.health_filter import is_greeting, is_health_related, get_greeting_type, count_health_signals, count_non_health_signals
@@ -96,13 +96,11 @@ class KnowledgeBaseStats(BaseModel):
 # ============ Helper Functions ============
 
 def translate_to_english(text: str) -> str:
-    """Türkçe'den İngilizce'ye çevir (ilaç isimleri ön işleme ile - main.py ile aynı)"""
+    """Türkçe'den İngilizce'ye çevir (ilaç maskeleri korunur)"""
     try:
         if not text or len(text.strip()) < 2:
             return text
-        # Önce ilaç isimlerini İngilizce'ye çevir (gelişmiş versiyon - main.py ile aynı)
-        preprocessed = preprocess_turkish_medicine_names(text)
-        translated = tr_to_en.translate(preprocessed)
+        translated = tr_to_en.translate(text)
         print(f"[RAG TR→EN] {text[:50]}... → {translated[:50]}...")
         return translated
     except Exception as e:
@@ -302,19 +300,35 @@ async def rag_chat(request: RAGChatRequest):
         is_first_health_question = not has_health_context
         print(f"[RAG] İlk sağlık sorusu mu: {is_first_health_question}")
 
-        # Mesajı İngilizce'ye çevir
-        message_en = translate_to_english(user_message)
+        # Global mask_map ve counter (history + current message için tek map)
+        global_mask_map = {}
+        mask_counter = 0
 
-        # Chat history'yi hazırla (main.py ile aynı mantık)
+        # 3a. Chat history'yi hazırla (history'den başla, counter collision önleme)
         history_en = []
         for msg in request.history[-6:]:  # Son 6 mesaj
             if msg.content_en:
                 # Frontend'den gelen İngilizce versiyon var, direkt kullan (drift önleme)
                 content_en = msg.content_en
+            elif msg.role == "user":
+                # User mesajı, maskele ve çevir (counter devam ettir)
+                masked_hist, global_mask_map, mask_counter = mask_medicines(
+                    msg.content, start_counter=mask_counter, existing_mask_map=global_mask_map
+                )
+                content_en = translate_to_english(masked_hist)
             else:
-                # content_en yok, çevir (hem user hem assistant)
+                # Assistant mesajı, sadece çevir
                 content_en = translate_to_english(msg.content)
             history_en.append({"role": msg.role, "content": content_en})
+
+        # 3b. Kullanıcı mesajındaki ilaçları maskele (counter kaldığı yerden devam)
+        masked_message, global_mask_map, mask_counter = mask_medicines(
+            user_message, start_counter=mask_counter, existing_mask_map=global_mask_map
+        )
+        print(f"[RAG MASK-MAP] {global_mask_map}")
+
+        # 3c. Maskelenmiş mesajı İngilizce'ye çevir
+        message_en = translate_to_english(masked_message)
 
         # RAG query - is_first_health_question'ı geç
         result = rag_chain.query(
@@ -323,10 +337,21 @@ async def rag_chat(request: RAGChatRequest):
             use_context=request.use_rag,
             is_first_health_question=is_first_health_question
         )
-        
-        # Cevabı Türkçe'ye çevir
+
+        # 3d. Cevabı Türkçe'ye çevir
         response_tr = translate_to_turkish(result["answer"])
-        
+        response_en_raw = result["answer"]
+
+        # 3e. ÖNCE LLM'in kendi eklediği İngilizce ilaç isimlerini Türkçe'ye çevir
+        # NOT: Bu unmask'ten ÖNCE yapılmalı, yoksa çift dönüşüm olur
+        response_tr = convert_english_medicines_to_turkish(response_tr, format_style="tr_with_en")
+
+        # 3f. SONRA maskeleri aç: MEDTOK0 → "Parol (paracetamol)"
+        if global_mask_map:
+            response_tr = unmask_medicines(response_tr, global_mask_map, format_style="tr_with_en")
+            # response_en için en_only kullan (drift önleme - saf İngilizce kalmalı)
+            response_en_raw = unmask_medicines(response_en_raw, global_mask_map, format_style="en_only")
+
         # Kaynakları formatla
         sources = [
             RAGSource(
@@ -337,10 +362,10 @@ async def rag_chat(request: RAGChatRequest):
             )
             for s in result.get("sources", [])[:request.max_sources]
         ]
-        
+
         return RAGChatResponse(
             response=response_tr,
-            response_en=result["answer"],
+            response_en=response_en_raw,  # Saf İngilizce (drift önleme için)
             sources=sources,
             rag_used=result.get("context_used", False)
         )

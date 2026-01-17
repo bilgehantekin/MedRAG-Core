@@ -123,6 +123,16 @@ Tarayıcıda: **http://localhost:3000**
 
 ## 📝 Sürüm Geçmişi
 
+### v3.2 (Ocak 2026) - İlaç İsim Pipeline Güçlendirmesi
+- ✨ Mask-based ilaç ismi koruma (TR → EN → LLM → TR pipeline)
+- ✨ Token format: `MEDTOK{n}X` (substring collision önleme)
+- ✨ `_inside_parentheses()` helper (nested parentheses önleme)
+- ✨ `convert_english_medicines_to_turkish()` - LLM eklediği EN isimleri TR'ye çevir
+- ✨ Uzun token'ları önce işleme (collision-safe unmask)
+- ✨ Regex word boundary ile güvenli replace
+- ✨ Kullanıcı yazımını koruma (`.title()` yerine `orig_word`)
+- ✨ Jenerik ilaç isimleri (marka yerine, kontrollü maddeler çıkarıldı)
+
 ### v3.1 (Ocak 2026) - RAG İyileştirmeleri & Kod Kalitesi
 - ✨ `medicine_utils.py` - Ortak ilaç işleme modülü (kod tekrarı önleme)
 - ✨ `domain.py` - Ortak tri-state domain kontrolü (YES/NO/UNCERTAIN)

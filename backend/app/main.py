@@ -22,7 +22,7 @@ from deep_translator import GoogleTranslator
 from app.health_filter import is_health_related, check_emergency_symptoms, is_non_health_topic, is_greeting, get_greeting_type, count_health_signals, count_non_health_signals
 from app.prompts import get_system_prompt, format_response_prompt, get_greeting_response
 from app.medicines import MEDICINE_BRANDS
-from app.medicine_utils import preprocess_turkish_medicine_names, detect_medicines
+from app.medicine_utils import detect_medicines, mask_medicines, unmask_medicines, convert_english_medicines_to_turkish
 from app.domain import check_health_domain_simple
 
 # Groq API ayarları
@@ -97,11 +97,9 @@ class ChatResponse(BaseModel):
     disclaimer: str = "⚠️ Bu bilgiler eğitim amaçlıdır, tıbbi tavsiye değildir. Acil durumlarda 112'yi arayın."
 
 def translate_to_english(text: str) -> str:
-    """Türkçe metni İngilizce'ye çevirir"""
+    """Türkçe metni İngilizce'ye çevirir (ilaç maskeleri korunur)"""
     try:
-        # Önce ilaç isimlerini dönüştür
-        preprocessed = preprocess_turkish_medicine_names(text)
-        translated = tr_to_en.translate(preprocessed)
+        translated = tr_to_en.translate(text)
         print(f"[TR→EN] {text[:50]}... → {translated[:50]}...")
         return translated
     except Exception as e:
@@ -392,47 +390,71 @@ async def chat(request: ChatRequest):
                     is_emergency=False
                 )
     
-    # 4. Pipeline: TR → EN → LLM → EN → TR
-    
-    # 4a. Kullanıcı mesajını İngilizce'ye çevir
-    user_message_en = translate_to_english(user_message)
-    
-    # 4b. Geçmiş mesajları İngilizce'ye çevir (drift önleme ile)
-    # Eğer content_en varsa direkt kullan, yoksa çevir
+    # 4. Pipeline: TR → MASK → EN → LLM → TR → UNMASK → EN→TR
+    # İlaç isimlerini maskele, çevir, LLM'den yanıt al, çevir, maskeleri aç, EN ilaçları TR'ye çevir
+
+    # Global mask_map ve counter (history + current message için tek map)
+    global_mask_map = {}
+    mask_counter = 0
+
+    # 4a. Geçmiş mesajları işle (history'den başla, counter collision önleme)
     messages_en = []
     for msg in request.history[-10:]:
         if msg.content_en:
             # Frontend'den gelen İngilizce versiyon var, direkt kullan (drift önleme)
             content_en = msg.content_en
         elif msg.role == "user":
-            # User mesajı, çevir
-            content_en = translate_to_english(msg.content)
+            # User mesajı, maskele ve çevir (counter devam ettir)
+            masked_hist, global_mask_map, mask_counter = mask_medicines(
+                msg.content, start_counter=mask_counter, existing_mask_map=global_mask_map
+            )
+            content_en = translate_to_english(masked_hist)
         else:
             # Assistant mesajı ve content_en yok, çevir (eski mesajlar için backward compat)
             content_en = translate_to_english(msg.content)
-        
+
         messages_en.append({"role": msg.role, "content": content_en})
-    
+
+    # 4b. Kullanıcı mesajındaki ilaçları maskele (counter kaldığı yerden devam)
+    masked_message, global_mask_map, mask_counter = mask_medicines(
+        user_message, start_counter=mask_counter, existing_mask_map=global_mask_map
+    )
+    print(f"[MASK-MAP] {global_mask_map}")
+
+    # 4c. Maskelenmiş mesajı İngilizce'ye çevir
+    user_message_en = translate_to_english(masked_message)
+
     # Kullanıcı mesajını ekle
     messages_en.append({"role": "user", "content": user_message_en})
-    
-    # 4c. İngilizce sistem prompt'u al (yapısal context ile)
+
+    # 4d. İngilizce sistem prompt'u al (yapısal context ile)
     # has_health_context: True ise follow-up (kısa), False ise ilk sağlık sorusu (detaylı)
     system_prompt_en = get_english_system_prompt(
-        detailed=request.detailed_response, 
+        detailed=request.detailed_response,
         has_history=has_health_context,
         symptom_context=request.symptom_context
     )
-    
-    # 4d. Groq'tan İngilizce yanıt al
-    response_en = call_groq(messages_en, system_prompt=system_prompt_en)
-    
-    # 4e. Yanıtı Türkçe'ye çevir
-    response_tr = translate_to_turkish(response_en)
-    
+
+    # 4e. Groq'tan İngilizce yanıt al
+    response_en_raw = call_groq(messages_en, system_prompt=system_prompt_en)
+
+    # 4f. Yanıtı Türkçe'ye çevir
+    response_tr = translate_to_turkish(response_en_raw)
+
+    # 4g. ÖNCE LLM'in kendi eklediği İngilizce ilaç isimlerini Türkçe'ye çevir
+    # (mask ile yakalanmayan "ibuprofen", "acetaminophen" gibi)
+    # NOT: Bu unmask'ten ÖNCE yapılmalı, yoksa çift dönüşüm olur
+    response_tr = convert_english_medicines_to_turkish(response_tr, format_style="tr_with_en")
+
+    # 4h. SONRA maskeleri aç: MEDTOK0 → "Parol (paracetamol)"
+    if global_mask_map:
+        response_tr = unmask_medicines(response_tr, global_mask_map, format_style="tr_with_en")
+        # response_en için en_only kullan (drift önleme - saf İngilizce kalmalı)
+        response_en_raw = unmask_medicines(response_en_raw, global_mask_map, format_style="en_only")
+
     return ChatResponse(
         response=response_tr,
-        response_en=response_en,  # Frontend'in saklaması için (drift önleme)
+        response_en=response_en_raw,  # Saf İngilizce (drift önleme için)
         is_emergency=False
     )
 

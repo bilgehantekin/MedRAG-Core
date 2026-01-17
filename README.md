@@ -55,7 +55,7 @@ medical_chatbot/
 │   │   ├── health_filter.py  # Sağlık/acil durum filtresi
 │   │   ├── medicines.py      # İlaç veritabanı (tek kaynak)
 │   │   ├── prompts.py        # LLM prompt şablonları
-│   │   └── rag/              # 📚 RAG Modülü
+│   │   └── rag/              # RAG Modülü
 │   │       ├── router.py     # RAG API endpoint'leri
 │   │       ├── rag_chain.py  # RAG zinciri ve LLM entegrasyonu
 │   │       ├── knowledge_base.py  # Tıbbi bilgi tabanı
@@ -125,10 +125,6 @@ Tarayıcıda: **http://localhost:3000**
 
 ### v3.2 (Ocak 2026) - İlaç İsim Pipeline Güçlendirmesi
 - ✨ Mask-based ilaç ismi koruma (TR → EN → LLM → TR pipeline)
-- ✨ Token format: `MEDTOK{n}X` (substring collision önleme)
-- ✨ `_inside_parentheses()` helper (nested parentheses önleme)
-- ✨ `convert_english_medicines_to_turkish()` - LLM eklediği EN isimleri TR'ye çevir
-- ✨ Uzun token'ları önce işleme (collision-safe unmask)
 - ✨ Regex word boundary ile güvenli replace
 - ✨ Kullanıcı yazımını koruma (`.title()` yerine `orig_word`)
 - ✨ Jenerik ilaç isimleri (marka yerine, kontrollü maddeler çıkarıldı)
@@ -146,7 +142,7 @@ Tarayıcıda: **http://localhost:3000**
 - ✨ Stricter classifier (max_tokens=3, stop newline, startswith parsing)
 - ✨ Frontend drift önleme (`content_en` saklama ve geri gönderme)
 
-### v3.0 (Ocak 2026) - RAG Entegrasyonu 🚀
+### v3.0 (Ocak 2026) - RAG Entegrasyonu 
 - ✨ **RAG (Retrieval-Augmented Generation)** sistemi eklendi
 - ✨ FAISS vektör veritabanı ile semantic search
 - ✨ Tıbbi bilgi tabanı (semptomlar, ilaçlar, acil durumlar)

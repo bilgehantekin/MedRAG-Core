@@ -38,9 +38,17 @@ en_to_tr = GoogleTranslator(source='en', target='tr')
 
 app = FastAPI(
     title="Medical Chatbot API",
-    description="Sağlık odaklı bilgilendirme chatbot'u - Groq + Translation",
-    version="2.0.0"
+    description="Sağlık odaklı bilgilendirme chatbot'u - Groq + Translation + RAG",
+    version="3.0.0"
 )
+
+# RAG Router'ı dahil et (opsiyonel - RAG kuruluysa)
+try:
+    from app.rag.router import router as rag_router
+    app.include_router(rag_router)
+    print("✅ RAG router yüklendi - /rag/* endpoint'leri aktif")
+except ImportError as e:
+    print(f"⚠️ RAG router yüklenemedi (sentence-transformers/faiss kurulu değil): {e}")
 
 # CORS ayarları
 # NOT: Prod'da allow_origins'i whitelist'e çevirin veya allow_credentials=False yapın

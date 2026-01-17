@@ -28,31 +28,44 @@ Chatbot'a doğrudan yazarak şikayetlerinizi kendi cümlelerinizle anlatın.
 - **💬 Direkt Yazarak Anlat** - Serbest metin girişi ile doğal dil anlatımı
 
 ### Chatbot Özellikleri
+- ✅ **RAG (Retrieval-Augmented Generation)** - Tıbbi bilgi tabanı ile zenginleştirilmiş yanıtlar
 - ✅ Türkçe ilaç ismi tanıma (117+ ilaç, typo düzeltme, ek kırpma)
 - ✅ Çoklu kelime ilaç tespiti (tylol hot, aferin forte)
 - ✅ Sağlık dışı soruları filtreleme (hard/soft ayrımı)
 - ✅ Acil durum tespiti ve 112 yönlendirmesi
 - ✅ Groq LLM + Translation Pipeline (TR → EN → LLM → TR)
+- ✅ LLM tabanlı yüksek kaliteli Türkçe çeviri
 
 ## 🛠️ Teknoloji Stack
 
-| Frontend | Backend |
-|----------|---------|
-| React 18 + TypeScript | FastAPI |
-| Three.js (@react-three/fiber) | Groq LLM (Llama 3.3) |
-| Zustand | Deep Translator |
-| Tailwind CSS | Pydantic |
+| Frontend | Backend | RAG |
+|----------|---------|-----|
+| React 18 + TypeScript | FastAPI | FAISS Vector Store |
+| Three.js (@react-three/fiber) | Groq LLM (Llama 3.3) | Sentence Transformers |
+| Zustand | Deep Translator | Medical Knowledge Base |
+| Tailwind CSS | Pydantic | Semantic Search |
 
 ## 📁 Proje Yapısı
 
 ```
 medical_chatbot/
 ├── backend/
-│   └── app/
-│       ├── main.py           # FastAPI ana uygulama
-│       ├── health_filter.py  # Sağlık/acil durum filtresi
-│       ├── medicines.py      # İlaç veritabanı (tek kaynak)
-│       └── prompts.py        # LLM prompt şablonları
+│   ├── app/
+│   │   ├── main.py           # FastAPI ana uygulama
+│   │   ├── health_filter.py  # Sağlık/acil durum filtresi
+│   │   ├── medicines.py      # İlaç veritabanı (tek kaynak)
+│   │   ├── prompts.py        # LLM prompt şablonları
+│   │   └── rag/              # 📚 RAG Modülü
+│   │       ├── router.py     # RAG API endpoint'leri
+│   │       ├── rag_chain.py  # RAG zinciri ve LLM entegrasyonu
+│   │       ├── knowledge_base.py  # Tıbbi bilgi tabanı
+│   │       ├── vector_store.py    # FAISS vektör deposu
+│   │       └── embeddings.py      # Sentence Transformers
+│   └── data/
+│       └── medical_knowledge/    # Tıbbi bilgi JSON dosyaları
+│           ├── symptoms_diseases.json
+│           ├── medications.json
+│           └── emergency.json
 ├── frontend-3d/
 │   └── src/
 │       ├── components/       # HumanModel, ChatPanel, SymptomPanel
@@ -96,6 +109,9 @@ Tarayıcıda: **http://localhost:3000**
 | Endpoint | Açıklama |
 |----------|----------|
 | POST /chat | Ana sohbet endpoint'i |
+| POST /rag/chat | RAG destekli sohbet endpoint'i |
+| POST /rag/search | Bilgi tabanında arama |
+| GET /rag/stats | RAG istatistikleri |
 | GET /health | API sağlık kontrolü |
 | GET /models | Mevcut Groq modelleri |
 
@@ -106,6 +122,17 @@ Tarayıcıda: **http://localhost:3000**
 - **Teşhis Engeli:** LLM teşhis koymamak üzere yapılandırılmış
 
 ## 📝 Sürüm Geçmişi
+
+### v3.0 (Ocak 2026) - RAG Entegrasyonu 🚀
+- ✨ **RAG (Retrieval-Augmented Generation)** sistemi eklendi
+- ✨ FAISS vektör veritabanı ile semantic search
+- ✨ Tıbbi bilgi tabanı (semptomlar, ilaçlar, acil durumlar)
+- ✨ Sentence Transformers ile embedding
+- ✨ Frontend'de RAG/Normal mod geçiş butonu
+- ✨ LLM tabanlı yüksek kaliteli Türkçe çeviri
+- ✨ Bağlamsal selamlaşma yanıtları (teşekkür, vedalaşma)
+- ✨ İlk sağlık sorusu / takip sorusu ayrımı
+- ✨ Kaynak gösterimi ile güvenilir bilgi sunumu
 
 ### v2.2 (Ocak 2026)
 - ✨ `medicines.py` - İlaç veritabanı tek kaynakta toplandı

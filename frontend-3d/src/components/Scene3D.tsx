@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Environment, PerspectiveCamera, ContactShadows, Lightformer } from '@react-three/drei';
+import { OrbitControls, Environment, PerspectiveCamera, ContactShadows } from '@react-three/drei';
 import { Suspense } from 'react';
 import { RealisticHumanModel } from './RealisticHumanModel';
 import { useAppStore } from '../store/useAppStore';

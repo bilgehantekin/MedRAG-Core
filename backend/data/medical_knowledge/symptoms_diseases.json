@@ -1,0 +1,557 @@
+[
+  {
+    "id": "headache_001",
+    "title": "Headache (Cephalalgia)",
+    "category": "symptoms",
+    "source": "MedlinePlus",
+    "content": "A headache is pain or discomfort in the head, scalp, or neck. Common types include tension headaches, migraines, and cluster headaches. Most headaches are not serious and can be treated with pain relievers, relaxation techniques, and lifestyle changes.",
+    "symptoms": [
+      "Pain in head or neck",
+      "Pressure sensation",
+      "Throbbing pain",
+      "Sensitivity to light or sound"
+    ],
+    "causes": [
+      "Stress and tension",
+      "Lack of sleep",
+      "Dehydration",
+      "Eye strain",
+      "Caffeine withdrawal",
+      "Sinus problems"
+    ],
+    "treatments": [
+      "Over-the-counter pain relievers (acetaminophen, ibuprofen)",
+      "Rest in a dark, quiet room",
+      "Apply cold or warm compress",
+      "Stay hydrated",
+      "Manage stress"
+    ],
+    "when_to_see_doctor": "Seek immediate medical attention if headache is sudden and severe, accompanied by fever, stiff neck, confusion, seizures, double vision, weakness, numbness, or difficulty speaking.",
+    "keywords": ["head pain", "migraine", "tension headache", "cephalalgia", "baş ağrısı"]
+  },
+  {
+    "id": "fever_001",
+    "title": "Fever (Pyrexia)",
+    "category": "symptoms",
+    "source": "MedlinePlus",
+    "content": "A fever is a temporary increase in body temperature, often due to illness. A temperature above 38°C (100.4°F) is generally considered a fever. Fever is a sign that your body is fighting an infection.",
+    "symptoms": [
+      "Elevated body temperature",
+      "Chills and shivering",
+      "Sweating",
+      "Headache",
+      "Muscle aches",
+      "Loss of appetite",
+      "Dehydration",
+      "General weakness"
+    ],
+    "causes": [
+      "Viral infections (flu, cold)",
+      "Bacterial infections",
+      "Heat exhaustion",
+      "Certain medications",
+      "Immunizations",
+      "Inflammatory conditions"
+    ],
+    "treatments": [
+      "Rest and stay hydrated",
+      "Over-the-counter fever reducers (acetaminophen, ibuprofen)",
+      "Light clothing and bedding",
+      "Cool compress on forehead",
+      "Tepid bath"
+    ],
+    "when_to_see_doctor": "Seek medical attention for fever above 39.4°C (103°F), fever lasting more than 3 days, severe headache, stiff neck, confusion, persistent vomiting, difficulty breathing, or skin rash.",
+    "keywords": ["high temperature", "pyrexia", "febrile", "ateş", "yüksek ateş"]
+  },
+  {
+    "id": "sore_throat_001",
+    "title": "Sore Throat (Pharyngitis)",
+    "category": "symptoms",
+    "source": "NHS",
+    "content": "A sore throat is pain, scratchiness, or irritation of the throat that often worsens when swallowing. The most common cause is a viral infection (cold or flu). Bacterial infections like strep throat require antibiotic treatment.",
+    "symptoms": [
+      "Pain or scratchy sensation in throat",
+      "Pain that worsens when swallowing",
+      "Swollen glands in neck",
+      "Red, swollen tonsils",
+      "White patches on tonsils",
+      "Hoarse voice"
+    ],
+    "causes": [
+      "Viral infections (common cold, flu, mononucleosis)",
+      "Bacterial infections (strep throat)",
+      "Allergies",
+      "Dry air",
+      "Irritants (smoke, pollution)",
+      "GERD (acid reflux)"
+    ],
+    "treatments": [
+      "Gargle with warm salt water",
+      "Drink warm liquids (tea with honey)",
+      "Use throat lozenges",
+      "Stay hydrated",
+      "Rest your voice",
+      "Use a humidifier",
+      "Over-the-counter pain relievers"
+    ],
+    "when_to_see_doctor": "See a doctor if sore throat is severe or lasts longer than a week, difficulty swallowing or breathing, high fever, blood in saliva, frequent sore throats, or lump in neck.",
+    "keywords": ["throat pain", "pharyngitis", "strep throat", "tonsillitis", "boğaz ağrısı"]
+  },
+  {
+    "id": "cough_001",
+    "title": "Cough",
+    "category": "symptoms",
+    "source": "Mayo Clinic",
+    "content": "A cough is your body's way of responding to irritants in your throat and airways. Occasional coughing is normal, but a persistent cough can indicate an underlying condition. Coughs can be dry or productive (with mucus).",
+    "symptoms": [
+      "Dry, hacking cough",
+      "Wet cough with phlegm",
+      "Tickling sensation in throat",
+      "Chest discomfort",
+      "Wheezing",
+      "Shortness of breath"
+    ],
+    "causes": [
+      "Common cold and flu",
+      "Allergies",
+      "Asthma",
+      "GERD (acid reflux)",
+      "Postnasal drip",
+      "Chronic bronchitis",
+      "Smoking",
+      "Air pollution"
+    ],
+    "treatments": [
+      "Stay hydrated",
+      "Use honey (not for children under 1)",
+      "Cough drops or lozenges",
+      "Use a humidifier",
+      "Avoid irritants",
+      "Over-the-counter cough suppressants or expectorants"
+    ],
+    "when_to_see_doctor": "Seek medical attention for cough lasting more than 3 weeks, coughing up blood, difficulty breathing, high fever, unexplained weight loss, or night sweats.",
+    "keywords": ["öksürük", "coughing", "bronchitis", "phlegm", "productive cough"]
+  },
+  {
+    "id": "stomach_pain_001",
+    "title": "Stomach Pain (Abdominal Pain)",
+    "category": "symptoms",
+    "source": "MedlinePlus",
+    "content": "Abdominal pain refers to discomfort in the area between the chest and pelvis. Most cases are not serious and can be related to digestion, but severe pain may indicate a serious condition requiring immediate attention.",
+    "symptoms": [
+      "Cramping pain",
+      "Sharp or stabbing pain",
+      "Dull, constant ache",
+      "Bloating",
+      "Nausea or vomiting",
+      "Loss of appetite"
+    ],
+    "causes": [
+      "Indigestion",
+      "Gas and bloating",
+      "Constipation",
+      "Food poisoning",
+      "Gastritis",
+      "Ulcers",
+      "Appendicitis",
+      "Gallstones",
+      "Menstrual cramps"
+    ],
+    "treatments": [
+      "Rest",
+      "Avoid solid food for a few hours",
+      "Sip water or clear fluids",
+      "Avoid dairy, caffeine, alcohol",
+      "Over-the-counter antacids",
+      "Heat pad on abdomen",
+      "Ginger or peppermint tea"
+    ],
+    "when_to_see_doctor": "Seek immediate care for severe pain, pain with fever, bloody stool, persistent vomiting, swollen abdomen, pain during pregnancy, or pain lasting more than 24-48 hours.",
+    "keywords": ["karın ağrısı", "mide ağrısı", "abdominal cramps", "stomach ache", "gastric pain"]
+  },
+  {
+    "id": "back_pain_001",
+    "title": "Back Pain",
+    "category": "symptoms",
+    "source": "NHS",
+    "content": "Back pain is one of the most common medical problems. It can range from a dull, constant ache to sudden, sharp pain. Most back pain gets better within a few weeks without treatment.",
+    "symptoms": [
+      "Muscle ache",
+      "Shooting or stabbing pain",
+      "Pain radiating down leg",
+      "Limited flexibility",
+      "Inability to stand straight"
+    ],
+    "causes": [
+      "Muscle or ligament strain",
+      "Poor posture",
+      "Bulging or ruptured disks",
+      "Arthritis",
+      "Osteoporosis",
+      "Skeletal irregularities",
+      "Prolonged sitting"
+    ],
+    "treatments": [
+      "Stay active (bed rest can worsen)",
+      "Over-the-counter pain relievers",
+      "Apply heat or ice",
+      "Gentle stretching",
+      "Improve posture",
+      "Physical therapy",
+      "Maintain healthy weight"
+    ],
+    "when_to_see_doctor": "See a doctor if pain persists beyond a few weeks, is severe and doesn't improve with rest, spreads down legs (especially below knee), causes weakness/numbness/tingling, or is accompanied by unexplained weight loss.",
+    "keywords": ["bel ağrısı", "sırt ağrısı", "lower back pain", "lumbar pain", "sciatica"]
+  },
+  {
+    "id": "fatigue_001",
+    "title": "Fatigue",
+    "category": "symptoms",
+    "source": "Mayo Clinic",
+    "content": "Fatigue is a feeling of constant tiredness or weakness that can be physical, mental, or both. It's different from simply feeling drowsy or sleepy. Fatigue can be a symptom of many different conditions.",
+    "symptoms": [
+      "Constant tiredness",
+      "Lack of energy",
+      "Difficulty concentrating",
+      "Decreased motivation",
+      "Muscle weakness",
+      "Slowed reflexes"
+    ],
+    "causes": [
+      "Lack of sleep",
+      "Poor diet",
+      "Lack of exercise",
+      "Anemia",
+      "Thyroid problems",
+      "Depression",
+      "Chronic fatigue syndrome",
+      "Diabetes",
+      "Heart disease"
+    ],
+    "treatments": [
+      "Get adequate sleep (7-9 hours)",
+      "Regular exercise",
+      "Balanced diet",
+      "Reduce stress",
+      "Limit caffeine and alcohol",
+      "Stay hydrated",
+      "Address underlying conditions"
+    ],
+    "when_to_see_doctor": "See a doctor if fatigue persists despite rest, is accompanied by unexplained weight loss, fever, or other symptoms, significantly impacts daily life, or if you suspect an underlying condition.",
+    "keywords": ["yorgunluk", "halsizlik", "tiredness", "exhaustion", "weakness"]
+  },
+  {
+    "id": "chest_pain_001",
+    "title": "Chest Pain",
+    "category": "symptoms",
+    "source": "American Heart Association",
+    "content": "Chest pain can have many causes, from muscle strain to heart problems. While not all chest pain is serious, it's important to recognize when it might indicate a heart attack or other emergency.",
+    "symptoms": [
+      "Pressure or tightness in chest",
+      "Sharp, stabbing pain",
+      "Burning sensation",
+      "Pain spreading to arm, jaw, or back",
+      "Shortness of breath",
+      "Nausea or sweating"
+    ],
+    "causes": [
+      "Heart attack",
+      "Angina",
+      "Muscle strain",
+      "Costochondritis",
+      "GERD (acid reflux)",
+      "Anxiety or panic attacks",
+      "Pneumonia",
+      "Pulmonary embolism"
+    ],
+    "treatments": [
+      "Treatment depends on cause",
+      "For suspected heart attack: call emergency immediately",
+      "For muscle strain: rest, ice, pain relievers",
+      "For GERD: antacids, dietary changes",
+      "For anxiety: breathing exercises, therapy"
+    ],
+    "when_to_see_doctor": "CALL EMERGENCY (112) IMMEDIATELY if chest pain is sudden and severe, accompanied by shortness of breath, pain spreading to arm/jaw/back, sweating, nausea, or dizziness. These could be signs of a heart attack.",
+    "keywords": ["göğüs ağrısı", "heart pain", "angina", "cardiac", "kalp ağrısı"]
+  },
+  {
+    "id": "nausea_001",
+    "title": "Nausea and Vomiting",
+    "category": "symptoms",
+    "source": "MedlinePlus",
+    "content": "Nausea is an uneasiness of the stomach that often comes before vomiting. Vomiting is the forcible emptying of stomach contents through the mouth. These symptoms can be caused by many conditions.",
+    "symptoms": [
+      "Queasy feeling in stomach",
+      "Urge to vomit",
+      "Sweating",
+      "Increased salivation",
+      "Dizziness",
+      "Abdominal discomfort"
+    ],
+    "causes": [
+      "Gastroenteritis (stomach flu)",
+      "Food poisoning",
+      "Motion sickness",
+      "Pregnancy (morning sickness)",
+      "Medications",
+      "Migraine",
+      "Appendicitis",
+      "Anxiety"
+    ],
+    "treatments": [
+      "Rest and avoid solid foods temporarily",
+      "Sip clear fluids slowly",
+      "Avoid strong odors",
+      "Try ginger or peppermint",
+      "BRAT diet when ready (bananas, rice, applesauce, toast)",
+      "Over-the-counter antiemetics"
+    ],
+    "when_to_see_doctor": "Seek medical care if vomiting persists more than 24 hours, there's blood in vomit, signs of dehydration, severe abdominal pain, high fever, or stiff neck with headache.",
+    "keywords": ["mide bulantısı", "kusma", "vomiting", "queasy", "sick stomach"]
+  },
+  {
+    "id": "dizziness_001",
+    "title": "Dizziness",
+    "category": "symptoms",
+    "source": "Mayo Clinic",
+    "content": "Dizziness is a term used to describe a range of sensations including feeling faint, woozy, weak, or unsteady. Vertigo creates the false sense that you or your surroundings are spinning or moving.",
+    "symptoms": [
+      "Lightheadedness",
+      "Feeling faint",
+      "Unsteadiness or loss of balance",
+      "Spinning sensation (vertigo)",
+      "Floating feeling",
+      "Nausea"
+    ],
+    "causes": [
+      "Inner ear problems (BPPV, vestibular neuritis)",
+      "Low blood pressure",
+      "Poor circulation",
+      "Dehydration",
+      "Anemia",
+      "Low blood sugar",
+      "Anxiety disorders",
+      "Medications"
+    ],
+    "treatments": [
+      "Sit or lie down immediately",
+      "Drink water if dehydrated",
+      "Avoid sudden movements",
+      "Epley maneuver for BPPV",
+      "Vestibular rehabilitation therapy",
+      "Address underlying conditions"
+    ],
+    "when_to_see_doctor": "Seek immediate care if dizziness is accompanied by sudden severe headache, chest pain, difficulty breathing, numbness/weakness, fainting, rapid heartbeat, or head injury.",
+    "keywords": ["baş dönmesi", "sersemlik", "vertigo", "lightheaded", "balance problems"]
+  },
+  {
+    "id": "common_cold_001",
+    "title": "Common Cold",
+    "category": "diseases",
+    "source": "CDC",
+    "content": "The common cold is a viral infection of the upper respiratory tract. It's usually harmless, although it might not feel that way. Many types of viruses can cause a common cold, with rhinoviruses being the most common.",
+    "symptoms": [
+      "Runny or stuffy nose",
+      "Sore throat",
+      "Cough",
+      "Sneezing",
+      "Mild body aches",
+      "Low-grade fever",
+      "Generally feeling unwell"
+    ],
+    "causes": [
+      "Rhinoviruses (most common)",
+      "Coronavirus (common cold type)",
+      "RSV",
+      "Parainfluenza",
+      "Spread through droplets or touching contaminated surfaces"
+    ],
+    "treatments": [
+      "Rest and stay hydrated",
+      "Over-the-counter cold remedies",
+      "Saline nasal drops",
+      "Warm liquids (tea, soup)",
+      "Honey for cough (not for children under 1)",
+      "Humidifier",
+      "Pain relievers for aches and fever"
+    ],
+    "when_to_see_doctor": "See a doctor if symptoms last more than 10 days, high fever (above 39.4°C/103°F), fever returning after improvement, severe sinus pain, or difficulty breathing.",
+    "keywords": ["soğuk algınlığı", "nezle", "grip", "runny nose", "nasal congestion"]
+  },
+  {
+    "id": "flu_001",
+    "title": "Influenza (Flu)",
+    "category": "diseases",
+    "source": "CDC",
+    "content": "Influenza is a contagious respiratory illness caused by influenza viruses. It can cause mild to severe illness and sometimes lead to death. The best way to prevent flu is annual vaccination.",
+    "symptoms": [
+      "Fever or chills",
+      "Cough",
+      "Sore throat",
+      "Runny or stuffy nose",
+      "Muscle or body aches",
+      "Headaches",
+      "Fatigue",
+      "Vomiting and diarrhea (more common in children)"
+    ],
+    "causes": [
+      "Influenza A virus",
+      "Influenza B virus",
+      "Spread through respiratory droplets",
+      "Touching contaminated surfaces"
+    ],
+    "treatments": [
+      "Rest and fluids",
+      "Antiviral medications (if prescribed early)",
+      "Over-the-counter symptom relief",
+      "Stay home to prevent spread",
+      "Pain relievers for fever and aches"
+    ],
+    "when_to_see_doctor": "Seek emergency care for difficulty breathing, persistent chest pain, confusion, severe vomiting, or flu-like symptoms that improve but return with fever and worse cough.",
+    "keywords": ["grip", "influenza", "flu symptoms", "seasonal flu", "independent"]
+  },
+  {
+    "id": "diabetes_001",
+    "title": "Diabetes Overview",
+    "category": "diseases",
+    "source": "American Diabetes Association",
+    "content": "Diabetes is a chronic disease where the body either doesn't produce enough insulin or can't effectively use the insulin it produces. This leads to elevated blood glucose levels that can damage organs over time.",
+    "symptoms": [
+      "Increased thirst",
+      "Frequent urination",
+      "Extreme hunger",
+      "Unexplained weight loss",
+      "Fatigue",
+      "Blurred vision",
+      "Slow-healing sores",
+      "Frequent infections"
+    ],
+    "causes": [
+      "Type 1: Autoimmune destruction of insulin-producing cells",
+      "Type 2: Insulin resistance, often linked to obesity and lifestyle",
+      "Gestational: Hormonal changes during pregnancy",
+      "Genetic factors"
+    ],
+    "treatments": [
+      "Blood sugar monitoring",
+      "Insulin therapy (Type 1, sometimes Type 2)",
+      "Oral medications (Type 2)",
+      "Healthy diet",
+      "Regular exercise",
+      "Weight management",
+      "Regular medical checkups"
+    ],
+    "when_to_see_doctor": "See a doctor if you experience symptoms of diabetes, have risk factors, or if you have diabetes and experience very high or low blood sugar, signs of ketoacidosis, or other complications.",
+    "keywords": ["şeker hastalığı", "diyabet", "blood sugar", "insulin", "high glucose"]
+  },
+  {
+    "id": "hypertension_001",
+    "title": "High Blood Pressure (Hypertension)",
+    "category": "diseases",
+    "source": "American Heart Association",
+    "content": "High blood pressure is a common condition where the force of blood against artery walls is too high. It often has no symptoms but can lead to serious health problems like heart disease and stroke if untreated.",
+    "symptoms": [
+      "Usually no symptoms (silent killer)",
+      "Severe cases may cause headaches",
+      "Shortness of breath",
+      "Nosebleeds",
+      "Dizziness"
+    ],
+    "causes": [
+      "Family history",
+      "Age",
+      "Being overweight",
+      "Physical inactivity",
+      "Too much salt",
+      "Too little potassium",
+      "Excessive alcohol",
+      "Stress",
+      "Chronic conditions (kidney disease, diabetes)"
+    ],
+    "treatments": [
+      "Lifestyle changes (DASH diet, exercise)",
+      "Reduce sodium intake",
+      "Maintain healthy weight",
+      "Limit alcohol",
+      "Quit smoking",
+      "Manage stress",
+      "Blood pressure medications (if needed)"
+    ],
+    "when_to_see_doctor": "Get regular blood pressure checks. Seek immediate care if blood pressure is very high (180/120 or higher) or accompanied by chest pain, severe headache, difficulty breathing, or neurological symptoms.",
+    "keywords": ["yüksek tansiyon", "hipertansiyon", "blood pressure", "cardiovascular", "heart disease risk"]
+  },
+  {
+    "id": "anxiety_001",
+    "title": "Anxiety Disorders",
+    "category": "mental_health",
+    "source": "National Institute of Mental Health",
+    "content": "Anxiety disorders involve more than temporary worry or fear. For a person with an anxiety disorder, the anxiety does not go away and can get worse over time, interfering with daily activities.",
+    "symptoms": [
+      "Feeling restless or on-edge",
+      "Being easily fatigued",
+      "Difficulty concentrating",
+      "Irritability",
+      "Muscle tension",
+      "Sleep problems",
+      "Excessive worry",
+      "Panic attacks (rapid heartbeat, sweating, trembling)"
+    ],
+    "causes": [
+      "Genetic factors",
+      "Brain chemistry",
+      "Personality",
+      "Life events",
+      "Trauma",
+      "Medical conditions",
+      "Substance use"
+    ],
+    "treatments": [
+      "Psychotherapy (especially CBT)",
+      "Medications (anti-anxiety, antidepressants)",
+      "Stress management techniques",
+      "Regular exercise",
+      "Adequate sleep",
+      "Limiting caffeine and alcohol",
+      "Mindfulness and relaxation techniques"
+    ],
+    "when_to_see_doctor": "Seek help if anxiety interferes with work, relationships, or daily life, if you have suicidal thoughts, or if anxiety is accompanied by depression or substance use problems.",
+    "keywords": ["anksiyete", "kaygı", "panik atak", "worry", "panic attack", "stress"]
+  },
+  {
+    "id": "depression_001",
+    "title": "Depression",
+    "category": "mental_health",
+    "source": "National Institute of Mental Health",
+    "content": "Depression is a common but serious mood disorder that affects how you feel, think, and handle daily activities. It requires treatment and is not something people can simply 'snap out of'.",
+    "symptoms": [
+      "Persistent sad or empty mood",
+      "Loss of interest in activities",
+      "Changes in appetite or weight",
+      "Sleep disturbances",
+      "Fatigue or loss of energy",
+      "Feelings of worthlessness or guilt",
+      "Difficulty thinking or concentrating",
+      "Thoughts of death or suicide"
+    ],
+    "causes": [
+      "Genetic factors",
+      "Brain chemistry imbalances",
+      "Hormonal changes",
+      "Stressful life events",
+      "Trauma",
+      "Medical conditions",
+      "Certain medications"
+    ],
+    "treatments": [
+      "Psychotherapy (talk therapy, CBT)",
+      "Antidepressant medications",
+      "Combination of therapy and medication",
+      "Regular exercise",
+      "Adequate sleep",
+      "Social support",
+      "Brain stimulation therapies (for severe cases)"
+    ],
+    "when_to_see_doctor": "Seek help immediately if you have thoughts of suicide or self-harm. Also see a doctor if symptoms persist for more than two weeks, significantly impact daily functioning, or if depression returns after improvement.",
+    "keywords": ["depresyon", "ruhsal çöküntü", "mood disorder", "sadness", "mental health"]
+  }
+]

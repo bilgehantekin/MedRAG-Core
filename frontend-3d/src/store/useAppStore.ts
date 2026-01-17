@@ -51,6 +51,10 @@ interface AppState {
   isStreaming: boolean;
   setIsStreaming: (streaming: boolean) => void;
 
+  // RAG Mode
+  useRag: boolean;
+  setUseRag: (useRag: boolean) => void;
+
   // Geçerli semptom raporu
   getCurrentSymptomReport: () => SymptomReport | null;
   
@@ -117,6 +121,10 @@ export const useAppStore = create<AppState>((set, get) => ({
   isStreaming: false,
   setIsStreaming: (streaming) => set({ isStreaming: streaming }),
 
+  // RAG Mode - varsayılan olarak açık
+  useRag: true,
+  setUseRag: (useRag) => set({ useRag: useRag }),
+
   // Geçerli semptom raporu
   getCurrentSymptomReport: () => {
     const state = get();
@@ -158,6 +166,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     additionalNotes: '',
     messages: [],
     isLoading: false,
-    isStreaming: false
+    isStreaming: false,
+    useRag: true
   })
 }));

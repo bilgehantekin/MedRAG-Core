@@ -1,0 +1,224 @@
+[
+  {
+    "id": "paracetamol_001",
+    "title": "Paracetamol (Acetaminophen)",
+    "category": "medications",
+    "source": "NHS",
+    "content": "Paracetamol is a common painkiller used to treat aches and pain. It can also reduce fever. It's available over the counter and is safe when taken correctly.",
+    "uses": [
+      "Mild to moderate pain",
+      "Headaches",
+      "Toothache",
+      "Backache",
+      "Period pain",
+      "Cold and flu symptoms",
+      "Reducing fever"
+    ],
+    "dosage": "Adults: 500mg to 1g every 4-6 hours, maximum 4g in 24 hours. Do not exceed recommended dose.",
+    "side_effects": [
+      "Rare when taken correctly",
+      "Allergic reactions (rare)",
+      "Liver damage with overdose"
+    ],
+    "warnings": [
+      "Do not exceed maximum daily dose",
+      "Avoid alcohol while taking",
+      "Check other medications for paracetamol content",
+      "Caution with liver disease"
+    ],
+    "keywords": ["parasetamol", "asetaminofen", "parol", "tylol", "pain relief", "fever reducer"]
+  },
+  {
+    "id": "ibuprofen_001",
+    "title": "Ibuprofen",
+    "category": "medications",
+    "source": "NHS",
+    "content": "Ibuprofen is a non-steroidal anti-inflammatory drug (NSAID). It reduces inflammation and pain, and can also reduce fever. Available over the counter for short-term use.",
+    "uses": [
+      "Pain relief",
+      "Reducing inflammation",
+      "Headaches and migraines",
+      "Dental pain",
+      "Period pain",
+      "Muscle and joint pain",
+      "Cold and flu symptoms"
+    ],
+    "dosage": "Adults: 200-400mg three times daily with food. Maximum 1200mg daily for OTC use.",
+    "side_effects": [
+      "Stomach upset, nausea",
+      "Heartburn",
+      "Dizziness",
+      "Increased risk of stomach ulcers",
+      "Kidney problems (with long-term use)"
+    ],
+    "warnings": [
+      "Take with food to reduce stomach upset",
+      "Not suitable for people with stomach ulcers",
+      "Caution with asthma, kidney or heart problems",
+      "Avoid in late pregnancy",
+      "May interact with blood thinners"
+    ],
+    "keywords": ["ibuprofen", "advil", "nurofen", "NSAID", "anti-inflammatory"]
+  },
+  {
+    "id": "aspirin_001",
+    "title": "Aspirin (Acetylsalicylic Acid)",
+    "category": "medications",
+    "source": "Mayo Clinic",
+    "content": "Aspirin is used to reduce pain, fever, and inflammation. Low-dose aspirin is also used to prevent heart attacks and strokes in high-risk individuals.",
+    "uses": [
+      "Pain relief",
+      "Reducing fever",
+      "Anti-inflammatory",
+      "Heart attack and stroke prevention (low dose)",
+      "During a heart attack (if advised by emergency services)"
+    ],
+    "dosage": "Pain/fever: 300-650mg every 4-6 hours. Heart protection: 75-100mg daily (doctor prescribed).",
+    "side_effects": [
+      "Stomach irritation and bleeding",
+      "Heartburn",
+      "Nausea",
+      "Increased bleeding risk",
+      "Allergic reactions"
+    ],
+    "warnings": [
+      "Not for children under 16 (Reye's syndrome risk)",
+      "Avoid with stomach ulcers",
+      "Caution with asthma",
+      "Stop before surgery",
+      "May interact with blood thinners"
+    ],
+    "keywords": ["aspirin", "asetilsalisilik asit", "blood thinner", "heart attack prevention"]
+  },
+  {
+    "id": "antihistamine_001",
+    "title": "Antihistamines",
+    "category": "medications",
+    "source": "NHS",
+    "content": "Antihistamines are medications that help relieve allergy symptoms by blocking histamine. They can be sedating (drowsy) or non-sedating types.",
+    "uses": [
+      "Hay fever and allergic rhinitis",
+      "Allergic skin reactions",
+      "Hives (urticaria)",
+      "Insect bites and stings",
+      "Motion sickness (some types)",
+      "Sleep aid (sedating types)"
+    ],
+    "types": [
+      "Non-drowsy: cetirizine, loratadine, fexofenadine",
+      "Drowsy: diphenhydramine, chlorphenamine, promethazine"
+    ],
+    "side_effects": [
+      "Drowsiness (especially older types)",
+      "Dry mouth",
+      "Blurred vision",
+      "Difficulty urinating",
+      "Dizziness"
+    ],
+    "warnings": [
+      "May impair driving (sedating types)",
+      "Avoid alcohol with drowsy antihistamines",
+      "Caution with glaucoma, prostate problems",
+      "Some not suitable for children"
+    ],
+    "keywords": ["antihistamin", "alerji ilacı", "allergy medication", "cetirizine", "loratadine", "hay fever"]
+  },
+  {
+    "id": "antacid_001",
+    "title": "Antacids",
+    "category": "medications",
+    "source": "MedlinePlus",
+    "content": "Antacids are medications that neutralize stomach acid. They provide quick relief for heartburn, acid reflux, and indigestion.",
+    "uses": [
+      "Heartburn",
+      "Acid reflux (GERD)",
+      "Indigestion",
+      "Stomach upset",
+      "Ulcer symptom relief"
+    ],
+    "types": [
+      "Aluminum hydroxide",
+      "Magnesium hydroxide",
+      "Calcium carbonate (Tums)",
+      "Sodium bicarbonate",
+      "Combination products"
+    ],
+    "side_effects": [
+      "Constipation (aluminum-based)",
+      "Diarrhea (magnesium-based)",
+      "Belching",
+      "Nausea"
+    ],
+    "warnings": [
+      "May affect absorption of other medications",
+      "Take 1-2 hours apart from other drugs",
+      "Not for long-term regular use without doctor advice",
+      "Kidney disease: avoid magnesium types",
+      "High sodium types: caution with high blood pressure"
+    ],
+    "keywords": ["antasit", "mide ilacı", "heartburn relief", "acid reflux", "indigestion"]
+  },
+  {
+    "id": "cough_medicine_001",
+    "title": "Cough Medicines",
+    "category": "medications",
+    "source": "NHS",
+    "content": "Cough medicines can help relieve coughing symptoms. There are two main types: expectorants (help bring up mucus) and suppressants (reduce the urge to cough).",
+    "uses": [
+      "Dry cough (suppressants)",
+      "Productive/chesty cough (expectorants)",
+      "Cold and flu symptoms"
+    ],
+    "types": [
+      "Suppressants: dextromethorphan, codeine (prescription)",
+      "Expectorants: guaifenesin",
+      "Mucolytics: acetylcysteine",
+      "Combination products"
+    ],
+    "side_effects": [
+      "Drowsiness (some types)",
+      "Dizziness",
+      "Nausea",
+      "Constipation (codeine-based)"
+    ],
+    "warnings": [
+      "Don't suppress a productive cough",
+      "Not recommended for children under 6",
+      "May interact with other medications",
+      "Codeine products can be addictive",
+      "Check for alcohol content"
+    ],
+    "keywords": ["öksürük şurubu", "öksürük ilacı", "cough syrup", "expectorant", "cough suppressant"]
+  },
+  {
+    "id": "decongestant_001",
+    "title": "Decongestants",
+    "category": "medications",
+    "source": "Mayo Clinic",
+    "content": "Decongestants reduce nasal congestion by narrowing blood vessels in the nasal passages. Available as oral tablets or nasal sprays.",
+    "uses": [
+      "Blocked or stuffy nose",
+      "Sinus congestion",
+      "Cold and flu symptoms",
+      "Sinusitis"
+    ],
+    "types": [
+      "Oral: pseudoephedrine, phenylephrine",
+      "Nasal sprays: oxymetazoline, xylometazoline"
+    ],
+    "side_effects": [
+      "Restlessness, insomnia",
+      "Increased heart rate",
+      "Increased blood pressure",
+      "Rebound congestion (nasal sprays, prolonged use)"
+    ],
+    "warnings": [
+      "Not for people with high blood pressure, heart disease",
+      "Avoid if taking MAO inhibitors",
+      "Nasal sprays: use max 7 days to avoid rebound",
+      "May interact with many medications",
+      "Caution with diabetes, thyroid problems, glaucoma"
+    ],
+    "keywords": ["dekonjestan", "burun tıkanıklığı", "nasal spray", "stuffy nose", "sinus relief"]
+  }
+]

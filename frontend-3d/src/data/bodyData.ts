@@ -252,6 +252,12 @@ export const SYMPTOMS: Record<SymptomType, SymptomInfo> = {
     name_en: 'Stiffness',
     icon: '🔒'
   },
+  tightness: {
+    id: 'tightness',
+    name_tr: 'Gerginlik/Sıkışma',
+    name_en: 'Tightness',
+    icon: '🔗'
+  },
   weakness: {
     id: 'weakness',
     name_tr: 'Güçsüzlük',

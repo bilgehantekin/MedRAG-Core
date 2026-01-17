@@ -36,7 +36,7 @@ export interface RegionInfo {
 }
 
 // Semptom türleri
-export type SymptomType = 
+export type SymptomType =
   | 'pain'
   | 'swelling'
   | 'numbness'
@@ -46,6 +46,7 @@ export type SymptomType =
   | 'burn'
   | 'rash'
   | 'stiffness'
+  | 'tightness'
   | 'weakness'
   | 'cramp'
   | 'bleeding';

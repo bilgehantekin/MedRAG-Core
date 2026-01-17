@@ -1,0 +1,173 @@
+[
+  {
+    "id": "emergency_heart_attack",
+    "title": "Heart Attack Emergency Signs",
+    "category": "emergency",
+    "source": "American Heart Association",
+    "content": "A heart attack is a medical emergency. Every minute matters. If you think you or someone else is having a heart attack, call emergency services (112 in Turkey) immediately.",
+    "symptoms": [
+      "Chest pain or discomfort (pressure, squeezing, fullness)",
+      "Pain spreading to shoulders, neck, jaw, or arms",
+      "Shortness of breath",
+      "Cold sweat",
+      "Nausea or vomiting",
+      "Lightheadedness or dizziness",
+      "Unusual fatigue (especially in women)"
+    ],
+    "what_to_do": [
+      "Call 112 immediately",
+      "Chew an aspirin (300mg) if not allergic",
+      "Rest in a comfortable position",
+      "Loosen tight clothing",
+      "If unconscious and not breathing, begin CPR",
+      "Use AED if available"
+    ],
+    "do_not": [
+      "Do not delay calling emergency services",
+      "Do not drive yourself to hospital",
+      "Do not ignore symptoms hoping they'll pass"
+    ],
+    "keywords": ["heart attack", "kalp krizi", "myocardial infarction", "cardiac emergency", "chest pain emergency"]
+  },
+  {
+    "id": "emergency_stroke",
+    "title": "Stroke Emergency Signs (FAST)",
+    "category": "emergency",
+    "source": "American Stroke Association",
+    "content": "Stroke is a medical emergency where blood supply to the brain is interrupted. Use FAST to remember warning signs: Face drooping, Arm weakness, Speech difficulty, Time to call emergency.",
+    "symptoms": [
+      "Face drooping on one side",
+      "Arm weakness or numbness (one side)",
+      "Speech difficulty (slurred, confused)",
+      "Sudden severe headache",
+      "Vision problems",
+      "Trouble walking, dizziness, loss of balance",
+      "Confusion"
+    ],
+    "what_to_do": [
+      "Call 112 immediately - time is critical",
+      "Note the time symptoms started",
+      "Keep the person calm and comfortable",
+      "Do not give food or water",
+      "If unconscious, place in recovery position",
+      "Monitor breathing"
+    ],
+    "fast_test": [
+      "F - Face: Ask them to smile. Does one side droop?",
+      "A - Arms: Ask them to raise both arms. Does one drift down?",
+      "S - Speech: Ask them to repeat a simple phrase. Is speech slurred?",
+      "T - Time: If any of these signs, call emergency immediately"
+    ],
+    "keywords": ["stroke", "inme", "felç", "brain attack", "FAST", "facial drooping"]
+  },
+  {
+    "id": "emergency_breathing",
+    "title": "Breathing Difficulty Emergency",
+    "category": "emergency",
+    "source": "NHS",
+    "content": "Severe breathing difficulty is a medical emergency. It can be caused by asthma attacks, allergic reactions, heart problems, or other conditions.",
+    "symptoms": [
+      "Struggling to breathe",
+      "Cannot speak in full sentences",
+      "Blue lips or face (cyanosis)",
+      "Severe wheezing",
+      "Rapid breathing",
+      "Using neck/chest muscles to breathe",
+      "Confusion or drowsiness",
+      "Choking"
+    ],
+    "what_to_do": [
+      "Call 112 immediately",
+      "Help person sit upright",
+      "Loosen tight clothing",
+      "Use prescribed inhaler if available (asthma)",
+      "Use EpiPen if allergic reaction and available",
+      "Stay calm and reassure the person",
+      "If choking, perform Heimlich maneuver"
+    ],
+    "keywords": ["breathing difficulty", "nefes darlığı", "shortness of breath", "asthma attack", "anaphylaxis", "choking"]
+  },
+  {
+    "id": "emergency_severe_bleeding",
+    "title": "Severe Bleeding Emergency",
+    "category": "emergency",
+    "source": "Red Cross",
+    "content": "Severe bleeding can be life-threatening and requires immediate action to stop blood loss while waiting for emergency services.",
+    "symptoms": [
+      "Blood spurting or flowing heavily",
+      "Blood soaking through bandages",
+      "Blood pooling on the ground",
+      "Pale, cold, or clammy skin",
+      "Rapid, weak pulse",
+      "Confusion or decreasing alertness"
+    ],
+    "what_to_do": [
+      "Call 112 immediately",
+      "Apply direct pressure with clean cloth or bandage",
+      "Press firmly and do not remove cloth if soaked (add more)",
+      "If possible, elevate the injured area above heart",
+      "Apply tourniquet only if trained and bleeding is life-threatening",
+      "Keep person warm and calm",
+      "Do not remove embedded objects"
+    ],
+    "keywords": ["severe bleeding", "ciddi kanama", "hemorrhage", "blood loss", "wound emergency"]
+  },
+  {
+    "id": "emergency_allergic_reaction",
+    "title": "Severe Allergic Reaction (Anaphylaxis)",
+    "category": "emergency",
+    "source": "American Academy of Allergy",
+    "content": "Anaphylaxis is a severe, life-threatening allergic reaction that can occur within minutes of exposure to an allergen. It requires immediate epinephrine and emergency care.",
+    "symptoms": [
+      "Difficulty breathing, wheezing",
+      "Swelling of throat, tongue, lips",
+      "Hives or skin rash",
+      "Rapid heartbeat",
+      "Dizziness or fainting",
+      "Nausea, vomiting, diarrhea",
+      "Feeling of impending doom",
+      "Drop in blood pressure"
+    ],
+    "what_to_do": [
+      "Call 112 immediately",
+      "Use EpiPen (epinephrine auto-injector) if available",
+      "Help person lie down with legs elevated",
+      "If breathing difficult, allow to sit up",
+      "Loosen tight clothing",
+      "Be prepared to give CPR",
+      "Second dose of epinephrine after 5-15 min if no improvement"
+    ],
+    "common_triggers": [
+      "Foods (nuts, shellfish, eggs, milk)",
+      "Insect stings (bees, wasps)",
+      "Medications (antibiotics, NSAIDs)",
+      "Latex"
+    ],
+    "keywords": ["anaphylaxis", "anafilaksi", "severe allergy", "allergic shock", "epinephrine", "EpiPen"]
+  },
+  {
+    "id": "emergency_unconscious",
+    "title": "Unconscious Person",
+    "category": "emergency",
+    "source": "Red Cross",
+    "content": "Finding someone unconscious requires quick assessment and action. Check if they're breathing and responsive, and call for emergency help immediately.",
+    "what_to_do": [
+      "Check for danger to yourself and the person",
+      "Tap shoulders and shout 'Are you okay?'",
+      "Call 112 immediately",
+      "Check for breathing (look, listen, feel for 10 seconds)",
+      "If breathing: place in recovery position",
+      "If not breathing: start CPR",
+      "Use AED if available"
+    ],
+    "recovery_position": [
+      "Kneel beside the person",
+      "Place nearest arm at right angle to body",
+      "Bring far arm across chest, hold hand against cheek",
+      "Pull far knee up, foot flat on ground",
+      "Roll person toward you onto their side",
+      "Tilt head back to keep airway open"
+    ],
+    "keywords": ["unconscious", "bilinç kaybı", "bayılma", "unresponsive", "fainting", "passed out"]
+  }
+]

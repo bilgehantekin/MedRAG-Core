@@ -30,7 +30,9 @@ export function ChatPanel() {
     setCurrentStep,
     resetSymptomSelection,
     interactionMode,
-    resetAll
+    resetAll,
+    useRag,
+    setUseRag
   } = useAppStore();
 
   const symptomReport = getCurrentSymptomReport();
@@ -198,6 +200,20 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
     await sendToAPI(userMessage, report);
   };
 
+  // RAG kaynaklarını formatla
+  const formatSources = (sources: Array<{title: string, source: string, category: string, relevance_score: number}>) => {
+    if (!sources || sources.length === 0) return '';
+
+    const sourceLines = sources
+      .filter(s => s.relevance_score > 0.3) // Sadece yüksek ilgili kaynaklar
+      .slice(0, 3) // Maksimum 3 kaynak
+      .map(s => `• ${s.title} (${s.source})`)
+      .join('\n');
+
+    if (!sourceLines) return '';
+    return `\n\n📚 **Kaynaklar:**\n${sourceLines}`;
+  };
+
   // Yapısal context'i API'ye gönder
   const sendToAPI = async (userMessage: string, report?: SymptomReport) => {
     setIsLoading(true);
@@ -209,44 +225,79 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
         content: m.content
       }));
 
-      // Body oluştur - yapısal context ile
-      const body: any = {
-        message: userMessage,
-        history
-      };
+      let responseText = '';
+      let isEmergency = false;
 
-      // Eğer symptom report varsa, context olarak ekle
-      if (report) {
-        body.symptom_context = {
-          region: report.region,
-          region_name_tr: BODY_REGIONS[report.region].name_tr,
-          region_name_en: BODY_REGIONS[report.region].name_en,
-          symptom: report.symptom,
-          symptom_name_tr: SYMPTOMS[report.symptom].name_tr,
-          symptom_name_en: SYMPTOMS[report.symptom].name_en,
-          severity_0_10: report.severity,
-          onset: report.onset,
-          trigger: report.trigger || null,
-          red_flags: report.redFlags
+      if (useRag) {
+        // RAG endpoint'ini kullan
+        const ragBody = {
+          message: userMessage,
+          history,
+          use_rag: true,
+          max_sources: 5
         };
+
+        const response = await fetch(`${API_URL}/rag/chat`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(ragBody)
+        });
+
+        if (!response.ok) {
+          throw new Error('RAG API hatası');
+        }
+
+        const data = await response.json();
+        responseText = data.response;
+
+        // Kaynakları ekle (varsa)
+        if (data.rag_used && data.sources && data.sources.length > 0) {
+          responseText += formatSources(data.sources);
+        }
+      } else {
+        // Normal chat endpoint'ini kullan
+        const body: any = {
+          message: userMessage,
+          history
+        };
+
+        // Eğer symptom report varsa, context olarak ekle
+        if (report) {
+          body.symptom_context = {
+            region: report.region,
+            region_name_tr: BODY_REGIONS[report.region].name_tr,
+            region_name_en: BODY_REGIONS[report.region].name_en,
+            symptom: report.symptom,
+            symptom_name_tr: SYMPTOMS[report.symptom].name_tr,
+            symptom_name_en: SYMPTOMS[report.symptom].name_en,
+            severity_0_10: report.severity,
+            onset: report.onset,
+            trigger: report.trigger || null,
+            red_flags: report.redFlags
+          };
+        }
+
+        const response = await fetch(`${API_URL}/chat`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+          throw new Error('API hatası');
+        }
+
+        const data = await response.json();
+        responseText = data.response;
+        isEmergency = data.is_emergency;
       }
-
-      const response = await fetch(`${API_URL}/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      });
-
-      if (!response.ok) {
-        throw new Error('API hatası');
-      }
-
-      const data = await response.json();
 
       // Streaming ile mesajı göster
-      await streamMessage(data.response, data.is_emergency);
+      await streamMessage(responseText, isEmergency);
 
     } catch (error) {
       console.error('Chat error:', error);
@@ -319,15 +370,32 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
             <h2 className="font-semibold text-lg">🏥 Sağlık Asistanı</h2>
             {isDirectChatMode ? (
               <p className="text-primary-100 text-sm">
-                💬 Serbest yazım modu
+                💬 Serbest yazım modu {useRag && '• 📚 RAG'}
               </p>
             ) : region && symptom ? (
               <p className="text-primary-100 text-sm">
-                📍 {region.name_tr} • {symptom.icon} {symptom.name_tr}
+                📍 {region.name_tr} • {symptom.icon} {symptom.name_tr} {useRag && '• 📚 RAG'}
               </p>
-            ) : null}
+            ) : (
+              <p className="text-primary-100 text-sm">
+                {useRag ? '📚 RAG Modu (Bilgi Tabanı)' : '🤖 Normal Mod'}
+              </p>
+            )}
           </div>
           <div className="flex items-center gap-2">
+            {/* RAG Toggle */}
+            <button
+              onClick={() => setUseRag(!useRag)}
+              className={`px-3 py-2 rounded-lg text-sm transition flex items-center gap-1 ${
+                useRag
+                  ? 'bg-emerald-500/30 hover:bg-emerald-500/40 border border-emerald-400/50'
+                  : 'bg-white/20 hover:bg-white/30'
+              }`}
+              title={useRag ? "RAG Kapalı: Normal mod kullan" : "RAG Açık: Bilgi tabanı kullan"}
+            >
+              {useRag ? '📚' : '🤖'}
+              <span className="hidden sm:inline">{useRag ? 'RAG' : 'Normal'}</span>
+            </button>
             <button
               onClick={handleNewComplaint}
               className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm transition"

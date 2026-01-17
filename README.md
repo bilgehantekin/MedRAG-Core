@@ -123,6 +123,16 @@ Tarayıcıda: **http://localhost:3000**
 
 ## 📝 Sürüm Geçmişi
 
+### v3.1 (Ocak 2026) - RAG İyileştirmeleri & Kod Kalitesi
+- ✨ `medicine_utils.py` - Ortak ilaç işleme modülü (kod tekrarı önleme)
+- ✨ Embedding normalization (cosine similarity eşdeğeri, daha iyi retrieval)
+- ✨ Index uyumluluk kontrolü (`index_metadata.json` ile versiyon/model takibi)
+- ✨ Double search düzeltmesi (performans optimizasyonu)
+- ✨ RAG prompt iyileştirmeleri (verbatim kopyalama önleme, doğal dil)
+- ✨ Follow-up domain gate (`/chat` ve `/rag/chat` tutarlılığı)
+- ✨ History TR/EN karışımı düzeltmesi (drift önleme)
+- 🧹 Kod temizliği (~385 satır duplikasyon kaldırıldı)
+
 ### v3.0 (Ocak 2026) - RAG Entegrasyonu 🚀
 - ✨ **RAG (Retrieval-Augmented Generation)** sistemi eklendi
 - ✨ FAISS vektör veritabanı ile semantic search

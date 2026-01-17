@@ -37,10 +37,10 @@ class RAGChain:
         print(f"✅ RAG Chain başlatıldı (model: {model})")
     
     def get_rag_system_prompt(self, context: str, is_followup: bool = False) -> str:
-        """RAG için sistem prompt'u oluştur - normal chat ile birebir aynı format"""
+        """RAG için sistem prompt'u oluştur - main.py ile aynı format"""
 
         if not is_followup:
-            # İLK SORU - Normal chat ile aynı format (context en sonda referans olarak)
+            # İLK SORU - Kapsamlı yanıt (main.py ile aynı)
             return f"""You are a medical health assistant. Your role is to provide health education and general guidance.
 
 IMPORTANT: This is the user's FIRST question. Provide a COMPREHENSIVE response with this EXACT structure:
@@ -77,12 +77,14 @@ FORMATTING RULES:
 - Be empathetic but concise
 - Do NOT diagnose or prescribe
 - You are NOT a doctor
+- Use the reference information below to inform your response, but DO NOT copy text verbatim
+- Write in plain, conversational language
 
 === REFERENCE INFORMATION (use to enhance your response) ===
 {context}
 ==============================================================="""
         else:
-            # TAKİP SORUSU - Odaklı yanıt (normal chat ile aynı)
+            # TAKİP SORUSU - Odaklı yanıt (main.py ile aynı format)
             return f"""You are a medical health assistant continuing a conversation.
 
 IMPORTANT: This is a FOLLOW-UP question. Be CONCISE and FOCUSED.
@@ -92,9 +94,20 @@ IMPORTANT: This is a FOLLOW-UP question. Be CONCISE and FOCUSED.
 - Use bullet points when listing multiple items:
   • Point 1
   • Point 2
-- Keep total response under 150 words
-- Do NOT repeat information from previous messages
-- Do NOT cite or mention sources
+- Keep response to 3-5 bullet points or 2-3 short paragraphs
+- Don't repeat information already given
+
+**If they share new symptoms:**
+• Acknowledge the new info briefly
+• Adjust guidance if needed
+• Mention if urgency changes
+
+RULES:
+- You are NOT a doctor
+- Be concise - this is a follow-up, not a new consultation
+- Use bullet points (•) for any lists
+- Stay focused on their current question
+- Use the reference information to inform your response, but DO NOT copy text verbatim
 
 === REFERENCE INFORMATION ===
 {context}
@@ -140,7 +153,8 @@ IMPORTANT: This is a FOLLOW-UP question. Be CONCISE and FOCUSED.
                 }
                 for r in search_results
             ]
-            context = self.knowledge_base.get_context_for_query(question, max_context_tokens)
+            # search_results'ı geç, double search önleme
+            context = self.knowledge_base.get_context_for_query(question, max_context_tokens, search_results=search_results)
 
         # Mesajları hazırla
         messages = []

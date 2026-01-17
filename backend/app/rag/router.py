@@ -4,23 +4,21 @@ RAG tabanlı tıbbi chatbot endpoint'leri
 """
 
 import os
-import re
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
-from typing import Optional, List, Dict
+from typing import Optional, List
 from deep_translator import GoogleTranslator
 from groq import Groq
 
 # RAG modülleri
-from app.rag.rag_chain import RAGChain, get_rag_chain
-from app.rag.knowledge_base import MedicalKnowledgeBase, get_knowledge_base
-from app.rag.vector_store import VectorStore
+from app.rag.rag_chain import get_rag_chain
+from app.rag.knowledge_base import get_knowledge_base
 
-# İlaç sözlüğü
-from app.medicines import TURKISH_MEDICINE_DICTIONARY, MEDICINE_TYPOS
+# İlaç isim işleme (main.py ile aynı gelişmiş versiyon)
+from app.medicine_utils import preprocess_turkish_medicine_names
 
 # Sağlık filtresi - selamlaşma ve sağlık konusu tespiti için
-from app.health_filter import is_greeting, is_health_related, get_greeting_type
+from app.health_filter import is_greeting, is_health_related, get_greeting_type, count_health_signals, count_non_health_signals
 
 # Hazır cevaplar
 from app.prompts import get_greeting_response
@@ -30,66 +28,9 @@ router = APIRouter(prefix="/rag", tags=["RAG"])
 # Groq client (çeviri için)
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY", ""))
 
-# Translator'lar (yedek olarak Google Translate)
+# Translator'lar
 tr_to_en = GoogleTranslator(source='tr', target='en')
 en_to_tr = GoogleTranslator(source='en', target='tr')
-
-# Türkçe hal ekleri
-TURKISH_SUFFIXES = [
-    "lerden", "lardan", "lerde", "larda", "lerin", "ların", "lere", "lara",
-    "lerle", "larla", "leri", "ları", "ler", "lar",
-    "ından", "inden", "undan", "ünden", "ında", "inde", "unda", "ünde",
-    "ının", "inin", "unun", "ünün", "ına", "ine", "una", "üne",
-    "ıyla", "iyle", "uyla", "üyle", "ını", "ini", "unu", "ünü",
-    "dan", "den", "tan", "ten", "da", "de", "ta", "te",
-    "a", "e", "ya", "ye", "ı", "i", "u", "ü",
-    "ım", "im", "um", "üm", "ın", "in", "un", "ün",
-    "sı", "si", "su", "sü", "mı", "mi", "mu", "mü",
-]
-
-
-def strip_turkish_suffix(word: str) -> str:
-    """Türkçe ekleri kelimeden temizler"""
-    word_lower = word.lower()
-    for suffix in TURKISH_SUFFIXES:
-        if word_lower.endswith(suffix) and len(word_lower) > len(suffix) + 2:
-            stripped = word_lower[:-len(suffix)]
-            if stripped in TURKISH_MEDICINE_DICTIONARY or stripped in MEDICINE_TYPOS:
-                return stripped
-    return word_lower
-
-
-def preprocess_medicine_names(text: str) -> str:
-    """
-    Türkçe ilaç isimlerini İngilizce karşılıklarına çevirir.
-    Çeviriden ÖNCE çalıştırılır.
-    """
-    words = re.findall(r'\b[\wğüşıöçĞÜŞİÖÇ]+\b', text, re.UNICODE)
-    result = text
-
-    for word in words:
-        if len(word) < 3:
-            continue
-
-        word_lower = word.lower()
-        stripped = strip_turkish_suffix(word_lower)
-
-        # Direkt eşleşme
-        if stripped in TURKISH_MEDICINE_DICTIONARY:
-            english = TURKISH_MEDICINE_DICTIONARY[stripped]
-            pattern = r'\b' + re.escape(word) + r'\b'
-            result = re.sub(pattern, english, result, flags=re.IGNORECASE)
-            print(f"[RAG-MEDICINE] '{word}' → '{english[:40]}...'")
-        # Yanlış yazım düzeltme
-        elif stripped in MEDICINE_TYPOS:
-            corrected = MEDICINE_TYPOS[stripped]
-            if corrected in TURKISH_MEDICINE_DICTIONARY:
-                english = TURKISH_MEDICINE_DICTIONARY[corrected]
-                pattern = r'\b' + re.escape(word) + r'\b'
-                result = re.sub(pattern, english, result, flags=re.IGNORECASE)
-                print(f"[RAG-MEDICINE] '{word}' → '{corrected}' → '{english[:40]}...'")
-
-    return result
 
 
 # ============ Request/Response Models ============
@@ -152,12 +93,12 @@ class KnowledgeBaseStats(BaseModel):
 # ============ Helper Functions ============
 
 def translate_to_english(text: str) -> str:
-    """Türkçe'den İngilizce'ye çevir (ilaç isimleri ön işleme ile)"""
+    """Türkçe'den İngilizce'ye çevir (ilaç isimleri ön işleme ile - main.py ile aynı)"""
     try:
         if not text or len(text.strip()) < 2:
             return text
-        # Önce ilaç isimlerini İngilizce'ye çevir
-        preprocessed = preprocess_medicine_names(text)
+        # Önce ilaç isimlerini İngilizce'ye çevir (gelişmiş versiyon - main.py ile aynı)
+        preprocessed = preprocess_turkish_medicine_names(text)
         translated = tr_to_en.translate(preprocessed)
         print(f"[RAG TR→EN] {text[:50]}... → {translated[:50]}...")
         return translated
@@ -166,56 +107,14 @@ def translate_to_english(text: str) -> str:
         return text
 
 
-def translate_to_turkish_with_llm(text: str) -> str:
-    """LLM ile yüksek kaliteli Türkçe çeviri"""
-    try:
-        response = groq_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[
-                {
-                    "role": "system",
-                    "content": """You are a professional translator. Translate the following English medical text to Turkish.
-
-RULES:
-- Use natural, fluent Turkish
-- Keep medical terms accurate but understandable
-- Preserve all formatting (bullet points, headers with **)
-- Do NOT add any extra text or explanations
-- Output ONLY the Turkish translation"""
-                },
-                {
-                    "role": "user",
-                    "content": text
-                }
-            ],
-            temperature=0.3,
-            max_tokens=2048
-        )
-        translated = response.choices[0].message.content
-        print(f"[RAG LLM EN→TR] Çeviri tamamlandı ({len(text)} → {len(translated)} karakter)")
-        return translated
-    except Exception as e:
-        print(f"[ERROR] LLM çeviri hatası: {e}")
-        return None
-
-
 def translate_to_turkish(text: str) -> str:
-    """İngilizce metni Türkçe'ye çevirir - önce LLM, başarısızsa Google Translate"""
+    """İngilizce metni Türkçe'ye çevirir - Google Translate (main.py ile aynı)"""
     try:
         if not text or len(text.strip()) < 2:
             return text
-
-        # Önce LLM ile çevir (yüksek kalite)
-        llm_translation = translate_to_turkish_with_llm(text)
-        if llm_translation:
-            return llm_translation
-
-        # LLM başarısız olursa Google Translate kullan
-        print(f"[RAG EN→TR] LLM başarısız, Google Translate deneniyor...")
         translated = en_to_tr.translate(text)
         print(f"[RAG EN→TR] {text[:50]}... → {translated[:50]}...")
         return translated
-
     except Exception as e:
         print(f"[ERROR] RAG Çeviri hatası (EN→TR): {e}")
         return text
@@ -370,6 +269,21 @@ async def rag_chat(request: RAGChatRequest):
                 rag_used=False
             )
 
+        # ============ 2b. FOLLOW-UP'TA KONU DEĞİŞİMİ KONTROLÜ (main.py ile aynı) ============
+        if has_health_context and not is_greeting(user_message):
+            health_kw, health_pat, _, _ = count_health_signals(user_message)
+            hard_nh, soft_nh, _, _ = count_non_health_signals(user_message)
+
+            # Sağlık sinyali yok + hard non-health varsa -> konu değiştirme reddi
+            if (health_kw + health_pat) == 0 and hard_nh > 0:
+                print(f"[RAG] Follow-up'ta konu değişimi tespit edildi → Ret")
+                return RAGChatResponse(
+                    response="Anladım, konu değiştirmek istiyorsunuz. 😊\n\nAncak ben sadece sağlık konularında yardımcı olabiliyorum. Eğer sağlıkla ilgili başka bir sorunuz varsa, sormaktan çekinmeyin!\n\nÖnceki konuya devam etmek isterseniz de yanınızdayım.",
+                    response_en="",
+                    sources=[],
+                    rag_used=False
+                )
+
         # ============ 3. RAG İŞLEMİ ============
         rag_chain = get_rag_chain()
 
@@ -380,14 +294,16 @@ async def rag_chat(request: RAGChatRequest):
         # Mesajı İngilizce'ye çevir
         message_en = translate_to_english(user_message)
 
-        # Chat history'yi hazırla
+        # Chat history'yi hazırla (main.py ile aynı mantık)
         history_en = []
         for msg in request.history[-6:]:  # Son 6 mesaj
             if msg.content_en:
-                history_en.append({"role": msg.role, "content": msg.content_en})
+                # Frontend'den gelen İngilizce versiyon var, direkt kullan (drift önleme)
+                content_en = msg.content_en
             else:
-                content_en = translate_to_english(msg.content) if msg.role == "user" else msg.content
-                history_en.append({"role": msg.role, "content": content_en})
+                # content_en yok, çevir (hem user hem assistant)
+                content_en = translate_to_english(msg.content)
+            history_en.append({"role": msg.role, "content": content_en})
 
         # RAG query - is_first_health_question'ı geç
         result = rag_chain.query(

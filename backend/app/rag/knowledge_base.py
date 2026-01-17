@@ -143,15 +143,17 @@ class MedicalKnowledgeBase:
         
         return results
     
-    def get_context_for_query(self, query: str, max_tokens: int = 2500) -> str:
+    def get_context_for_query(self, query: str, max_tokens: int = 2500, search_results: Optional[List[Dict]] = None) -> str:
         """
         Sorgu için LLM'e verilecek context oluştur
 
         Args:
             query: Kullanıcı sorusu
             max_tokens: Yaklaşık maksimum token (karakter/4 hesabı)
+            search_results: Önceden hesaplanmış arama sonuçları (double search önleme)
         """
-        results = self.search(query, top_k=5)
+        # Eğer önceden hesaplanmış sonuçlar verilmediyse, arama yap
+        results = search_results if search_results is not None else self.search(query, top_k=5)
 
         if not results:
             return ""

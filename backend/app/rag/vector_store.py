@@ -7,7 +7,7 @@ import faiss
 import numpy as np
 import json
 import os
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Optional
 from pathlib import Path
 
 from app.rag.embeddings import get_embedding_model, EmbeddingModel
@@ -39,15 +39,19 @@ class VectorStore:
         self.documents: List[Dict] = []
         
         # Eğer kayıtlı index varsa yükle
-        if index_path and os.path.exists(index_path):
-            load_success = self.load(index_path)
-            if load_success:
-                print(f"✅ Vector store yüklendi: {len(self.documents)} döküman")
+        if index_path:
+            if os.path.isdir(index_path):
+                load_success = self.load(index_path)
+                if load_success:
+                    print(f"✅ Vector store yüklendi: {len(self.documents)} döküman")
+                else:
+                    # Eski/uyumsuz index - temiz başla, rebuild gerekiyor
+                    print("⚠️  Uyumsuz index atlandı - temiz başlatılıyor")
+                    self.index = faiss.IndexFlatL2(self.dimension)
+                    self.documents = []
             else:
-                # Eski/uyumsuz index - temiz başla, rebuild gerekiyor
-                print("⚠️  Uyumsuz index atlandı - temiz başlatılıyor")
-                self.index = faiss.IndexFlatL2(self.dimension)
-                self.documents = []
+                print(f"⚠️  index_path klasör değil: {index_path} (skip load)")
+                print(f"✅ Yeni vector store oluşturuldu (dim: {self.dimension})")
         else:
             print(f"✅ Yeni vector store oluşturuldu (dim: {self.dimension})")
 
@@ -78,8 +82,15 @@ class VectorStore:
         if not texts:
             return
 
+        # Uzunluk validasyonu
+        if metadatas is not None and len(metadatas) != len(texts):
+            raise ValueError(f"metadatas length ({len(metadatas)}) must match texts length ({len(texts)})")
+        if ids is not None and len(ids) != len(texts):
+            raise ValueError(f"ids length ({len(ids)}) must match texts length ({len(texts)})")
+
         # Embedding oluştur ve normalize et (retrieval kalitesi için)
-        embeddings = self.embedding_model.embed_texts(texts).astype('float32')
+        embeddings = np.asarray(self.embedding_model.embed_texts(texts), dtype="float32")
+        embeddings = np.atleast_2d(embeddings)  # 1D gelirse 2D yap
         embeddings = self._normalize(embeddings)
 
         # FAISS'e ekle
@@ -194,6 +205,12 @@ class VectorStore:
             if saved_model and saved_model != self.embedding_model.model_name:
                 print(f"⚠️  Model uyumsuzluğu! Kayıtlı: {saved_model}, Şimdiki: {self.embedding_model.model_name}")
                 needs_rebuild = True
+
+            # Dimension uyumluluk kontrolü (metadata'dan)
+            saved_dim = index_metadata.get("dimension")
+            if saved_dim and int(saved_dim) != int(self.dimension):
+                print(f"⚠️  Dimension uyumsuzluğu! Kayıtlı: {saved_dim}, Şimdiki: {self.dimension}")
+                needs_rebuild = True
         else:
             # Eski format - metadata yok, muhtemelen normalize edilmemiş
             print("⚠️  index_metadata.json bulunamadı - eski format, rebuild önerilir")
@@ -203,16 +220,34 @@ class VectorStore:
             print("🔄 Eski index uyumsuz - rebuild gerekiyor!")
             return False
 
-        # FAISS index yükle
+        # Dosya varlık kontrolü
         index_file = path / "index.faiss"
-        if index_file.exists():
-            self.index = faiss.read_index(str(index_file))
-
-        # Metadata yükle
         docs_file = path / "documents.json"
-        if docs_file.exists():
-            with open(docs_file, "r", encoding="utf-8") as f:
-                self.documents = json.load(f)
+
+        if not index_file.exists() or not docs_file.exists():
+            print("⚠️  index.faiss veya documents.json eksik - rebuild gerekiyor")
+            return False
+
+        # Atomic load: önce temp'e yükle, validasyon geçerse commit et
+        tmp_index = faiss.read_index(str(index_file))
+
+        with open(docs_file, "r", encoding="utf-8") as f:
+            tmp_docs = json.load(f)
+
+        # Yükleme sonrası uyumluluk kontrolleri
+        # Index dimension kontrolü
+        if getattr(tmp_index, "d", None) != self.dimension:
+            print(f"⚠️  Index dimension uyumsuz! index.d={tmp_index.d}, beklenen={self.dimension}")
+            return False
+
+        # Index-document sayısı uyumu
+        if tmp_index.ntotal != len(tmp_docs):
+            print(f"⚠️  Index/doc count uyumsuz! ntotal={tmp_index.ntotal}, docs={len(tmp_docs)}")
+            return False
+
+        # Tüm validasyonlar geçti - commit et
+        self.index = tmp_index
+        self.documents = tmp_docs
 
         return True
     

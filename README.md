@@ -125,12 +125,16 @@ Tarayıcıda: **http://localhost:3000**
 
 ### v3.1 (Ocak 2026) - RAG İyileştirmeleri & Kod Kalitesi
 - ✨ `medicine_utils.py` - Ortak ilaç işleme modülü (kod tekrarı önleme)
+- ✨ `domain.py` - Ortak tri-state domain kontrolü (YES/NO/UNCERTAIN)
 - ✨ Embedding normalization (cosine similarity eşdeğeri, daha iyi retrieval)
 - ✨ Index uyumluluk kontrolü (`index_metadata.json` ile versiyon/model takibi)
+- ✨ Vector store robustness (atomic load, dimension validation, isdir check)
 - ✨ Double search düzeltmesi (performans optimizasyonu)
 - ✨ RAG prompt iyileştirmeleri (verbatim kopyalama önleme, doğal dil)
 - ✨ Follow-up domain gate (`/chat` ve `/rag/chat` tutarlılığı)
-- ✨ History TR/EN karışımı düzeltmesi (drift önleme)
+- ✨ Lazy init for Groq/Translator (startup crash önleme)
+- ✨ Stricter classifier (max_tokens=3, stop newline, startswith parsing)
+- ✨ Frontend drift önleme (`content_en` saklama ve geri gönderme)
 - 🧹 Kod temizliği (~385 satır duplikasyon kaldırıldı)
 
 ### v3.0 (Ocak 2026) - RAG Entegrasyonu 🚀

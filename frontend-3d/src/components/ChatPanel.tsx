@@ -64,13 +64,14 @@ export function ChatPanel() {
   }, [messages.length]);
 
   // Streaming efekti ile mesaj göster
-  const streamMessage = useCallback(async (fullContent: string, isEmergency?: boolean) => {
+  const streamMessage = useCallback(async (fullContent: string, isEmergency?: boolean, contentEn?: string) => {
     setIsStreaming(true);
-    
-    // Boş mesaj ile başla
+
+    // Boş mesaj ile başla - content_en dahil (drift önleme için)
     addMessage({
       role: 'assistant',
       content: '',
+      content_en: contentEn,
       isEmergency
     });
 
@@ -219,13 +220,15 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
     setIsLoading(true);
 
     try {
-      // History'yi hazırla
+      // History'yi hazırla (content_en dahil - drift önleme için)
       const history = messages.slice(-10).map(m => ({
         role: m.role,
-        content: m.content
+        content: m.content,
+        content_en: m.content_en  // Backend'e geri gönder
       }));
 
       let responseText = '';
+      let responseEn: string | undefined = undefined;  // Drift önleme için
       let isEmergency = false;
 
       if (useRag) {
@@ -251,6 +254,7 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
 
         const data = await response.json();
         responseText = data.response;
+        responseEn = data.response_en;  // İngilizce cevabı sakla (drift önleme)
 
         // Kaynakları ekle (varsa)
         if (data.rag_used && data.sources && data.sources.length > 0) {
@@ -293,11 +297,12 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
 
         const data = await response.json();
         responseText = data.response;
+        responseEn = data.response_en;  // Normal chat de response_en döner
         isEmergency = data.is_emergency;
       }
 
-      // Streaming ile mesajı göster
-      await streamMessage(responseText, isEmergency);
+      // Streaming ile mesajı göster (content_en ile - drift önleme)
+      await streamMessage(responseText, isEmergency, responseEn);
 
     } catch (error) {
       console.error('Chat error:', error);

@@ -23,6 +23,9 @@ from app.health_filter import is_greeting, is_health_related, get_greeting_type,
 # Hazır cevaplar
 from app.prompts import get_greeting_response
 
+# Domain kontrolü (main.py ile aynı tri-state logic)
+from app.domain import check_health_domain_simple
+
 router = APIRouter(prefix="/rag", tags=["RAG"])
 
 # Groq client (çeviri için)
@@ -255,22 +258,30 @@ async def rag_chat(request: RAGChatRequest):
                     rag_used=False
                 )
 
-        # ============ 2. SAĞLIK DIŞI KONU KONTROLÜ ============
-        # İlk soru (sağlık bağlamı yok) ve sağlıkla ilgili değilse → hazır ret cevabı
-        is_health = is_health_related(user_message)
-        print(f"[RAG] is_health_related: {is_health}")
+        # ============ 2. SAĞLIK DIŞI KONU KONTROLÜ (main.py ile aynı tri-state) ============
+        # İlk soru (sağlık bağlamı yok) - tam sağlık kontrolü
+        if not has_health_context:
+            domain_result = check_health_domain_simple(user_message)
+            print(f"[RAG] check_health_domain_simple: {domain_result}")
 
-        if not has_health_context and not is_health:
-            print(f"[RAG] Sağlık dışı konu tespit edildi → Hazır ret cevabı dönüyor")
-            return RAGChatResponse(
-                response="Merhaba! Ben sağlık odaklı bir asistanım. 🏥\n\nSadece sağlık, hastalık, semptom ve tedavi ile ilgili sorularınızda size yardımcı olabilirim. Sağlık dışı konularda maalesef yardımcı olamıyorum.\n\nSağlıkla ilgili bir sorunuz varsa, lütfen sorun!",
-                response_en="",
-                sources=[],
-                rag_used=False
-            )
+            if domain_result == "NO":
+                return RAGChatResponse(
+                    response="Merhaba! Ben sağlık odaklı bir asistanım. 🏥\n\nSadece sağlık, hastalık, semptom ve tedavi ile ilgili sorularınızda size yardımcı olabilirim. Sağlık dışı konularda maalesef yardımcı olamıyorum.\n\nSağlıkla ilgili bir sorunuz varsa, lütfen sorun!",
+                    response_en="",
+                    sources=[],
+                    rag_used=False
+                )
+            elif domain_result == "UNCERTAIN":
+                # Belirsiz durumda netleştirme sorusu sor (main.py ile aynı)
+                return RAGChatResponse(
+                    response="Merhaba! 😊 Mesajınızı tam anlayamadım.\n\nBen sağlık konularında yardımcı olan bir asistanım. Sağlık, semptom veya ilaçlarla ilgili bir sorunuz mu var?\n\nLütfen sorunuzu biraz daha açıklayabilir misiniz?",
+                    response_en="",
+                    sources=[],
+                    rag_used=False
+                )
 
         # ============ 2b. FOLLOW-UP'TA KONU DEĞİŞİMİ KONTROLÜ (main.py ile aynı) ============
-        if has_health_context and not is_greeting(user_message):
+        if has_health_context and not greeting_type:
             health_kw, health_pat, _, _ = count_health_signals(user_message)
             hard_nh, soft_nh, _, _ = count_non_health_signals(user_message)
 
@@ -394,25 +405,28 @@ async def get_stats():
 async def reload_knowledge_base():
     """
     Knowledge base'i yeniden yükle
-    
+
     Yeni dökümanlar ekledikten sonra kullanın.
     """
     try:
-        # Global instance'ı sıfırla
+        # Global instance'ları sıfırla
         from app.rag import knowledge_base as kb_module
+        from app.rag import rag_chain as rag_chain_module
+
         kb_module._knowledge_base = None
-        
+        rag_chain_module._rag_chain = None  # RAG chain'i de sıfırla (stale KB referansı önleme)
+
         # Yeniden yükle
         kb = get_knowledge_base()
         stats = kb.get_stats()
-        
+
         return {
             "status": "success",
             "message": "Knowledge base reloaded",
             "documents": stats["total_documents"],
             "categories": stats["categories"]
         }
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Reload error: {str(e)}")
 

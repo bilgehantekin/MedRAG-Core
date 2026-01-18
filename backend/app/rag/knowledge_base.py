@@ -27,6 +27,38 @@ class MedicalKnowledgeBase:
         self.data_dir = Path(__file__).parent.parent.parent / "data" / "medical_knowledge"
         self.categories = set()
         self._loaded_files: set = set()  # Tekrarlı yükleme önleme
+
+    def _to_bool(self, v) -> bool:
+        """
+        Güvenli bool dönüşümü: string "false", int 0, None vb. doğru handle et
+        """
+        if isinstance(v, bool):
+            return v
+        if isinstance(v, (int, float)):
+            return v != 0
+        if isinstance(v, str):
+            s = v.strip().lower()
+            if s in {"true", "1", "yes", "y", "evet"}:
+                return True
+            if s in {"false", "0", "no", "n", "hayır", "hayir", ""}:
+                return False
+        return False
+
+    def _normalize_keywords(self, raw_keywords: List) -> List[str]:
+        """
+        Keyword listesini normalize et: non-str filtrele, lower/strip, dedupe, sırayı koru
+        """
+        out = []
+        seen = set()
+        for kw in raw_keywords:
+            if not isinstance(kw, str):
+                continue
+            k = kw.strip().lower()
+            if not k or k in seen:
+                continue
+            seen.add(k)
+            out.append(k)
+        return out
     
     def load_from_json(self, file_path: str) -> int:
         """
@@ -71,13 +103,14 @@ class MedicalKnowledgeBase:
             source = item.get("source_name") or item.get("source", "unknown")
 
             # Tüm keyword'leri birleştir (EN + TR + typos) + dedupe + normalize
+            # `or []` ile null değerler handle edilir (item.get default None döner)
             raw_keywords = []
-            raw_keywords.extend(item.get("keywords", []))  # Eski format
-            raw_keywords.extend(item.get("keywords_en", []))
-            raw_keywords.extend(item.get("keywords_tr", []))
-            raw_keywords.extend(item.get("typos_tr", []))
-            # Normalize: lower + strip, sonra dedupe
-            all_keywords = list({kw.lower().strip() for kw in raw_keywords if kw})
+            raw_keywords.extend(item.get("keywords") or [])  # Eski format
+            raw_keywords.extend(item.get("keywords_en") or [])
+            raw_keywords.extend(item.get("keywords_tr") or [])
+            raw_keywords.extend(item.get("typos_tr") or [])
+            # Normalize: non-str filtrele, lower + strip, dedupe, sırayı koru
+            all_keywords = self._normalize_keywords(raw_keywords)
 
             metadata = {
                 "title": item.get("title", ""),
@@ -90,7 +123,7 @@ class MedicalKnowledgeBase:
                 "safety_level": item.get("safety_level", "general"),
                 # Ek metadata alanları (v3.3+)
                 "severity": item.get("severity", ""),
-                "call_emergency": item.get("call_emergency", False),
+                "call_emergency": self._to_bool(item.get("call_emergency", False)),
                 "emergency_number": item.get("emergency_number", ""),
                 "drug_class": item.get("drug_class", ""),
                 "retrieved_date": item.get("retrieved_date", "")
@@ -126,8 +159,8 @@ class MedicalKnowledgeBase:
         if item.get("severity"):
             parts.append(f"Severity: {item['severity']}")
 
-        if item.get("call_emergency"):
-            emergency_num = item.get("emergency_number", "112")
+        if self._to_bool(item.get("call_emergency", False)):
+            emergency_num = item.get("emergency_number") or "112"
             parts.append(f"EMERGENCY: Call {emergency_num} immediately")
 
         if item.get("time_critical"):
@@ -153,42 +186,68 @@ class MedicalKnowledgeBase:
             parts.append(f"Bring to hospital: {item['bring_to_hospital']}")
 
         # Ek acil durum alanları
-        if item.get("call_112_if"):
-            parts.append(f"Call 112 if: {', '.join(item['call_112_if'])}")
+        val = item.get("call_112_if")
+        if isinstance(val, list) and val:
+            parts.append(f"Call 112 if: {', '.join(str(x) for x in val)}")
 
         if item.get("fast_test"):
-            parts.append(f"FAST test: {item['fast_test']}")
+            val = item["fast_test"]
+            if isinstance(val, dict):
+                parts.append(f"FAST test: {' | '.join(f'{k}: {v}' for k, v in val.items())}")
+            elif isinstance(val, list):
+                parts.append(f"FAST test: {'; '.join(str(v) for v in val)}")
+            else:
+                parts.append(f"FAST test: {val}")
 
         if item.get("cpr_basics"):
-            parts.append(f"CPR basics: {item['cpr_basics']}")
+            val = item["cpr_basics"]
+            if isinstance(val, dict):
+                parts.append(f"CPR basics: {' | '.join(f'{k}: {v}' for k, v in val.items())}")
+            elif isinstance(val, list):
+                parts.append(f"CPR basics: {'; '.join(str(v) for v in val)}")
+            else:
+                parts.append(f"CPR basics: {val}")
 
         if item.get("recovery_position"):
-            parts.append(f"Recovery position: {item['recovery_position']}")
+            val = item["recovery_position"]
+            if isinstance(val, dict):
+                parts.append(f"Recovery position: {' | '.join(f'{k}: {v}' for k, v in val.items())}")
+            elif isinstance(val, list):
+                parts.append(f"Recovery position: {'; '.join(str(v) for v in val)}")
+            else:
+                parts.append(f"Recovery position: {val}")
 
-        if item.get("common_triggers"):
-            parts.append(f"Common triggers: {', '.join(item['common_triggers'])}")
+        val = item.get("common_triggers")
+        if isinstance(val, list) and val:
+            parts.append(f"Common triggers: {', '.join(str(x) for x in val)}")
 
         if item.get("asthma_source"):
             parts.append(f"Asthma source: {item['asthma_source']}")
 
         # === SEMPTOM/HASTALIK ALANLARI ===
-        if item.get("symptoms"):
-            parts.append(f"Symptoms: {', '.join(item['symptoms'])}")
+        val = item.get("symptoms")
+        if isinstance(val, list) and val:
+            parts.append(f"Symptoms: {', '.join(str(x) for x in val)}")
 
-        if item.get("causes"):
-            parts.append(f"Causes: {', '.join(item['causes'])}")
+        val = item.get("causes")
+        if isinstance(val, list) and val:
+            parts.append(f"Causes: {', '.join(str(x) for x in val)}")
 
-        if item.get("treatments"):
-            parts.append(f"Treatments: {', '.join(item['treatments'])}")
+        val = item.get("treatments")
+        if isinstance(val, list) and val:
+            parts.append(f"Treatments: {', '.join(str(x) for x in val)}")
 
-        if item.get("what_to_do"):
-            parts.append(f"What to do: {', '.join(item['what_to_do'])}")
+        val = item.get("what_to_do")
+        if isinstance(val, list) and val:
+            parts.append(f"What to do: {', '.join(str(x) for x in val)}")
 
-        if item.get("do_not"):
-            parts.append(f"Do not: {', '.join(item['do_not'])}")
+        val = item.get("do_not")
+        if isinstance(val, list) and val:
+            parts.append(f"Do not: {', '.join(str(x) for x in val)}")
 
-        if item.get("red_flags"):
-            parts.append(f"Red flags (seek emergency): {', '.join(item['red_flags'])}")
+        val = item.get("red_flags")
+        if isinstance(val, list) and val:
+            parts.append(f"Red flags (seek emergency): {', '.join(str(x) for x in val)}")
 
         if item.get("when_to_see_doctor"):
             parts.append(f"When to see a doctor: {item['when_to_see_doctor']}")
@@ -200,8 +259,9 @@ class MedicalKnowledgeBase:
         if item.get("drug_class"):
             parts.append(f"Drug class: {item['drug_class']}")
 
-        if item.get("uses"):
-            parts.append(f"Uses: {', '.join(item['uses'])}")
+        val = item.get("uses")
+        if isinstance(val, list) and val:
+            parts.append(f"Uses: {', '.join(str(x) for x in val)}")
 
         if item.get("dosage_info"):
             dosage = item["dosage_info"]
@@ -211,17 +271,21 @@ class MedicalKnowledgeBase:
             else:
                 parts.append(f"Dosage: {dosage}")
 
-        if item.get("side_effects"):
-            parts.append(f"Side effects: {', '.join(item['side_effects'])}")
+        val = item.get("side_effects")
+        if isinstance(val, list) and val:
+            parts.append(f"Side effects: {', '.join(str(x) for x in val)}")
 
-        if item.get("contraindications"):
-            parts.append(f"Contraindications: {', '.join(item['contraindications'])}")
+        val = item.get("contraindications")
+        if isinstance(val, list) and val:
+            parts.append(f"Contraindications: {', '.join(str(x) for x in val)}")
 
-        if item.get("warnings"):
-            parts.append(f"Warnings: {', '.join(item['warnings'])}")
+        val = item.get("warnings")
+        if isinstance(val, list) and val:
+            parts.append(f"Warnings: {', '.join(str(x) for x in val)}")
 
-        if item.get("drug_interactions"):
-            parts.append(f"Drug interactions: {', '.join(item['drug_interactions'])}")
+        val = item.get("drug_interactions")
+        if isinstance(val, list) and val:
+            parts.append(f"Drug interactions: {', '.join(str(x) for x in val)}")
 
         if item.get("overdose_warning"):
             parts.append(f"Overdose warning: {item['overdose_warning']}")
@@ -235,17 +299,20 @@ class MedicalKnowledgeBase:
         if item.get("rebound_warning"):
             parts.append(f"Rebound warning: {item['rebound_warning']}")
 
-        if item.get("brand_examples_tr"):
-            parts.append(f"Turkish brands (örnek): {', '.join(item['brand_examples_tr'])}")
+        val = item.get("brand_examples_tr")
+        if isinstance(val, list) and val:
+            parts.append(f"Turkish brands (örnek): {', '.join(str(x) for x in val)}")
 
         # === KEYWORD'LER (arama kalitesi için) ===
-        all_keywords = []
-        all_keywords.extend(item.get("keywords", []))
-        all_keywords.extend(item.get("keywords_en", []))
-        all_keywords.extend(item.get("keywords_tr", []))
-        all_keywords.extend(item.get("typos_tr", []))
-        if all_keywords:
-            parts.append(f"Related terms: {', '.join(all_keywords)}")
+        # `or []` ile null değerler handle edilir
+        raw_keywords = []
+        raw_keywords.extend(item.get("keywords") or [])
+        raw_keywords.extend(item.get("keywords_en") or [])
+        raw_keywords.extend(item.get("keywords_tr") or [])
+        raw_keywords.extend(item.get("typos_tr") or [])
+        normalized_keywords = self._normalize_keywords(raw_keywords)
+        if normalized_keywords:
+            parts.append(f"Related terms: {', '.join(normalized_keywords)}")
 
         return "\n".join(parts)
     

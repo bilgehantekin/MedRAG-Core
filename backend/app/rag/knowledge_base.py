@@ -4,7 +4,6 @@ Tıbbi bilgi kaynaklarını yönetme ve yükleme
 """
 
 import json
-import os
 from typing import List, Dict, Optional
 from pathlib import Path
 
@@ -27,6 +26,7 @@ class MedicalKnowledgeBase:
         self.vector_store = vector_store or VectorStore()
         self.data_dir = Path(__file__).parent.parent.parent / "data" / "medical_knowledge"
         self.categories = set()
+        self._loaded_files: set = set()  # Tekrarlı yükleme önleme
     
     def load_from_json(self, file_path: str) -> int:
         """
@@ -48,12 +48,20 @@ class MedicalKnowledgeBase:
         """
         with open(file_path, "r", encoding="utf-8") as f:
             data = json.load(f)
-        
+
+        # JSON format validasyonu
+        if not isinstance(data, list):
+            raise ValueError(f"JSON root must be a list, got {type(data).__name__}")
+
         texts = []
         metadatas = []
         ids = []
-        
+
         for i, item in enumerate(data):
+            # Item validasyonu
+            if not isinstance(item, dict):
+                print(f"⚠️  Skipping item {i}: expected dict, got {type(item).__name__}")
+                continue
             # Ana içerik
             text = self._format_document(item)
             texts.append(text)
@@ -62,12 +70,14 @@ class MedicalKnowledgeBase:
             # source_name (yeni) veya source (eski) - backward compatible
             source = item.get("source_name") or item.get("source", "unknown")
 
-            # Tüm keyword'leri birleştir (EN + TR + typos)
-            all_keywords = []
-            all_keywords.extend(item.get("keywords", []))  # Eski format
-            all_keywords.extend(item.get("keywords_en", []))
-            all_keywords.extend(item.get("keywords_tr", []))
-            all_keywords.extend(item.get("typos_tr", []))
+            # Tüm keyword'leri birleştir (EN + TR + typos) + dedupe + normalize
+            raw_keywords = []
+            raw_keywords.extend(item.get("keywords", []))  # Eski format
+            raw_keywords.extend(item.get("keywords_en", []))
+            raw_keywords.extend(item.get("keywords_tr", []))
+            raw_keywords.extend(item.get("typos_tr", []))
+            # Normalize: lower + strip, sonra dedupe
+            all_keywords = list({kw.lower().strip() for kw in raw_keywords if kw})
 
             metadata = {
                 "title": item.get("title", ""),
@@ -77,7 +87,13 @@ class MedicalKnowledgeBase:
                 "source_url": item.get("source_url", ""),
                 "keywords": all_keywords,
                 "jurisdiction": item.get("jurisdiction", "TR"),
-                "safety_level": item.get("safety_level", "general")
+                "safety_level": item.get("safety_level", "general"),
+                # Ek metadata alanları (v3.3+)
+                "severity": item.get("severity", ""),
+                "call_emergency": item.get("call_emergency", False),
+                "emergency_number": item.get("emergency_number", ""),
+                "drug_class": item.get("drug_class", ""),
+                "retrieved_date": item.get("retrieved_date", "")
             }
             metadatas.append(metadata)
             self.categories.add(metadata["category"])
@@ -90,10 +106,10 @@ class MedicalKnowledgeBase:
         return len(texts)
     
     def _format_document(self, item: Dict) -> str:
-        """Dökümanı arama için optimize edilmiş formata çevir (v3.3 schema)"""
+        """Dökümanı arama için optimize edilmiş formata çevir (v3.3+ schema)"""
         parts = []
 
-        # Başlık (EN + TR)
+        # === TEMEL BİLGİLER ===
         if item.get("title"):
             title = item['title']
             if item.get("title_tr"):
@@ -106,6 +122,56 @@ class MedicalKnowledgeBase:
         if item.get("content"):
             parts.append(f"Content: {item['content']}")
 
+        # === ACİL DURUM ALANLARI ===
+        if item.get("severity"):
+            parts.append(f"Severity: {item['severity']}")
+
+        if item.get("call_emergency"):
+            emergency_num = item.get("emergency_number", "112")
+            parts.append(f"EMERGENCY: Call {emergency_num} immediately")
+
+        if item.get("time_critical"):
+            parts.append(f"Time critical: {item['time_critical']}")
+
+        # Acil durum özel notları
+        if item.get("aspirin_safety_note"):
+            parts.append(f"Aspirin safety: {item['aspirin_safety_note']}")
+
+        if item.get("shock_warning"):
+            parts.append(f"Shock warning: {item['shock_warning']}")
+
+        if item.get("asthma_note"):
+            parts.append(f"Asthma guidance: {item['asthma_note']}")
+
+        if item.get("epipen_note"):
+            parts.append(f"EpiPen guidance: {item['epipen_note']}")
+
+        if item.get("after_seizure"):
+            parts.append(f"After seizure: {item['after_seizure']}")
+
+        if item.get("bring_to_hospital"):
+            parts.append(f"Bring to hospital: {item['bring_to_hospital']}")
+
+        # Ek acil durum alanları
+        if item.get("call_112_if"):
+            parts.append(f"Call 112 if: {', '.join(item['call_112_if'])}")
+
+        if item.get("fast_test"):
+            parts.append(f"FAST test: {item['fast_test']}")
+
+        if item.get("cpr_basics"):
+            parts.append(f"CPR basics: {item['cpr_basics']}")
+
+        if item.get("recovery_position"):
+            parts.append(f"Recovery position: {item['recovery_position']}")
+
+        if item.get("common_triggers"):
+            parts.append(f"Common triggers: {', '.join(item['common_triggers'])}")
+
+        if item.get("asthma_source"):
+            parts.append(f"Asthma source: {item['asthma_source']}")
+
+        # === SEMPTOM/HASTALIK ALANLARI ===
         if item.get("symptoms"):
             parts.append(f"Symptoms: {', '.join(item['symptoms'])}")
 
@@ -115,7 +181,6 @@ class MedicalKnowledgeBase:
         if item.get("treatments"):
             parts.append(f"Treatments: {', '.join(item['treatments'])}")
 
-        # Yeni v3.3 alanları
         if item.get("what_to_do"):
             parts.append(f"What to do: {', '.join(item['what_to_do'])}")
 
@@ -128,7 +193,52 @@ class MedicalKnowledgeBase:
         if item.get("when_to_see_doctor"):
             parts.append(f"When to see a doctor: {item['when_to_see_doctor']}")
 
-        # Tüm keyword'leri birleştir (arama kalitesi için)
+        if item.get("crisis_info"):
+            parts.append(f"Crisis info: {item['crisis_info']}")
+
+        # === İLAÇ ALANLARI ===
+        if item.get("drug_class"):
+            parts.append(f"Drug class: {item['drug_class']}")
+
+        if item.get("uses"):
+            parts.append(f"Uses: {', '.join(item['uses'])}")
+
+        if item.get("dosage_info"):
+            dosage = item["dosage_info"]
+            if isinstance(dosage, dict):
+                dosage_parts = [f"{k}: {v}" for k, v in dosage.items()]
+                parts.append(f"Dosage: {'; '.join(dosage_parts)}")
+            else:
+                parts.append(f"Dosage: {dosage}")
+
+        if item.get("side_effects"):
+            parts.append(f"Side effects: {', '.join(item['side_effects'])}")
+
+        if item.get("contraindications"):
+            parts.append(f"Contraindications: {', '.join(item['contraindications'])}")
+
+        if item.get("warnings"):
+            parts.append(f"Warnings: {', '.join(item['warnings'])}")
+
+        if item.get("drug_interactions"):
+            parts.append(f"Drug interactions: {', '.join(item['drug_interactions'])}")
+
+        if item.get("overdose_warning"):
+            parts.append(f"Overdose warning: {item['overdose_warning']}")
+
+        if item.get("safety_disclaimer"):
+            parts.append(f"Safety disclaimer: {item['safety_disclaimer']}")
+
+        if item.get("emergency_use_note"):
+            parts.append(f"Emergency use note: {item['emergency_use_note']}")
+
+        if item.get("rebound_warning"):
+            parts.append(f"Rebound warning: {item['rebound_warning']}")
+
+        if item.get("brand_examples_tr"):
+            parts.append(f"Turkish brands (örnek): {', '.join(item['brand_examples_tr'])}")
+
+        # === KEYWORD'LER (arama kalitesi için) ===
         all_keywords = []
         all_keywords.extend(item.get("keywords", []))
         all_keywords.extend(item.get("keywords_en", []))
@@ -150,8 +260,15 @@ class MedicalKnowledgeBase:
         
         total_loaded = 0
         for json_file in self.data_dir.glob("*.json"):
+            # Tekrarlı yükleme kontrolü
+            file_key = str(json_file.resolve())
+            if file_key in self._loaded_files:
+                print(f"ℹ️  {json_file.name}: zaten yüklendi, atlanıyor")
+                continue
+
             try:
                 count = self.load_from_json(str(json_file))
+                self._loaded_files.add(file_key)
                 print(f"📚 {json_file.name}: {count} döküman yüklendi")
                 total_loaded += count
             except Exception as e:

@@ -58,12 +58,24 @@ class MedicalKnowledgeBase:
             text = self._format_document(item)
             texts.append(text)
             
-            # Metadata
+            # Metadata - yeni schema desteği (v3.3+)
+            # source_name (yeni) veya source (eski) - backward compatible
+            source = item.get("source_name") or item.get("source", "unknown")
+
+            # Tüm keyword'leri birleştir (EN + TR + typos)
+            all_keywords = []
+            all_keywords.extend(item.get("keywords", []))  # Eski format
+            all_keywords.extend(item.get("keywords_en", []))
+            all_keywords.extend(item.get("keywords_tr", []))
+            all_keywords.extend(item.get("typos_tr", []))
+
             metadata = {
                 "title": item.get("title", ""),
+                "title_tr": item.get("title_tr", ""),
                 "category": item.get("category", "general"),
-                "source": item.get("source", "unknown"),
-                "keywords": item.get("keywords", [])
+                "source": source,
+                "source_url": item.get("source_url", ""),
+                "keywords": all_keywords
             }
             metadatas.append(metadata)
             self.categories.add(metadata["category"])
@@ -76,33 +88,53 @@ class MedicalKnowledgeBase:
         return len(texts)
     
     def _format_document(self, item: Dict) -> str:
-        """Dökümanı arama için optimize edilmiş formata çevir"""
+        """Dökümanı arama için optimize edilmiş formata çevir (v3.3 schema)"""
         parts = []
-        
+
+        # Başlık (EN + TR)
         if item.get("title"):
-            parts.append(f"Title: {item['title']}")
-        
+            title = item['title']
+            if item.get("title_tr"):
+                title += f" / {item['title_tr']}"
+            parts.append(f"Title: {title}")
+
         if item.get("category"):
             parts.append(f"Category: {item['category']}")
-        
+
         if item.get("content"):
             parts.append(f"Content: {item['content']}")
-        
+
         if item.get("symptoms"):
             parts.append(f"Symptoms: {', '.join(item['symptoms'])}")
-        
+
         if item.get("causes"):
             parts.append(f"Causes: {', '.join(item['causes'])}")
-        
+
         if item.get("treatments"):
             parts.append(f"Treatments: {', '.join(item['treatments'])}")
-        
+
+        # Yeni v3.3 alanları
+        if item.get("what_to_do"):
+            parts.append(f"What to do: {', '.join(item['what_to_do'])}")
+
+        if item.get("do_not"):
+            parts.append(f"Do not: {', '.join(item['do_not'])}")
+
+        if item.get("red_flags"):
+            parts.append(f"Red flags (seek emergency): {', '.join(item['red_flags'])}")
+
         if item.get("when_to_see_doctor"):
             parts.append(f"When to see a doctor: {item['when_to_see_doctor']}")
-        
-        if item.get("keywords"):
-            parts.append(f"Related terms: {', '.join(item['keywords'])}")
-        
+
+        # Tüm keyword'leri birleştir (arama kalitesi için)
+        all_keywords = []
+        all_keywords.extend(item.get("keywords", []))
+        all_keywords.extend(item.get("keywords_en", []))
+        all_keywords.extend(item.get("keywords_tr", []))
+        all_keywords.extend(item.get("typos_tr", []))
+        if all_keywords:
+            parts.append(f"Related terms: {', '.join(all_keywords)}")
+
         return "\n".join(parts)
     
     def load_default_knowledge(self) -> int:

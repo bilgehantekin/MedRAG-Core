@@ -123,6 +123,18 @@ Tarayıcıda: **http://localhost:3000**
 
 ## 📝 Sürüm Geçmişi
 
+### v3.3 (Ocak 2026) - RAG Bilgi Tabanı Güçlendirmesi
+- ✨ Gerçek kaynak URL'leri ve metadata (source_name, source_url, retrieved_date)
+- ✨ Güvenlik alanları: contraindications, drug_interactions, warnings, do_not
+- ✨ Acil durum severity seviyeleri (CRITICAL/HIGH) ve call_emergency flag'leri
+- ✨ Yapılandırılmış dosage_info ve tedavi rehberliği
+- ✨ Türkçe konuşma dili ifadeleri (başım zonkluyor, midem kazınıyor)
+- ✨ Yaygın Türkçe yazım hataları desteği (baş ağırısı, mide bulantsi)
+- ✨ red_flags ve time_critical uyarıları
+- ✨ Kalp krizi için aspirin güvenlik notu (kontrendikasyonlar ile)
+- ✨ Ayrılmış keyword'ler: keywords_en, keywords_tr, typos_tr
+- ✨ Riskli genel aspirin tavsiyesi kaldırıldı
+
 ### v3.2 (Ocak 2026) - İlaç İsim Pipeline Güçlendirmesi
 - ✨ Mask-based ilaç ismi koruma (TR → EN → LLM → TR pipeline)
 - ✨ Regex word boundary ile güvenli replace

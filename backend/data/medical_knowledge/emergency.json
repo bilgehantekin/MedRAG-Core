@@ -2,172 +2,402 @@
   {
     "id": "emergency_heart_attack",
     "title": "Heart Attack Emergency Signs",
+    "title_tr": "Kalp Krizi Acil Belirtileri",
     "category": "emergency",
-    "source": "American Heart Association",
-    "content": "A heart attack is a medical emergency. Every minute matters. If you think you or someone else is having a heart attack, call emergency services (112 in Turkey) immediately.",
+    "severity": "CRITICAL",
+    "call_emergency": true,
+    "emergency_number": "112",
+    "source_name": "American Heart Association",
+    "source_url": "https://www.heart.org/en/health-topics/heart-attack/warning-signs-of-a-heart-attack",
+    "retrieved_date": "2025-01-15",
+    "content": "A heart attack is a medical emergency. Every minute matters. If you think you or someone else is having a heart attack, call emergency services (112 in Turkey) immediately. Do not wait to see if symptoms improve.",
     "symptoms": [
-      "Chest pain or discomfort (pressure, squeezing, fullness)",
-      "Pain spreading to shoulders, neck, jaw, or arms",
-      "Shortness of breath",
+      "Chest pain or discomfort (pressure, squeezing, fullness, or pain)",
+      "Pain or discomfort in arms, back, neck, jaw, or stomach",
+      "Shortness of breath (with or without chest pain)",
       "Cold sweat",
       "Nausea or vomiting",
       "Lightheadedness or dizziness",
-      "Unusual fatigue (especially in women)"
+      "Unusual fatigue (especially in women)",
+      "Women may have more subtle symptoms"
     ],
     "what_to_do": [
-      "Call 112 immediately",
-      "Chew an aspirin (300mg) if not allergic",
-      "Rest in a comfortable position",
+      "CALL 112 IMMEDIATELY - do not delay",
+      "Do not drive yourself - call ambulance or have someone drive you",
+      "Rest in a comfortable position (sitting up may be easier for breathing)",
       "Loosen tight clothing",
-      "If unconscious and not breathing, begin CPR",
-      "Use AED if available"
+      "Stay calm and try to remain still",
+      "If unconscious and not breathing, begin CPR if trained",
+      "Use AED (automated external defibrillator) if available and trained"
     ],
     "do_not": [
-      "Do not delay calling emergency services",
-      "Do not drive yourself to hospital",
-      "Do not ignore symptoms hoping they'll pass"
+      "Do NOT delay calling emergency services",
+      "Do NOT drive yourself to hospital",
+      "Do NOT ignore symptoms hoping they'll pass",
+      "Do NOT take aspirin without medical guidance (see safety note)",
+      "Do NOT give anything by mouth if person is unconscious"
     ],
-    "keywords": ["heart attack", "kalp krizi", "myocardial infarction", "cardiac emergency", "chest pain emergency"]
+    "aspirin_safety_note": "Emergency services may advise chewing aspirin. However, do NOT take aspirin without being advised to, as it can be dangerous for some people: those with aspirin allergy, bleeding disorders, stomach ulcers, or already taking blood thinners. WAIT for medical guidance.",
+    "time_critical": "With a heart attack, every minute counts. The faster treatment begins, the better the outcome. 'Time is muscle' - heart muscle dies without blood flow.",
+    "keywords_en": ["heart attack", "myocardial infarction", "cardiac emergency", "chest pain emergency", "cardiac arrest"],
+    "keywords_tr": [
+      "kalp krizi", "kalp krizi belirtileri", "göğsüm ağrıyor acil",
+      "kalbim durdu", "kalp çarpıntısı acil", "göğsümde baskı",
+      "koluma vuran ağrı", "kalp krizi geçiriyorum", "miyokard enfarktüsü"
+    ],
+    "typos_tr": ["kalp krizi", "kalp kirizi", "gogus agrisi acil", "kalbim agriyor"]
   },
   {
     "id": "emergency_stroke",
     "title": "Stroke Emergency Signs (FAST)",
+    "title_tr": "İnme (Felç) Acil Belirtileri",
     "category": "emergency",
-    "source": "American Stroke Association",
-    "content": "Stroke is a medical emergency where blood supply to the brain is interrupted. Use FAST to remember warning signs: Face drooping, Arm weakness, Speech difficulty, Time to call emergency.",
+    "severity": "CRITICAL",
+    "call_emergency": true,
+    "emergency_number": "112",
+    "source_name": "American Stroke Association",
+    "source_url": "https://www.stroke.org/en/about-stroke/stroke-symptoms",
+    "retrieved_date": "2025-01-15",
+    "content": "Stroke is a medical emergency where blood supply to the brain is interrupted. Use FAST to remember warning signs: Face drooping, Arm weakness, Speech difficulty, Time to call emergency. Brain cells die every minute without treatment.",
     "symptoms": [
-      "Face drooping on one side",
+      "Face drooping on one side (ask person to smile)",
       "Arm weakness or numbness (one side)",
-      "Speech difficulty (slurred, confused)",
-      "Sudden severe headache",
-      "Vision problems",
+      "Speech difficulty (slurred, confused, unable to speak)",
+      "Sudden severe headache with no known cause",
+      "Vision problems (sudden blurred or lost vision)",
       "Trouble walking, dizziness, loss of balance",
-      "Confusion"
+      "Confusion or difficulty understanding"
     ],
+    "fast_test": {
+      "F": "FACE - Ask the person to smile. Does one side of the face droop?",
+      "A": "ARMS - Ask them to raise both arms. Does one arm drift downward?",
+      "S": "SPEECH - Ask them to repeat a simple phrase. Is speech slurred or strange?",
+      "T": "TIME - If you see ANY of these signs, call 112 IMMEDIATELY"
+    },
     "what_to_do": [
-      "Call 112 immediately - time is critical",
-      "Note the time symptoms started",
+      "CALL 112 IMMEDIATELY - time is critical",
+      "Note the exact time symptoms started (crucial for treatment)",
       "Keep the person calm and comfortable",
-      "Do not give food or water",
-      "If unconscious, place in recovery position",
-      "Monitor breathing"
+      "Do not give food or water (swallowing may be affected)",
+      "Lay person on their side if vomiting or unconscious",
+      "Monitor breathing and be ready for CPR",
+      "Do not give any medications"
     ],
-    "fast_test": [
-      "F - Face: Ask them to smile. Does one side droop?",
-      "A - Arms: Ask them to raise both arms. Does one drift down?",
-      "S - Speech: Ask them to repeat a simple phrase. Is speech slurred?",
-      "T - Time: If any of these signs, call emergency immediately"
+    "do_not": [
+      "Do NOT delay - every minute matters",
+      "Do NOT give food, water, or any medication",
+      "Do NOT let them 'sleep it off'",
+      "Do NOT wait to see if symptoms improve"
     ],
-    "keywords": ["stroke", "inme", "felç", "brain attack", "FAST", "facial drooping"]
+    "time_critical": "Brain cells die at a rate of about 1.9 million per minute during a stroke. Treatment within 3-4.5 hours with clot-busting drugs can significantly improve outcomes.",
+    "keywords_en": ["stroke", "brain attack", "FAST", "facial drooping", "TIA", "transient ischemic attack"],
+    "keywords_tr": [
+      "inme", "felç", "beyin kanaması", "yüzüm düştü", "konuşamıyorum",
+      "kolum kalkmiyor", "bir tarafım uyuştu", "felç belirtileri",
+      "beyin felci", "inme geçiriyorum", "bir tarafım felç oldu"
+    ],
+    "typos_tr": ["inme", "felc", "felc belirtileri", "beyin kanamasi", "yuzum dustu"]
   },
   {
     "id": "emergency_breathing",
-    "title": "Breathing Difficulty Emergency",
+    "title": "Severe Breathing Difficulty Emergency",
+    "title_tr": "Ciddi Nefes Darlığı Acil Durumu",
     "category": "emergency",
-    "source": "NHS",
-    "content": "Severe breathing difficulty is a medical emergency. It can be caused by asthma attacks, allergic reactions, heart problems, or other conditions.",
+    "severity": "CRITICAL",
+    "call_emergency": true,
+    "emergency_number": "112",
+    "source_name": "NHS UK",
+    "source_url": "https://www.nhs.uk/conditions/shortness-of-breath/",
+    "retrieved_date": "2025-01-15",
+    "content": "Severe breathing difficulty is a medical emergency. It can be caused by asthma attacks, allergic reactions (anaphylaxis), heart problems, or other conditions. If someone cannot breathe properly, call emergency services immediately.",
     "symptoms": [
-      "Struggling to breathe",
-      "Cannot speak in full sentences",
-      "Blue lips or face (cyanosis)",
+      "Struggling to breathe or gasping for air",
+      "Cannot speak in full sentences due to breathlessness",
+      "Blue or grey lips, face, or fingernails (cyanosis)",
       "Severe wheezing",
-      "Rapid breathing",
-      "Using neck/chest muscles to breathe",
-      "Confusion or drowsiness",
-      "Choking"
+      "Rapid, shallow breathing",
+      "Using neck/chest/abdominal muscles to breathe",
+      "Confusion or drowsiness due to lack of oxygen",
+      "Choking sensation"
     ],
     "what_to_do": [
-      "Call 112 immediately",
-      "Help person sit upright",
-      "Loosen tight clothing",
-      "Use prescribed inhaler if available (asthma)",
-      "Use EpiPen if allergic reaction and available",
+      "CALL 112 IMMEDIATELY",
+      "Help person sit upright (usually easier to breathe)",
+      "Loosen any tight clothing around neck and chest",
+      "If asthmatic: help use their reliever inhaler (usually blue)",
+      "If known severe allergy: help use EpiPen if available and trained",
       "Stay calm and reassure the person",
-      "If choking, perform Heimlich maneuver"
+      "If choking on object: perform back blows and Heimlich maneuver if trained",
+      "Open windows for fresh air if helpful"
     ],
-    "keywords": ["breathing difficulty", "nefes darlığı", "shortness of breath", "asthma attack", "anaphylaxis", "choking"]
+    "do_not": [
+      "Do NOT lay person flat if they're struggling to breathe",
+      "Do NOT give food or water",
+      "Do NOT leave them alone",
+      "Do NOT delay calling for help"
+    ],
+    "asthma_note": "If person has asthma: help them use their reliever inhaler (usually blue). Give 1 puff every 30-60 seconds, up to 10 puffs. If no improvement after 10 puffs, or if you don't have an inhaler, call 112.",
+    "keywords_en": ["breathing difficulty", "shortness of breath", "asthma attack", "anaphylaxis", "choking", "cant breathe"],
+    "keywords_tr": [
+      "nefes darlığı", "nefes alamıyorum", "nefesim kesiliyor", "boğuluyorum",
+      "astım krizi", "astım atağı", "hırıltı", "nefes nefese kaldım",
+      "göğsüm sıkışıyor nefes alamıyorum", "morarma"
+    ],
+    "typos_tr": ["nefes darligi", "nefes alamiyorum", "boguluyorum", "astim krizi"]
   },
   {
     "id": "emergency_severe_bleeding",
     "title": "Severe Bleeding Emergency",
+    "title_tr": "Ciddi Kanama Acil Durumu",
     "category": "emergency",
-    "source": "Red Cross",
-    "content": "Severe bleeding can be life-threatening and requires immediate action to stop blood loss while waiting for emergency services.",
+    "severity": "CRITICAL",
+    "call_emergency": true,
+    "emergency_number": "112",
+    "source_name": "American Red Cross",
+    "source_url": "https://www.redcross.org/get-help/how-to-prepare-for-emergencies/types-of-emergencies/bleeding.html",
+    "retrieved_date": "2025-01-15",
+    "content": "Severe bleeding can be life-threatening and requires immediate action to stop blood loss while waiting for emergency services. Apply direct pressure and call for help immediately.",
     "symptoms": [
-      "Blood spurting or flowing heavily",
-      "Blood soaking through bandages",
+      "Blood spurting from wound",
+      "Blood flowing heavily and continuously",
+      "Blood soaking through bandages quickly",
       "Blood pooling on the ground",
-      "Pale, cold, or clammy skin",
+      "Pale, cold, or clammy skin (signs of shock)",
       "Rapid, weak pulse",
-      "Confusion or decreasing alertness"
+      "Confusion or decreasing alertness",
+      "Feeling faint or dizzy"
     ],
     "what_to_do": [
-      "Call 112 immediately",
-      "Apply direct pressure with clean cloth or bandage",
-      "Press firmly and do not remove cloth if soaked (add more)",
-      "If possible, elevate the injured area above heart",
-      "Apply tourniquet only if trained and bleeding is life-threatening",
+      "CALL 112 IMMEDIATELY",
+      "Apply direct, firm pressure with clean cloth, bandage, or clothing",
+      "Press firmly and continuously - do not lift to check",
+      "If blood soaks through, add more cloth on top (don't remove first layer)",
+      "If possible and no broken bones, elevate injured area above heart level",
       "Keep person warm and calm",
-      "Do not remove embedded objects"
+      "Monitor for signs of shock"
     ],
-    "keywords": ["severe bleeding", "ciddi kanama", "hemorrhage", "blood loss", "wound emergency"]
+    "do_not": [
+      "Do NOT remove embedded objects (apply pressure around them)",
+      "Do NOT apply a tourniquet unless trained and bleeding is life-threatening from a limb",
+      "Do NOT remove blood-soaked bandages (add more on top)",
+      "Do NOT give food or water"
+    ],
+    "shock_warning": "Severe blood loss can cause shock. Signs include: pale/cold/clammy skin, rapid weak pulse, rapid breathing, confusion. Lay person down, elevate legs (if no broken bones), keep warm, and call 112.",
+    "keywords_en": ["severe bleeding", "hemorrhage", "blood loss", "wound emergency", "arterial bleeding"],
+    "keywords_tr": [
+      "ciddi kanama", "çok kan kaybı", "kanama durmuyor", "kan fışkırıyor",
+      "derin kesik", "bıçak yarası", "kaza kanama", "şok belirtileri kanama"
+    ],
+    "typos_tr": ["ciddi kanama", "kan kaybi", "kanama durmuyor", "derin kesik"]
   },
   {
     "id": "emergency_allergic_reaction",
     "title": "Severe Allergic Reaction (Anaphylaxis)",
+    "title_tr": "Ciddi Alerjik Reaksiyon (Anafilaksi)",
     "category": "emergency",
-    "source": "American Academy of Allergy",
-    "content": "Anaphylaxis is a severe, life-threatening allergic reaction that can occur within minutes of exposure to an allergen. It requires immediate epinephrine and emergency care.",
+    "severity": "CRITICAL",
+    "call_emergency": true,
+    "emergency_number": "112",
+    "source_name": "American Academy of Allergy, Asthma & Immunology",
+    "source_url": "https://www.aaaai.org/conditions-treatments/allergies/anaphylaxis",
+    "retrieved_date": "2025-01-15",
+    "content": "Anaphylaxis is a severe, potentially life-threatening allergic reaction that can occur within seconds or minutes of exposure to an allergen. It requires immediate epinephrine (adrenaline) and emergency care.",
     "symptoms": [
-      "Difficulty breathing, wheezing",
-      "Swelling of throat, tongue, lips",
-      "Hives or skin rash",
-      "Rapid heartbeat",
-      "Dizziness or fainting",
-      "Nausea, vomiting, diarrhea",
-      "Feeling of impending doom",
-      "Drop in blood pressure"
-    ],
-    "what_to_do": [
-      "Call 112 immediately",
-      "Use EpiPen (epinephrine auto-injector) if available",
-      "Help person lie down with legs elevated",
-      "If breathing difficult, allow to sit up",
-      "Loosen tight clothing",
-      "Be prepared to give CPR",
-      "Second dose of epinephrine after 5-15 min if no improvement"
+      "Difficulty breathing, wheezing, shortness of breath",
+      "Swelling of throat, tongue, or lips",
+      "Widespread hives or skin rash",
+      "Rapid or weak heartbeat",
+      "Dizziness, fainting, or feeling faint",
+      "Nausea, vomiting, or diarrhea",
+      "Feeling of impending doom or anxiety",
+      "Sudden drop in blood pressure"
     ],
     "common_triggers": [
-      "Foods (nuts, shellfish, eggs, milk)",
-      "Insect stings (bees, wasps)",
-      "Medications (antibiotics, NSAIDs)",
-      "Latex"
+      "Foods: nuts (especially peanuts), shellfish, fish, eggs, milk, wheat, soy",
+      "Insect stings: bees, wasps, hornets, fire ants",
+      "Medications: antibiotics (penicillin), NSAIDs, some anesthetics",
+      "Latex",
+      "Exercise (rare, sometimes with food)"
     ],
-    "keywords": ["anaphylaxis", "anafilaksi", "severe allergy", "allergic shock", "epinephrine", "EpiPen"]
+    "what_to_do": [
+      "CALL 112 IMMEDIATELY - this is life-threatening",
+      "Use EpiPen (epinephrine auto-injector) if available - inject into outer thigh",
+      "Help person lie down with legs elevated (unless breathing difficult)",
+      "If breathing difficult, allow to sit up",
+      "Loosen tight clothing",
+      "Stay with person and monitor breathing",
+      "Second dose of epinephrine after 5-15 minutes if no improvement",
+      "Be prepared to start CPR if they become unresponsive"
+    ],
+    "do_not": [
+      "Do NOT delay giving epinephrine if available and person is having anaphylaxis",
+      "Do NOT assume symptoms will improve on their own",
+      "Do NOT give antihistamines instead of epinephrine for severe reactions",
+      "Do NOT have person sit up if feeling faint (lay flat with legs raised)"
+    ],
+    "epipen_note": "EpiPen is injected into the outer thigh (can be through clothing). Hold in place for 10 seconds. Massage area after. Call 112 even after using EpiPen - effects wear off and reaction may return.",
+    "keywords_en": ["anaphylaxis", "severe allergy", "allergic shock", "epinephrine", "EpiPen", "swelling throat"],
+    "keywords_tr": [
+      "anafilaksi", "şiddetli alerji", "alerjik şok", "boğazım şişiyor",
+      "nefes alamıyorum alerji", "adrenalin iğnesi", "epipen",
+      "arı sokması alerji", "fıstık alerjisi", "yüzüm şişiyor"
+    ],
+    "typos_tr": ["anafilaksi", "alerjik sok", "bogazim sisiyor", "epipen", "siddetli alerji"]
   },
   {
     "id": "emergency_unconscious",
     "title": "Unconscious Person",
+    "title_tr": "Bilinci Kapalı Kişi",
     "category": "emergency",
-    "source": "Red Cross",
-    "content": "Finding someone unconscious requires quick assessment and action. Check if they're breathing and responsive, and call for emergency help immediately.",
+    "severity": "CRITICAL",
+    "call_emergency": true,
+    "emergency_number": "112",
+    "source_name": "American Red Cross",
+    "source_url": "https://www.redcross.org/take-a-class/cpr/performing-cpr/cpr-steps",
+    "retrieved_date": "2025-01-15",
+    "content": "Finding someone unconscious requires quick assessment and action. Check if they're breathing and responsive, and call for emergency help immediately. Be prepared to perform CPR if needed.",
     "what_to_do": [
-      "Check for danger to yourself and the person",
-      "Tap shoulders and shout 'Are you okay?'",
-      "Call 112 immediately",
+      "Check scene is safe for you and the person",
+      "Tap shoulders firmly and shout 'Are you okay?'",
+      "CALL 112 IMMEDIATELY (or have someone else call)",
       "Check for breathing (look, listen, feel for 10 seconds)",
-      "If breathing: place in recovery position",
-      "If not breathing: start CPR",
-      "Use AED if available"
+      "If breathing normally: place in recovery position",
+      "If NOT breathing or only gasping: start CPR immediately",
+      "Send someone to get AED (automated external defibrillator) if available"
     ],
+    "cpr_basics": {
+      "rate": "Push hard and fast: 100-120 compressions per minute",
+      "depth": "Press down at least 5cm (2 inches) on center of chest",
+      "ratio": "30 compressions, then 2 rescue breaths (if trained)",
+      "hands_only": "If not trained in rescue breaths, do hands-only CPR (compressions only)",
+      "continue": "Continue until help arrives or person starts breathing"
+    },
     "recovery_position": [
+      "Use if person is breathing but unconscious",
       "Kneel beside the person",
-      "Place nearest arm at right angle to body",
-      "Bring far arm across chest, hold hand against cheek",
+      "Place nearest arm at right angle to body, palm up",
+      "Bring far arm across chest, hold hand against near cheek",
       "Pull far knee up, foot flat on ground",
       "Roll person toward you onto their side",
-      "Tilt head back to keep airway open"
+      "Tilt head back slightly to keep airway open",
+      "Monitor breathing until help arrives"
     ],
-    "keywords": ["unconscious", "bilinç kaybı", "bayılma", "unresponsive", "fainting", "passed out"]
+    "do_not": [
+      "Do NOT move them if you suspect spinal injury (unless in danger)",
+      "Do NOT put anything in their mouth",
+      "Do NOT leave them alone",
+      "Do NOT delay calling for help"
+    ],
+    "keywords_en": ["unconscious", "unresponsive", "fainting", "passed out", "CPR", "not breathing"],
+    "keywords_tr": [
+      "bilinç kaybı", "bayıldı", "baygın", "yanıt vermiyor", "cevap vermiyor",
+      "nefes almıyor", "kalbi durdu", "CPR", "kalp masajı",
+      "yere yığıldı", "kendinden geçti"
+    ],
+    "typos_tr": ["bilinc kaybi", "bayildi", "nefes almiyor", "kalp masaji"]
+  },
+  {
+    "id": "emergency_poisoning",
+    "title": "Poisoning Emergency",
+    "title_tr": "Zehirlenme Acil Durumu",
+    "category": "emergency",
+    "severity": "HIGH",
+    "call_emergency": true,
+    "emergency_number": "112",
+    "source_name": "American Association of Poison Control Centers",
+    "source_url": "https://www.aapcc.org/prevention/poison-info",
+    "retrieved_date": "2025-01-15",
+    "content": "Poisoning can occur from medications, household chemicals, plants, or food. Symptoms vary based on the substance. Call emergency services immediately if poisoning is suspected, especially if the person is unconscious, having seizures, or having difficulty breathing.",
+    "symptoms": [
+      "Nausea, vomiting, or diarrhea",
+      "Drowsiness or unconsciousness",
+      "Difficulty breathing",
+      "Burns or redness around mouth (chemical ingestion)",
+      "Unusual breath odor",
+      "Seizures or convulsions",
+      "Confusion or altered mental state",
+      "Abdominal pain"
+    ],
+    "what_to_do": [
+      "CALL 112 if person is unconscious, having seizures, or difficulty breathing",
+      "Try to identify what was taken, when, and how much",
+      "Bring the container/substance to hospital if possible",
+      "If conscious and alert, call Poison Control for guidance",
+      "Do not induce vomiting unless specifically told to by medical professionals",
+      "If chemical on skin: remove contaminated clothing, rinse skin with water",
+      "If chemical in eye: rinse with clean water for 15-20 minutes"
+    ],
+    "do_not": [
+      "Do NOT induce vomiting unless told to by medical professionals",
+      "Do NOT give anything to eat or drink unless advised",
+      "Do NOT try to 'neutralize' poison with other substances",
+      "Do NOT wait for symptoms before calling for help"
+    ],
+    "bring_to_hospital": "If possible, bring the container, pill bottle, or substance with you to the hospital. This helps medical staff provide proper treatment.",
+    "keywords_en": ["poisoning", "overdose", "toxic ingestion", "chemical exposure", "drug overdose"],
+    "keywords_tr": [
+      "zehirlenme", "ilaç zehirlenmesi", "temizlik malzemesi yuttu",
+      "çocuk ilaç içti", "aşırı doz", "mantar zehirlenmesi",
+      "kimyasal madde yuttu", "zehirli madde", "gıda zehirlenmesi acil"
+    ],
+    "typos_tr": ["zehirlenme", "ilac zehirlenmesi", "asiri doz", "gida zehirlenmesi"]
+  },
+  {
+    "id": "emergency_seizure",
+    "title": "Seizure Emergency",
+    "title_tr": "Nöbet (Sara Krizi) Acil Durumu",
+    "category": "emergency",
+    "severity": "HIGH",
+    "call_emergency": true,
+    "emergency_number": "112",
+    "source_name": "Epilepsy Foundation",
+    "source_url": "https://www.epilepsy.com/learn/seizure-first-aid-and-safety",
+    "retrieved_date": "2025-01-15",
+    "content": "A seizure is caused by abnormal electrical activity in the brain. Most seizures end on their own within a few minutes. The main goal is to keep the person safe and prevent injury during the seizure.",
+    "symptoms": [
+      "Sudden falling",
+      "Uncontrollable jerking movements",
+      "Stiffening of body",
+      "Loss of consciousness",
+      "Staring blankly",
+      "Confusion after episode",
+      "Temporary loss of bladder/bowel control",
+      "Drooling or frothing at mouth"
+    ],
+    "what_to_do": [
+      "Stay calm - most seizures end within 1-3 minutes",
+      "Time the seizure",
+      "Clear area of hard or sharp objects",
+      "Protect their head with something soft",
+      "Gently guide them to the floor if standing",
+      "Turn them on their side (recovery position) if possible",
+      "Stay with them until fully alert",
+      "Speak calmly and reassuringly as they recover"
+    ],
+    "call_112_if": [
+      "Seizure lasts more than 5 minutes",
+      "Person doesn't regain consciousness",
+      "Another seizure starts soon after",
+      "Person is injured during seizure",
+      "Person is pregnant, diabetic, or has heart disease",
+      "This is their first seizure",
+      "Seizure happens in water",
+      "Person has breathing difficulties after seizure"
+    ],
+    "do_not": [
+      "Do NOT hold them down or restrain movements",
+      "Do NOT put anything in their mouth",
+      "Do NOT try to stop the jerking movements",
+      "Do NOT give food or water until fully alert",
+      "Do NOT leave them alone"
+    ],
+    "after_seizure": "Person may be confused, tired, or have a headache after seizure. Stay with them, speak calmly, and help them get oriented. They may not remember the seizure.",
+    "keywords_en": ["seizure", "convulsion", "epilepsy", "epileptic fit", "convulsions"],
+    "keywords_tr": [
+      "nöbet", "sara krizi", "epilepsi", "kasılma", "çırpınma",
+      "havale", "sara nöbeti", "bayılıp kasıldı", "ağzından köpük geliyor",
+      "nöbet geçiriyor"
+    ],
+    "typos_tr": ["nobet", "sara krizi", "epilepsi", "havale", "kasılma"]
   }
 ]

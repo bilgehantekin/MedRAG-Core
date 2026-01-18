@@ -2,8 +2,11 @@
   {
     "id": "headache_001",
     "title": "Headache (Cephalalgia)",
+    "title_tr": "Baş Ağrısı",
     "category": "symptoms",
-    "source": "MedlinePlus",
+    "source_name": "MedlinePlus - NIH",
+    "source_url": "https://medlineplus.gov/headache.html",
+    "retrieved_date": "2025-01-15",
     "content": "A headache is pain or discomfort in the head, scalp, or neck. Common types include tension headaches, migraines, and cluster headaches. Most headaches are not serious and can be treated with pain relievers, relaxation techniques, and lifestyle changes.",
     "symptoms": [
       "Pain in head or neck",
@@ -19,24 +22,46 @@
       "Caffeine withdrawal",
       "Sinus problems"
     ],
-    "treatments": [
-      "Over-the-counter pain relievers (acetaminophen, ibuprofen)",
+    "what_to_do": [
       "Rest in a dark, quiet room",
       "Apply cold or warm compress",
       "Stay hydrated",
-      "Manage stress"
+      "Manage stress",
+      "Over-the-counter pain relievers may help (consult pharmacist)"
     ],
-    "when_to_see_doctor": "Seek immediate medical attention if headache is sudden and severe, accompanied by fever, stiff neck, confusion, seizures, double vision, weakness, numbness, or difficulty speaking.",
-    "keywords": ["head pain", "migraine", "tension headache", "cephalalgia", "baş ağrısı"]
+    "do_not": [
+      "Do not ignore sudden severe headaches",
+      "Do not take pain relievers more than 2-3 days/week regularly",
+      "Do not self-diagnose migraines without doctor consultation"
+    ],
+    "red_flags": [
+      "Sudden, severe 'thunderclap' headache",
+      "Headache with fever and stiff neck",
+      "Headache after head injury",
+      "Headache with confusion or vision changes",
+      "Headache with weakness or numbness",
+      "Worst headache of your life"
+    ],
+    "when_to_see_doctor": "Seek immediate medical attention (112) if headache is sudden and severe, accompanied by fever, stiff neck, confusion, seizures, double vision, weakness, numbness, or difficulty speaking.",
+    "keywords_en": ["head pain", "migraine", "tension headache", "cephalalgia", "throbbing pain"],
+    "keywords_tr": [
+      "baş ağrısı", "başım ağrıyor", "başım zonkluyor", "başımda baskı var",
+      "migren", "şakak ağrısı", "ense ağrısı", "baş ağrım var",
+      "kafam ağrıyor", "kafam çatlıyor", "başım patlıyor", "başım çok ağrıyor"
+    ],
+    "typos_tr": ["bas agrisi", "basim agriyor", "basim zonkluyor", "migren", "baş agrisı"]
   },
   {
     "id": "fever_001",
     "title": "Fever (Pyrexia)",
+    "title_tr": "Ateş",
     "category": "symptoms",
-    "source": "MedlinePlus",
-    "content": "A fever is a temporary increase in body temperature, often due to illness. A temperature above 38°C (100.4°F) is generally considered a fever. Fever is a sign that your body is fighting an infection.",
+    "source_name": "MedlinePlus - NIH",
+    "source_url": "https://medlineplus.gov/fever.html",
+    "retrieved_date": "2025-01-15",
+    "content": "A fever is a temporary increase in body temperature, often due to illness. A temperature above 38C (100.4F) is generally considered a fever. Fever is a sign that your body is fighting an infection.",
     "symptoms": [
-      "Elevated body temperature",
+      "Elevated body temperature (above 38C/100.4F)",
       "Chills and shivering",
       "Sweating",
       "Headache",
@@ -53,22 +78,46 @@
       "Immunizations",
       "Inflammatory conditions"
     ],
-    "treatments": [
-      "Rest and stay hydrated",
-      "Over-the-counter fever reducers (acetaminophen, ibuprofen)",
-      "Light clothing and bedding",
+    "what_to_do": [
+      "Rest and stay hydrated (water, clear fluids)",
+      "Wear light clothing and bedding",
       "Cool compress on forehead",
-      "Tepid bath"
+      "Tepid (lukewarm) bath - NOT cold",
+      "Fever reducers may help (consult pharmacist for appropriate use)"
     ],
-    "when_to_see_doctor": "Seek medical attention for fever above 39.4°C (103°F), fever lasting more than 3 days, severe headache, stiff neck, confusion, persistent vomiting, difficulty breathing, or skin rash.",
-    "keywords": ["high temperature", "pyrexia", "febrile", "ateş", "yüksek ateş"]
+    "do_not": [
+      "Do not use ice baths or very cold water",
+      "Do not bundle up in heavy blankets despite chills",
+      "Do not give aspirin to children under 16",
+      "Do not ignore high fever (above 39.4C/103F)"
+    ],
+    "red_flags": [
+      "Fever above 39.4C (103F) in adults",
+      "Fever lasting more than 3 days",
+      "Fever with stiff neck",
+      "Fever with severe headache",
+      "Fever with difficulty breathing",
+      "Fever with skin rash",
+      "Fever in infants under 3 months"
+    ],
+    "when_to_see_doctor": "Seek medical attention for fever above 39.4C (103F), fever lasting more than 3 days, severe headache, stiff neck, confusion, persistent vomiting, difficulty breathing, or skin rash.",
+    "keywords_en": ["high temperature", "pyrexia", "febrile", "elevated temperature"],
+    "keywords_tr": [
+      "ateş", "ateşim var", "ateşim yükseldi", "yüksek ateş", "ateş düşmüyor",
+      "titreme", "üşüyorum", "terliyorum", "vücut ısım yüksek",
+      "38 derece ateş", "39 derece ateş", "ateşim 38", "ateşim 39"
+    ],
+    "typos_tr": ["ates", "atesim var", "yuksek ates", "atesim yuksek", "titremé"]
   },
   {
     "id": "sore_throat_001",
     "title": "Sore Throat (Pharyngitis)",
+    "title_tr": "Boğaz Ağrısı",
     "category": "symptoms",
-    "source": "NHS",
-    "content": "A sore throat is pain, scratchiness, or irritation of the throat that often worsens when swallowing. The most common cause is a viral infection (cold or flu). Bacterial infections like strep throat require antibiotic treatment.",
+    "source_name": "NHS UK",
+    "source_url": "https://www.nhs.uk/conditions/sore-throat/",
+    "retrieved_date": "2025-01-15",
+    "content": "A sore throat is pain, scratchiness, or irritation of the throat that often worsens when swallowing. The most common cause is a viral infection (cold or flu). Bacterial infections like strep throat require antibiotic treatment prescribed by a doctor.",
     "symptoms": [
       "Pain or scratchy sensation in throat",
       "Pain that worsens when swallowing",
@@ -85,23 +134,46 @@
       "Irritants (smoke, pollution)",
       "GERD (acid reflux)"
     ],
-    "treatments": [
+    "what_to_do": [
       "Gargle with warm salt water",
       "Drink warm liquids (tea with honey)",
       "Use throat lozenges",
       "Stay hydrated",
       "Rest your voice",
-      "Use a humidifier",
-      "Over-the-counter pain relievers"
+      "Use a humidifier"
+    ],
+    "do_not": [
+      "Do not demand antibiotics for viral infections",
+      "Do not give honey to children under 1 year",
+      "Do not smoke or expose to secondhand smoke",
+      "Do not ignore symptoms lasting more than a week"
+    ],
+    "red_flags": [
+      "Difficulty breathing or swallowing",
+      "Drooling (in children)",
+      "High fever (above 38.3C/101F)",
+      "Blood in saliva or phlegm",
+      "Lump in neck",
+      "Severe pain on one side",
+      "Voice changes lasting more than 2 weeks"
     ],
     "when_to_see_doctor": "See a doctor if sore throat is severe or lasts longer than a week, difficulty swallowing or breathing, high fever, blood in saliva, frequent sore throats, or lump in neck.",
-    "keywords": ["throat pain", "pharyngitis", "strep throat", "tonsillitis", "boğaz ağrısı"]
+    "keywords_en": ["throat pain", "pharyngitis", "strep throat", "tonsillitis", "swallowing pain"],
+    "keywords_tr": [
+      "boğaz ağrısı", "boğazım ağrıyor", "boğazım yanıyor", "yutkunamıyorum",
+      "boğazım şişti", "bademcik", "bademciklerim şiş", "boğazımda beyaz var",
+      "boğazım kızardı", "ses kısıklığı", "sesim kısıldı", "boğaz enfeksiyonu"
+    ],
+    "typos_tr": ["bogaz agrisi", "bogazim agriyor", "bogazim yaniyor", "bademcik", "bogaz enfeksiyonu"]
   },
   {
     "id": "cough_001",
     "title": "Cough",
+    "title_tr": "Öksürük",
     "category": "symptoms",
-    "source": "Mayo Clinic",
+    "source_name": "Mayo Clinic",
+    "source_url": "https://www.mayoclinic.org/symptoms/cough/basics/definition/sym-20050846",
+    "retrieved_date": "2025-01-15",
     "content": "A cough is your body's way of responding to irritants in your throat and airways. Occasional coughing is normal, but a persistent cough can indicate an underlying condition. Coughs can be dry or productive (with mucus).",
     "symptoms": [
       "Dry, hacking cough",
@@ -121,22 +193,46 @@
       "Smoking",
       "Air pollution"
     ],
-    "treatments": [
+    "what_to_do": [
       "Stay hydrated",
-      "Use honey (not for children under 1)",
+      "Use honey for cough (adults and children over 1)",
       "Cough drops or lozenges",
       "Use a humidifier",
-      "Avoid irritants",
-      "Over-the-counter cough suppressants or expectorants"
+      "Avoid irritants (smoke, dust)",
+      "Elevate head while sleeping"
+    ],
+    "do_not": [
+      "Do not give honey to children under 1 year",
+      "Do not suppress a productive cough unnecessarily",
+      "Do not smoke",
+      "Do not ignore cough lasting more than 3 weeks"
+    ],
+    "red_flags": [
+      "Coughing up blood (hemoptysis)",
+      "Cough lasting more than 3 weeks",
+      "Difficulty breathing",
+      "High fever with cough",
+      "Unexplained weight loss",
+      "Night sweats",
+      "Chest pain when coughing"
     ],
     "when_to_see_doctor": "Seek medical attention for cough lasting more than 3 weeks, coughing up blood, difficulty breathing, high fever, unexplained weight loss, or night sweats.",
-    "keywords": ["öksürük", "coughing", "bronchitis", "phlegm", "productive cough"]
+    "keywords_en": ["coughing", "bronchitis", "phlegm", "productive cough", "dry cough"],
+    "keywords_tr": [
+      "öksürük", "öksürüyorum", "kuru öksürük", "balgamlı öksürük",
+      "öksürük durmuyor", "gece öksürüğü", "boğazım gıcıklanıyor",
+      "göğsüm ağrıyor öksürünce", "balgam çıkıyor", "öksürükten uyuyamıyorum"
+    ],
+    "typos_tr": ["oksuruk", "oksuruyorum", "balgam", "kuru oksuruk", "öksürük surubu"]
   },
   {
     "id": "stomach_pain_001",
     "title": "Stomach Pain (Abdominal Pain)",
+    "title_tr": "Karın/Mide Ağrısı",
     "category": "symptoms",
-    "source": "MedlinePlus",
+    "source_name": "MedlinePlus - NIH",
+    "source_url": "https://medlineplus.gov/abdominalpain.html",
+    "retrieved_date": "2025-01-15",
     "content": "Abdominal pain refers to discomfort in the area between the chest and pelvis. Most cases are not serious and can be related to digestion, but severe pain may indicate a serious condition requiring immediate attention.",
     "symptoms": [
       "Cramping pain",
@@ -157,23 +253,48 @@
       "Gallstones",
       "Menstrual cramps"
     ],
-    "treatments": [
+    "what_to_do": [
       "Rest",
-      "Avoid solid food for a few hours",
+      "Avoid solid food for a few hours if nauseous",
       "Sip water or clear fluids",
       "Avoid dairy, caffeine, alcohol",
-      "Over-the-counter antacids",
-      "Heat pad on abdomen",
-      "Ginger or peppermint tea"
+      "Heat pad on abdomen may help",
+      "Ginger or peppermint tea for mild symptoms"
     ],
-    "when_to_see_doctor": "Seek immediate care for severe pain, pain with fever, bloody stool, persistent vomiting, swollen abdomen, pain during pregnancy, or pain lasting more than 24-48 hours.",
-    "keywords": ["karın ağrısı", "mide ağrısı", "abdominal cramps", "stomach ache", "gastric pain"]
+    "do_not": [
+      "Do not take aspirin or ibuprofen on empty stomach",
+      "Do not ignore severe or sudden pain",
+      "Do not eat heavy or fatty foods",
+      "Do not take laxatives for undiagnosed abdominal pain"
+    ],
+    "red_flags": [
+      "Severe, sudden pain",
+      "Pain with high fever",
+      "Bloody or black stool",
+      "Persistent vomiting (especially with blood)",
+      "Swollen, rigid abdomen",
+      "Pain during pregnancy",
+      "Pain lasting more than 24-48 hours",
+      "Pain in lower right abdomen (appendicitis)"
+    ],
+    "when_to_see_doctor": "Seek immediate care (112) for severe pain, pain with fever, bloody stool, persistent vomiting, swollen abdomen, pain during pregnancy, or pain lasting more than 24-48 hours.",
+    "keywords_en": ["abdominal cramps", "stomach ache", "gastric pain", "belly pain"],
+    "keywords_tr": [
+      "karın ağrısı", "mide ağrısı", "karnım ağrıyor", "midem ağrıyor",
+      "midem bulanıyor", "midem yanıyor", "şişkinlik", "gaz sancısı",
+      "kramp giriyor", "karnım şişti", "mide bulantısı", "midem kazınıyor",
+      "karın sancısı", "göbek ağrısı", "mide ekşimesi"
+    ],
+    "typos_tr": ["karin agrisi", "mide agrisi", "karnim agriyor", "midem agriyor", "mide bulantisi"]
   },
   {
     "id": "back_pain_001",
     "title": "Back Pain",
+    "title_tr": "Bel/Sırt Ağrısı",
     "category": "symptoms",
-    "source": "NHS",
+    "source_name": "NHS UK",
+    "source_url": "https://www.nhs.uk/conditions/back-pain/",
+    "retrieved_date": "2025-01-15",
     "content": "Back pain is one of the most common medical problems. It can range from a dull, constant ache to sudden, sharp pain. Most back pain gets better within a few weeks without treatment.",
     "symptoms": [
       "Muscle ache",
@@ -191,23 +312,223 @@
       "Skeletal irregularities",
       "Prolonged sitting"
     ],
-    "treatments": [
-      "Stay active (bed rest can worsen)",
-      "Over-the-counter pain relievers",
+    "what_to_do": [
+      "Stay active (gentle movement helps)",
       "Apply heat or ice",
       "Gentle stretching",
       "Improve posture",
-      "Physical therapy",
-      "Maintain healthy weight"
+      "Maintain healthy weight",
+      "Sleep on firm surface with pillow under knees"
+    ],
+    "do_not": [
+      "Do not stay in bed for extended periods",
+      "Do not lift heavy objects",
+      "Do not ignore pain radiating down legs",
+      "Do not self-treat chronic back pain without evaluation"
+    ],
+    "red_flags": [
+      "Pain after fall or injury",
+      "Pain with fever",
+      "Pain spreading down legs (especially below knee)",
+      "Numbness or tingling in legs",
+      "Weakness in legs",
+      "Loss of bladder or bowel control",
+      "Unexplained weight loss"
     ],
     "when_to_see_doctor": "See a doctor if pain persists beyond a few weeks, is severe and doesn't improve with rest, spreads down legs (especially below knee), causes weakness/numbness/tingling, or is accompanied by unexplained weight loss.",
-    "keywords": ["bel ağrısı", "sırt ağrısı", "lower back pain", "lumbar pain", "sciatica"]
+    "keywords_en": ["lower back pain", "lumbar pain", "sciatica", "spine pain"],
+    "keywords_tr": [
+      "bel ağrısı", "sırt ağrısı", "belim ağrıyor", "sırtım ağrıyor",
+      "bel fıtığı", "siyatik", "belim tutuldu", "kamburlaştım",
+      "bacağıma vuruyor", "kalçam ağrıyor", "omurga ağrısı", "bel kayması"
+    ],
+    "typos_tr": ["bel agrisi", "sirt agrisi", "belim agriyor", "bel fitigi", "siyatik"]
+  },
+  {
+    "id": "chest_pain_001",
+    "title": "Chest Pain",
+    "title_tr": "Göğüs Ağrısı",
+    "category": "symptoms",
+    "source_name": "American Heart Association",
+    "source_url": "https://www.heart.org/en/health-topics/heart-attack/warning-signs-of-a-heart-attack",
+    "retrieved_date": "2025-01-15",
+    "content": "Chest pain can have many causes, from muscle strain to heart problems. While not all chest pain is serious, it's important to recognize when it might indicate a heart attack or other emergency. When in doubt, seek immediate medical attention.",
+    "symptoms": [
+      "Pressure or tightness in chest",
+      "Sharp, stabbing pain",
+      "Burning sensation",
+      "Pain spreading to arm, jaw, or back",
+      "Shortness of breath",
+      "Nausea or sweating"
+    ],
+    "causes": [
+      "Heart attack",
+      "Angina",
+      "Muscle strain",
+      "Costochondritis",
+      "GERD (acid reflux)",
+      "Anxiety or panic attacks",
+      "Pneumonia",
+      "Pulmonary embolism"
+    ],
+    "what_to_do": [
+      "If suspected heart attack: CALL 112 IMMEDIATELY",
+      "Rest and stay calm",
+      "Loosen tight clothing",
+      "Note when pain started and characteristics"
+    ],
+    "do_not": [
+      "Do NOT delay calling emergency services if heart attack suspected",
+      "Do NOT drive yourself to hospital",
+      "Do NOT ignore chest pain, especially with risk factors",
+      "Do NOT take someone else's heart medication"
+    ],
+    "red_flags": [
+      "Sudden, severe chest pain",
+      "Pain spreading to arm, jaw, neck, or back",
+      "Chest pain with shortness of breath",
+      "Chest pain with sweating",
+      "Chest pain with nausea",
+      "Chest pain with dizziness",
+      "Chest pain lasting more than a few minutes"
+    ],
+    "when_to_see_doctor": "CALL 112 IMMEDIATELY if chest pain is sudden and severe, accompanied by shortness of breath, pain spreading to arm/jaw/back, sweating, nausea, or dizziness. These could be signs of a heart attack.",
+    "keywords_en": ["heart pain", "angina", "cardiac", "chest tightness"],
+    "keywords_tr": [
+      "göğüs ağrısı", "göğsüm ağrıyor", "kalbim ağrıyor", "kalp ağrısı",
+      "göğsümde baskı var", "göğsüm sıkışıyor", "nefes alamıyorum",
+      "koluma vuruyor", "çenem ağrıyor", "kalp krizi belirtileri",
+      "göğsümde yanma", "göğüs sıkışması"
+    ],
+    "typos_tr": ["gogus agrisi", "gogsüm agriyor", "kalp agrisi", "kalbim agriyor"]
+  },
+  {
+    "id": "nausea_001",
+    "title": "Nausea and Vomiting",
+    "title_tr": "Mide Bulantısı ve Kusma",
+    "category": "symptoms",
+    "source_name": "MedlinePlus - NIH",
+    "source_url": "https://medlineplus.gov/nauseaandvomiting.html",
+    "retrieved_date": "2025-01-15",
+    "content": "Nausea is an uneasiness of the stomach that often comes before vomiting. Vomiting is the forcible emptying of stomach contents through the mouth. These symptoms can be caused by many conditions.",
+    "symptoms": [
+      "Queasy feeling in stomach",
+      "Urge to vomit",
+      "Sweating",
+      "Increased salivation",
+      "Dizziness",
+      "Abdominal discomfort"
+    ],
+    "causes": [
+      "Gastroenteritis (stomach flu)",
+      "Food poisoning",
+      "Motion sickness",
+      "Pregnancy (morning sickness)",
+      "Medications",
+      "Migraine",
+      "Appendicitis",
+      "Anxiety"
+    ],
+    "what_to_do": [
+      "Rest and avoid solid foods temporarily",
+      "Sip clear fluids slowly (water, clear broth)",
+      "Avoid strong odors",
+      "Try ginger or peppermint",
+      "BRAT diet when ready (bananas, rice, applesauce, toast)",
+      "Avoid lying flat - slightly elevated position"
+    ],
+    "do_not": [
+      "Do not force yourself to eat",
+      "Do not drink large amounts at once",
+      "Do not eat spicy or fatty foods",
+      "Do not ignore signs of dehydration"
+    ],
+    "red_flags": [
+      "Vomiting for more than 24 hours",
+      "Blood in vomit (looks like coffee grounds)",
+      "Signs of dehydration (dark urine, dizziness)",
+      "Severe abdominal pain",
+      "High fever with vomiting",
+      "Stiff neck with headache and vomiting",
+      "Vomiting after head injury"
+    ],
+    "when_to_see_doctor": "Seek medical care if vomiting persists more than 24 hours, there's blood in vomit, signs of dehydration, severe abdominal pain, high fever, or stiff neck with headache.",
+    "keywords_en": ["vomiting", "queasy", "sick stomach", "throwing up"],
+    "keywords_tr": [
+      "mide bulantısı", "bulantı", "kusma", "kusuyorum", "midem bulanıyor",
+      "öğürtü", "kusmak istiyorum", "midem kalkıyor", "iğrenme hissi",
+      "sabah bulantısı", "yemek yiyemiyorum", "midemi tutamıyorum"
+    ],
+    "typos_tr": ["mide bulantisi", "bulanti", "kusma", "midem bulaniyor", "kusmak"]
+  },
+  {
+    "id": "dizziness_001",
+    "title": "Dizziness",
+    "title_tr": "Baş Dönmesi",
+    "category": "symptoms",
+    "source_name": "Mayo Clinic",
+    "source_url": "https://www.mayoclinic.org/diseases-conditions/dizziness/symptoms-causes/syc-20371787",
+    "retrieved_date": "2025-01-15",
+    "content": "Dizziness is a term used to describe a range of sensations including feeling faint, woozy, weak, or unsteady. Vertigo creates the false sense that you or your surroundings are spinning or moving.",
+    "symptoms": [
+      "Lightheadedness",
+      "Feeling faint",
+      "Unsteadiness or loss of balance",
+      "Spinning sensation (vertigo)",
+      "Floating feeling",
+      "Nausea"
+    ],
+    "causes": [
+      "Inner ear problems (BPPV, vestibular neuritis)",
+      "Low blood pressure",
+      "Poor circulation",
+      "Dehydration",
+      "Anemia",
+      "Low blood sugar",
+      "Anxiety disorders",
+      "Medications"
+    ],
+    "what_to_do": [
+      "Sit or lie down immediately",
+      "Drink water if dehydrated",
+      "Avoid sudden movements",
+      "Hold onto something stable",
+      "Focus on a fixed point",
+      "Breathe slowly and deeply"
+    ],
+    "do_not": [
+      "Do not stand up quickly",
+      "Do not drive if dizzy",
+      "Do not climb ladders or heights",
+      "Do not ignore recurring dizziness"
+    ],
+    "red_flags": [
+      "Sudden severe headache with dizziness",
+      "Chest pain with dizziness",
+      "Difficulty breathing",
+      "Numbness or weakness (especially one-sided)",
+      "Fainting",
+      "Rapid or irregular heartbeat",
+      "Head injury before dizziness",
+      "Double vision or vision loss"
+    ],
+    "when_to_see_doctor": "Seek immediate care (112) if dizziness is accompanied by sudden severe headache, chest pain, difficulty breathing, numbness/weakness, fainting, rapid heartbeat, or head injury.",
+    "keywords_en": ["vertigo", "lightheaded", "balance problems", "spinning"],
+    "keywords_tr": [
+      "baş dönmesi", "başım dönüyor", "sersemlik", "dengesizlik",
+      "her yer dönüyor", "vertigo", "ayakta duramıyorum", "düşecek gibiyim",
+      "bayılacak gibiyim", "gözüm kararıyor", "kafam dönüyor"
+    ],
+    "typos_tr": ["bas donmesi", "basim donuyor", "sersemlik", "vertigo", "gozum karariyor"]
   },
   {
     "id": "fatigue_001",
     "title": "Fatigue",
+    "title_tr": "Yorgunluk/Halsizlik",
     "category": "symptoms",
-    "source": "Mayo Clinic",
+    "source_name": "Mayo Clinic",
+    "source_url": "https://www.mayoclinic.org/symptoms/fatigue/basics/definition/sym-20050894",
+    "retrieved_date": "2025-01-15",
     "content": "Fatigue is a feeling of constant tiredness or weakness that can be physical, mental, or both. It's different from simply feeling drowsy or sleepy. Fatigue can be a symptom of many different conditions.",
     "symptoms": [
       "Constant tiredness",
@@ -228,127 +549,45 @@
       "Diabetes",
       "Heart disease"
     ],
-    "treatments": [
+    "what_to_do": [
       "Get adequate sleep (7-9 hours)",
       "Regular exercise",
       "Balanced diet",
       "Reduce stress",
       "Limit caffeine and alcohol",
-      "Stay hydrated",
-      "Address underlying conditions"
+      "Stay hydrated"
+    ],
+    "do_not": [
+      "Do not rely on caffeine or energy drinks",
+      "Do not ignore persistent fatigue",
+      "Do not skip meals",
+      "Do not overwork without rest"
+    ],
+    "red_flags": [
+      "Fatigue with unexplained weight loss",
+      "Fatigue with fever",
+      "Fatigue with shortness of breath",
+      "Fatigue with chest pain",
+      "Fatigue lasting more than 2 weeks despite rest",
+      "Fatigue with thoughts of self-harm"
     ],
     "when_to_see_doctor": "See a doctor if fatigue persists despite rest, is accompanied by unexplained weight loss, fever, or other symptoms, significantly impacts daily life, or if you suspect an underlying condition.",
-    "keywords": ["yorgunluk", "halsizlik", "tiredness", "exhaustion", "weakness"]
-  },
-  {
-    "id": "chest_pain_001",
-    "title": "Chest Pain",
-    "category": "symptoms",
-    "source": "American Heart Association",
-    "content": "Chest pain can have many causes, from muscle strain to heart problems. While not all chest pain is serious, it's important to recognize when it might indicate a heart attack or other emergency.",
-    "symptoms": [
-      "Pressure or tightness in chest",
-      "Sharp, stabbing pain",
-      "Burning sensation",
-      "Pain spreading to arm, jaw, or back",
-      "Shortness of breath",
-      "Nausea or sweating"
+    "keywords_en": ["tiredness", "exhaustion", "weakness", "lack of energy"],
+    "keywords_tr": [
+      "yorgunluk", "halsizlik", "çok yorgunum", "enerjim yok",
+      "bitkinlik", "güçsüzlük", "tükenmişlik", "uyusam da yorgunum",
+      "kendimi zayıf hissediyorum", "hiçbir şey yapasım yok"
     ],
-    "causes": [
-      "Heart attack",
-      "Angina",
-      "Muscle strain",
-      "Costochondritis",
-      "GERD (acid reflux)",
-      "Anxiety or panic attacks",
-      "Pneumonia",
-      "Pulmonary embolism"
-    ],
-    "treatments": [
-      "Treatment depends on cause",
-      "For suspected heart attack: call emergency immediately",
-      "For muscle strain: rest, ice, pain relievers",
-      "For GERD: antacids, dietary changes",
-      "For anxiety: breathing exercises, therapy"
-    ],
-    "when_to_see_doctor": "CALL EMERGENCY (112) IMMEDIATELY if chest pain is sudden and severe, accompanied by shortness of breath, pain spreading to arm/jaw/back, sweating, nausea, or dizziness. These could be signs of a heart attack.",
-    "keywords": ["göğüs ağrısı", "heart pain", "angina", "cardiac", "kalp ağrısı"]
-  },
-  {
-    "id": "nausea_001",
-    "title": "Nausea and Vomiting",
-    "category": "symptoms",
-    "source": "MedlinePlus",
-    "content": "Nausea is an uneasiness of the stomach that often comes before vomiting. Vomiting is the forcible emptying of stomach contents through the mouth. These symptoms can be caused by many conditions.",
-    "symptoms": [
-      "Queasy feeling in stomach",
-      "Urge to vomit",
-      "Sweating",
-      "Increased salivation",
-      "Dizziness",
-      "Abdominal discomfort"
-    ],
-    "causes": [
-      "Gastroenteritis (stomach flu)",
-      "Food poisoning",
-      "Motion sickness",
-      "Pregnancy (morning sickness)",
-      "Medications",
-      "Migraine",
-      "Appendicitis",
-      "Anxiety"
-    ],
-    "treatments": [
-      "Rest and avoid solid foods temporarily",
-      "Sip clear fluids slowly",
-      "Avoid strong odors",
-      "Try ginger or peppermint",
-      "BRAT diet when ready (bananas, rice, applesauce, toast)",
-      "Over-the-counter antiemetics"
-    ],
-    "when_to_see_doctor": "Seek medical care if vomiting persists more than 24 hours, there's blood in vomit, signs of dehydration, severe abdominal pain, high fever, or stiff neck with headache.",
-    "keywords": ["mide bulantısı", "kusma", "vomiting", "queasy", "sick stomach"]
-  },
-  {
-    "id": "dizziness_001",
-    "title": "Dizziness",
-    "category": "symptoms",
-    "source": "Mayo Clinic",
-    "content": "Dizziness is a term used to describe a range of sensations including feeling faint, woozy, weak, or unsteady. Vertigo creates the false sense that you or your surroundings are spinning or moving.",
-    "symptoms": [
-      "Lightheadedness",
-      "Feeling faint",
-      "Unsteadiness or loss of balance",
-      "Spinning sensation (vertigo)",
-      "Floating feeling",
-      "Nausea"
-    ],
-    "causes": [
-      "Inner ear problems (BPPV, vestibular neuritis)",
-      "Low blood pressure",
-      "Poor circulation",
-      "Dehydration",
-      "Anemia",
-      "Low blood sugar",
-      "Anxiety disorders",
-      "Medications"
-    ],
-    "treatments": [
-      "Sit or lie down immediately",
-      "Drink water if dehydrated",
-      "Avoid sudden movements",
-      "Epley maneuver for BPPV",
-      "Vestibular rehabilitation therapy",
-      "Address underlying conditions"
-    ],
-    "when_to_see_doctor": "Seek immediate care if dizziness is accompanied by sudden severe headache, chest pain, difficulty breathing, numbness/weakness, fainting, rapid heartbeat, or head injury.",
-    "keywords": ["baş dönmesi", "sersemlik", "vertigo", "lightheaded", "balance problems"]
+    "typos_tr": ["yorgunluk", "halsizlik", "cok yorgunum", "enerjim yok", "bitkinlik"]
   },
   {
     "id": "common_cold_001",
     "title": "Common Cold",
+    "title_tr": "Soğuk Algınlığı/Nezle",
     "category": "diseases",
-    "source": "CDC",
+    "source_name": "CDC",
+    "source_url": "https://www.cdc.gov/common-cold/about/index.html",
+    "retrieved_date": "2025-01-15",
     "content": "The common cold is a viral infection of the upper respiratory tract. It's usually harmless, although it might not feel that way. Many types of viruses can cause a common cold, with rhinoviruses being the most common.",
     "symptoms": [
       "Runny or stuffy nose",
@@ -366,24 +605,47 @@
       "Parainfluenza",
       "Spread through droplets or touching contaminated surfaces"
     ],
-    "treatments": [
+    "what_to_do": [
       "Rest and stay hydrated",
-      "Over-the-counter cold remedies",
-      "Saline nasal drops",
+      "Saline nasal drops or spray",
       "Warm liquids (tea, soup)",
-      "Honey for cough (not for children under 1)",
-      "Humidifier",
-      "Pain relievers for aches and fever"
+      "Honey for cough (adults and children over 1)",
+      "Humidifier for dry air",
+      "Symptom relief medications if needed"
     ],
-    "when_to_see_doctor": "See a doctor if symptoms last more than 10 days, high fever (above 39.4°C/103°F), fever returning after improvement, severe sinus pain, or difficulty breathing.",
-    "keywords": ["soğuk algınlığı", "nezle", "grip", "runny nose", "nasal congestion"]
+    "do_not": [
+      "Do not demand antibiotics (ineffective against viruses)",
+      "Do not give honey to children under 1",
+      "Do not share personal items",
+      "Do not go to work/school when contagious"
+    ],
+    "red_flags": [
+      "Symptoms lasting more than 10 days",
+      "High fever (above 39.4C/103F)",
+      "Fever returning after improvement",
+      "Severe sinus pain",
+      "Difficulty breathing",
+      "Severe headache",
+      "Ear pain"
+    ],
+    "when_to_see_doctor": "See a doctor if symptoms last more than 10 days, high fever (above 39.4C/103F), fever returning after improvement, severe sinus pain, or difficulty breathing.",
+    "keywords_en": ["runny nose", "nasal congestion", "cold symptoms", "upper respiratory infection"],
+    "keywords_tr": [
+      "soğuk algınlığı", "nezle", "grip", "burun akıyor", "burun tıkanıklığı",
+      "hapşırık", "burnum tıkalı", "üşüttüm", "soğuk aldım",
+      "burun akıntısı", "nezle oldum", "grip oldum"
+    ],
+    "typos_tr": ["soguk alginligi", "nezle", "burun akiyor", "burun tikali", "grip"]
   },
   {
     "id": "flu_001",
     "title": "Influenza (Flu)",
+    "title_tr": "Grip (İnfluenza)",
     "category": "diseases",
-    "source": "CDC",
-    "content": "Influenza is a contagious respiratory illness caused by influenza viruses. It can cause mild to severe illness and sometimes lead to death. The best way to prevent flu is annual vaccination.",
+    "source_name": "CDC",
+    "source_url": "https://www.cdc.gov/flu/symptoms/symptoms.htm",
+    "retrieved_date": "2025-01-15",
+    "content": "Influenza is a contagious respiratory illness caused by influenza viruses. It can cause mild to severe illness. The best way to prevent flu is annual vaccination.",
     "symptoms": [
       "Fever or chills",
       "Cough",
@@ -400,22 +662,43 @@
       "Spread through respiratory droplets",
       "Touching contaminated surfaces"
     ],
-    "treatments": [
-      "Rest and fluids",
-      "Antiviral medications (if prescribed early)",
-      "Over-the-counter symptom relief",
+    "what_to_do": [
+      "Rest and stay hydrated",
       "Stay home to prevent spread",
-      "Pain relievers for fever and aches"
+      "Symptom relief for fever and aches",
+      "Antiviral medications if prescribed early by doctor"
+    ],
+    "do_not": [
+      "Do not go to work/school while sick",
+      "Do not share personal items",
+      "Do not give aspirin to children under 16"
+    ],
+    "red_flags": [
+      "Difficulty breathing or shortness of breath",
+      "Persistent chest pain or pressure",
+      "Confusion or altered mental state",
+      "Severe or persistent vomiting",
+      "Symptoms improve then return with fever and worse cough",
+      "Bluish lips or face"
     ],
     "when_to_see_doctor": "Seek emergency care for difficulty breathing, persistent chest pain, confusion, severe vomiting, or flu-like symptoms that improve but return with fever and worse cough.",
-    "keywords": ["grip", "influenza", "flu symptoms", "seasonal flu", "independent"]
+    "keywords_en": ["influenza", "flu symptoms", "seasonal flu", "viral infection"],
+    "keywords_tr": [
+      "grip", "influenza", "grip oldum", "grip belirtileri",
+      "tüm vücudum ağrıyor", "kemiklerim ağrıyor", "grip aşısı",
+      "mevsimsel grip", "ateşim var ve öksürüyorum"
+    ],
+    "typos_tr": ["grip", "influenza", "grip oldum", "grip belirtileri"]
   },
   {
     "id": "diabetes_001",
     "title": "Diabetes Overview",
+    "title_tr": "Şeker Hastalığı (Diyabet)",
     "category": "diseases",
-    "source": "American Diabetes Association",
-    "content": "Diabetes is a chronic disease where the body either doesn't produce enough insulin or can't effectively use the insulin it produces. This leads to elevated blood glucose levels that can damage organs over time.",
+    "source_name": "American Diabetes Association",
+    "source_url": "https://diabetes.org/about-diabetes",
+    "retrieved_date": "2025-01-15",
+    "content": "Diabetes is a chronic disease where the body either doesn't produce enough insulin or can't effectively use the insulin it produces. This leads to elevated blood glucose levels that can damage organs over time. Proper management is essential.",
     "symptoms": [
       "Increased thirst",
       "Frequent urination",
@@ -432,23 +715,45 @@
       "Gestational: Hormonal changes during pregnancy",
       "Genetic factors"
     ],
-    "treatments": [
-      "Blood sugar monitoring",
-      "Insulin therapy (Type 1, sometimes Type 2)",
-      "Oral medications (Type 2)",
-      "Healthy diet",
+    "what_to_do": [
+      "Monitor blood sugar regularly",
+      "Follow prescribed treatment plan",
+      "Healthy balanced diet",
       "Regular exercise",
-      "Weight management",
+      "Maintain healthy weight",
       "Regular medical checkups"
     ],
+    "do_not": [
+      "Do not skip medications",
+      "Do not ignore blood sugar readings",
+      "Do not skip meals if on insulin",
+      "Do not exercise with very high blood sugar"
+    ],
+    "red_flags": [
+      "Very high blood sugar (above 300 mg/dL)",
+      "Very low blood sugar (below 70 mg/dL)",
+      "Fruity breath odor (diabetic ketoacidosis)",
+      "Confusion or altered consciousness",
+      "Nausea and vomiting with high blood sugar",
+      "Rapid breathing"
+    ],
     "when_to_see_doctor": "See a doctor if you experience symptoms of diabetes, have risk factors, or if you have diabetes and experience very high or low blood sugar, signs of ketoacidosis, or other complications.",
-    "keywords": ["şeker hastalığı", "diyabet", "blood sugar", "insulin", "high glucose"]
+    "keywords_en": ["blood sugar", "insulin", "high glucose", "type 2 diabetes"],
+    "keywords_tr": [
+      "şeker hastalığı", "diyabet", "kan şekeri", "şekerim yüksek",
+      "insülin", "tip 2 diyabet", "şeker ölçümü", "şeker hastasıyım",
+      "açlık şekeri", "tokluk şekeri", "şeker düştü", "hipoglisemi"
+    ],
+    "typos_tr": ["seker hastaligi", "diyabet", "kan sekeri", "insulin", "sekarim yuksek"]
   },
   {
     "id": "hypertension_001",
     "title": "High Blood Pressure (Hypertension)",
+    "title_tr": "Yüksek Tansiyon (Hipertansiyon)",
     "category": "diseases",
-    "source": "American Heart Association",
+    "source_name": "American Heart Association",
+    "source_url": "https://www.heart.org/en/health-topics/high-blood-pressure",
+    "retrieved_date": "2025-01-15",
     "content": "High blood pressure is a common condition where the force of blood against artery walls is too high. It often has no symptoms but can lead to serious health problems like heart disease and stroke if untreated.",
     "symptoms": [
       "Usually no symptoms (silent killer)",
@@ -468,24 +773,48 @@
       "Stress",
       "Chronic conditions (kidney disease, diabetes)"
     ],
-    "treatments": [
-      "Lifestyle changes (DASH diet, exercise)",
+    "what_to_do": [
+      "Regular blood pressure monitoring",
+      "DASH diet (fruits, vegetables, whole grains)",
       "Reduce sodium intake",
+      "Regular exercise",
       "Maintain healthy weight",
       "Limit alcohol",
-      "Quit smoking",
-      "Manage stress",
-      "Blood pressure medications (if needed)"
+      "Take prescribed medications"
     ],
-    "when_to_see_doctor": "Get regular blood pressure checks. Seek immediate care if blood pressure is very high (180/120 or higher) or accompanied by chest pain, severe headache, difficulty breathing, or neurological symptoms.",
-    "keywords": ["yüksek tansiyon", "hipertansiyon", "blood pressure", "cardiovascular", "heart disease risk"]
+    "do_not": [
+      "Do not skip blood pressure medications",
+      "Do not add extra salt to food",
+      "Do not ignore high readings",
+      "Do not smoke"
+    ],
+    "red_flags": [
+      "Blood pressure above 180/120 (hypertensive crisis)",
+      "Severe headache with high BP",
+      "Chest pain",
+      "Difficulty breathing",
+      "Numbness or weakness",
+      "Vision changes",
+      "Difficulty speaking"
+    ],
+    "when_to_see_doctor": "Get regular blood pressure checks. Seek immediate care (112) if blood pressure is very high (180/120 or higher) or accompanied by chest pain, severe headache, difficulty breathing, or neurological symptoms.",
+    "keywords_en": ["blood pressure", "cardiovascular", "heart disease risk", "hypertensive"],
+    "keywords_tr": [
+      "yüksek tansiyon", "hipertansiyon", "tansiyon", "tansiyonum yüksek",
+      "kan basıncı", "tansiyon ölçümü", "tansiyon ilacı",
+      "tansiyonum 14", "tansiyonum 16", "tansiyonum 18"
+    ],
+    "typos_tr": ["yuksek tansiyon", "hipertansiyon", "tansiyonum yuksek", "kan basinci"]
   },
   {
     "id": "anxiety_001",
     "title": "Anxiety Disorders",
+    "title_tr": "Anksiyete Bozuklukları",
     "category": "mental_health",
-    "source": "National Institute of Mental Health",
-    "content": "Anxiety disorders involve more than temporary worry or fear. For a person with an anxiety disorder, the anxiety does not go away and can get worse over time, interfering with daily activities.",
+    "source_name": "National Institute of Mental Health",
+    "source_url": "https://www.nimh.nih.gov/health/topics/anxiety-disorders",
+    "retrieved_date": "2025-01-15",
+    "content": "Anxiety disorders involve more than temporary worry or fear. For a person with an anxiety disorder, the anxiety does not go away and can get worse over time, interfering with daily activities. Professional help is available and effective.",
     "symptoms": [
       "Feeling restless or on-edge",
       "Being easily fatigued",
@@ -505,24 +834,46 @@
       "Medical conditions",
       "Substance use"
     ],
-    "treatments": [
-      "Psychotherapy (especially CBT)",
-      "Medications (anti-anxiety, antidepressants)",
+    "what_to_do": [
+      "Seek professional help (psychologist, psychiatrist)",
       "Stress management techniques",
       "Regular exercise",
       "Adequate sleep",
-      "Limiting caffeine and alcohol",
-      "Mindfulness and relaxation techniques"
+      "Limit caffeine and alcohol",
+      "Mindfulness and relaxation techniques",
+      "Talk to trusted people about your feelings"
     ],
-    "when_to_see_doctor": "Seek help if anxiety interferes with work, relationships, or daily life, if you have suicidal thoughts, or if anxiety is accompanied by depression or substance use problems.",
-    "keywords": ["anksiyete", "kaygı", "panik atak", "worry", "panic attack", "stress"]
+    "do_not": [
+      "Do not self-medicate with alcohol or drugs",
+      "Do not isolate yourself",
+      "Do not avoid seeking professional help",
+      "Do not be ashamed - anxiety is common and treatable"
+    ],
+    "red_flags": [
+      "Thoughts of suicide or self-harm",
+      "Panic attacks that don't improve",
+      "Anxiety severely impacting work/relationships",
+      "Using substances to cope",
+      "Physical symptoms without medical cause"
+    ],
+    "when_to_see_doctor": "Seek help if anxiety interferes with work, relationships, or daily life, if you have suicidal thoughts (call crisis line immediately), or if anxiety is accompanied by depression or substance use problems.",
+    "keywords_en": ["worry", "panic attack", "stress", "generalized anxiety"],
+    "keywords_tr": [
+      "anksiyete", "kaygı", "panik atak", "endişe", "stres",
+      "kalbim çarpıyor", "ellerim titriyor", "nefes alamıyorum panik",
+      "sürekli endişeleniyorum", "uyuyamıyorum kaygıdan", "gergin hissediyorum"
+    ],
+    "typos_tr": ["anksiyete", "kaygi", "panik atak", "endise", "stres"]
   },
   {
     "id": "depression_001",
     "title": "Depression",
+    "title_tr": "Depresyon",
     "category": "mental_health",
-    "source": "National Institute of Mental Health",
-    "content": "Depression is a common but serious mood disorder that affects how you feel, think, and handle daily activities. It requires treatment and is not something people can simply 'snap out of'.",
+    "source_name": "National Institute of Mental Health",
+    "source_url": "https://www.nimh.nih.gov/health/topics/depression",
+    "retrieved_date": "2025-01-15",
+    "content": "Depression is a common but serious mood disorder that affects how you feel, think, and handle daily activities. It requires treatment and is not something people can simply 'snap out of'. Effective treatments are available.",
     "symptoms": [
       "Persistent sad or empty mood",
       "Loss of interest in activities",
@@ -542,16 +893,37 @@
       "Medical conditions",
       "Certain medications"
     ],
-    "treatments": [
-      "Psychotherapy (talk therapy, CBT)",
-      "Antidepressant medications",
-      "Combination of therapy and medication",
+    "what_to_do": [
+      "Seek professional help (therapist, psychiatrist)",
+      "Talk to someone you trust",
       "Regular exercise",
-      "Adequate sleep",
-      "Social support",
-      "Brain stimulation therapies (for severe cases)"
+      "Maintain regular sleep schedule",
+      "Eat balanced meals",
+      "Avoid alcohol and drugs",
+      "Set small, achievable goals"
     ],
-    "when_to_see_doctor": "Seek help immediately if you have thoughts of suicide or self-harm. Also see a doctor if symptoms persist for more than two weeks, significantly impact daily functioning, or if depression returns after improvement.",
-    "keywords": ["depresyon", "ruhsal çöküntü", "mood disorder", "sadness", "mental health"]
+    "do_not": [
+      "Do not isolate yourself",
+      "Do not make major decisions when severely depressed",
+      "Do not self-medicate with alcohol or drugs",
+      "Do not give up on treatment - it takes time"
+    ],
+    "red_flags": [
+      "Thoughts of suicide or self-harm",
+      "Making plans for suicide",
+      "Giving away possessions",
+      "Saying goodbye to loved ones",
+      "Sudden calmness after severe depression"
+    ],
+    "when_to_see_doctor": "Seek help immediately (call crisis line or 112) if you have thoughts of suicide or self-harm. Also see a doctor if symptoms persist for more than two weeks, significantly impact daily functioning, or if depression returns after improvement.",
+    "crisis_info": "Turkey Crisis Line: 182 (Suicide Prevention)",
+    "keywords_en": ["mood disorder", "sadness", "mental health", "clinical depression"],
+    "keywords_tr": [
+      "depresyon", "mutsuzluk", "üzgünlük", "hayattan zevk alamıyorum",
+      "hiçbir şey yapmak istemiyorum", "umutsuzluk", "kendimi değersiz hissediyorum",
+      "uyuyamıyorum", "çok uyuyorum", "iştahım yok", "sürekli ağlıyorum",
+      "intihar düşüncesi", "yaşamak istemiyorum"
+    ],
+    "typos_tr": ["depresyon", "mutsuzluk", "uzgunluk", "umutsuzluk"]
   }
 ]

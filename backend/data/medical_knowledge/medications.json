@@ -2,9 +2,13 @@
   {
     "id": "paracetamol_001",
     "title": "Paracetamol (Acetaminophen)",
+    "title_tr": "Parasetamol (Asetaminofen)",
     "category": "medications",
-    "source": "NHS",
-    "content": "Paracetamol is a common painkiller used to treat aches and pain. It can also reduce fever. It's available over the counter and is safe when taken correctly.",
+    "drug_class": "Analgesic / Antipyretic",
+    "source_name": "NHS UK",
+    "source_url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+    "retrieved_date": "2025-01-15",
+    "content": "Paracetamol is a common painkiller used to treat aches and pain. It can also reduce fever. It's available over the counter and is safe when taken correctly. Always follow dosage instructions carefully.",
     "uses": [
       "Mild to moderate pain",
       "Headaches",
@@ -14,26 +18,55 @@
       "Cold and flu symptoms",
       "Reducing fever"
     ],
-    "dosage": "Adults: 500mg to 1g every 4-6 hours, maximum 4g in 24 hours. Do not exceed recommended dose.",
+    "dosage_info": {
+      "adults": "500mg to 1g (1-2 tablets) every 4-6 hours",
+      "max_daily": "Maximum 4g (4000mg) in 24 hours",
+      "min_interval": "At least 4 hours between doses",
+      "note": "Consult pharmacist or doctor for children's dosing"
+    },
     "side_effects": [
       "Rare when taken correctly",
-      "Allergic reactions (rare)",
-      "Liver damage with overdose"
+      "Allergic reactions (rare) - rash, swelling, breathing difficulty",
+      "Liver damage with overdose or prolonged high doses"
+    ],
+    "contraindications": [
+      "Known allergy to paracetamol",
+      "Severe liver disease or liver failure",
+      "Chronic alcohol use (consult doctor)"
     ],
     "warnings": [
-      "Do not exceed maximum daily dose",
-      "Avoid alcohol while taking",
-      "Check other medications for paracetamol content",
-      "Caution with liver disease"
+      "Do not exceed maximum daily dose (4g/day)",
+      "Avoid or limit alcohol while taking",
+      "Check other medications for paracetamol content (many cold/flu products contain it)",
+      "Caution with liver disease - consult doctor",
+      "Caution with kidney disease - consult doctor"
     ],
-    "keywords": ["parasetamol", "asetaminofen", "parol", "tylol", "pain relief", "fever reducer"]
+    "drug_interactions": [
+      "Warfarin (blood thinner) - may increase bleeding risk with regular use",
+      "Alcohol - increases liver damage risk",
+      "Other paracetamol-containing products - risk of overdose"
+    ],
+    "overdose_warning": "Paracetamol overdose is serious and can cause liver failure. Seek immediate medical attention if overdose suspected, even if feeling well.",
+    "safety_disclaimer": "Always consult a pharmacist or doctor before use if you have existing health conditions or take other medications.",
+    "keywords_en": ["acetaminophen", "pain relief", "fever reducer", "analgesic", "tylenol"],
+    "keywords_tr": [
+      "parasetamol", "parol", "tylol", "ağrı kesici", "ateş düşürücü",
+      "parol alabilir miyim", "tylol ne işe yarar", "parasetamol dozu",
+      "parol yan etkileri", "ateşim var ne alayım"
+    ],
+    "typos_tr": ["parasetamol", "parol", "tilol", "tylol", "parasetemol", "paracetamol"],
+    "brand_examples_tr": ["Parol", "Tylol", "Tamol", "Minoset", "Paranox"]
   },
   {
     "id": "ibuprofen_001",
     "title": "Ibuprofen",
+    "title_tr": "İbuprofen",
     "category": "medications",
-    "source": "NHS",
-    "content": "Ibuprofen is a non-steroidal anti-inflammatory drug (NSAID). It reduces inflammation and pain, and can also reduce fever. Available over the counter for short-term use.",
+    "drug_class": "NSAID (Non-Steroidal Anti-Inflammatory Drug)",
+    "source_name": "NHS UK",
+    "source_url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+    "retrieved_date": "2025-01-15",
+    "content": "Ibuprofen is a non-steroidal anti-inflammatory drug (NSAID). It reduces inflammation and pain, and can also reduce fever. Available over the counter for short-term use. Should be taken with food.",
     "uses": [
       "Pain relief",
       "Reducing inflammation",
@@ -41,184 +74,365 @@
       "Dental pain",
       "Period pain",
       "Muscle and joint pain",
-      "Cold and flu symptoms"
+      "Cold and flu symptoms",
+      "Arthritis pain"
     ],
-    "dosage": "Adults: 200-400mg three times daily with food. Maximum 1200mg daily for OTC use.",
+    "dosage_info": {
+      "adults": "200-400mg three times daily",
+      "max_daily": "Maximum 1200mg daily for OTC use (higher doses require prescription)",
+      "min_interval": "At least 4-6 hours between doses",
+      "note": "Always take with or after food"
+    },
     "side_effects": [
-      "Stomach upset, nausea",
+      "Stomach upset, nausea, indigestion",
       "Heartburn",
       "Dizziness",
-      "Increased risk of stomach ulcers",
-      "Kidney problems (with long-term use)"
+      "Increased risk of stomach ulcers (long-term use)",
+      "Kidney problems (long-term use)",
+      "Increased cardiovascular risk (long-term high doses)"
+    ],
+    "contraindications": [
+      "Known allergy to ibuprofen or other NSAIDs",
+      "History of stomach ulcers or GI bleeding",
+      "Severe heart failure",
+      "Severe kidney or liver disease",
+      "Third trimester of pregnancy",
+      "History of aspirin-induced asthma"
     ],
     "warnings": [
-      "Take with food to reduce stomach upset",
+      "ALWAYS take with food to reduce stomach upset",
       "Not suitable for people with stomach ulcers",
-      "Caution with asthma, kidney or heart problems",
-      "Avoid in late pregnancy",
-      "May interact with blood thinners"
+      "Caution with asthma - may trigger symptoms",
+      "Caution with kidney, heart, or liver problems",
+      "Avoid in late pregnancy (after 30 weeks)",
+      "May interact with blood thinners",
+      "Use lowest effective dose for shortest time"
     ],
-    "keywords": ["ibuprofen", "advil", "nurofen", "NSAID", "anti-inflammatory"]
+    "drug_interactions": [
+      "Warfarin and other blood thinners - increased bleeding risk",
+      "Aspirin - reduced aspirin effectiveness, increased GI risk",
+      "Blood pressure medications - may reduce effectiveness",
+      "Lithium - increased lithium levels",
+      "Methotrexate - increased toxicity risk"
+    ],
+    "safety_disclaimer": "Consult doctor before use if you have heart disease, high blood pressure, kidney disease, or are over 65. Not recommended for long-term use without medical supervision.",
+    "keywords_en": ["NSAID", "anti-inflammatory", "pain relief", "advil", "nurofen"],
+    "keywords_tr": [
+      "ibuprofen", "advil", "nurofen", "ağrı kesici", "iltihap giderici",
+      "ibuprofen ne işe yarar", "ibuprofen yan etkileri", "ibuprofen dozu",
+      "eklem ağrısı ilacı", "kas ağrısı ilacı"
+    ],
+    "typos_tr": ["ibuprofen", "ibuprufen", "ibuprofen", "advil", "nurofen"],
+    "brand_examples_tr": ["Advil", "Nurofen", "Brufen", "Dolgit"]
   },
   {
     "id": "aspirin_001",
     "title": "Aspirin (Acetylsalicylic Acid)",
+    "title_tr": "Aspirin (Asetilsalisilik Asit)",
     "category": "medications",
-    "source": "Mayo Clinic",
-    "content": "Aspirin is used to reduce pain, fever, and inflammation. Low-dose aspirin is also used to prevent heart attacks and strokes in high-risk individuals.",
+    "drug_class": "NSAID / Antiplatelet",
+    "source_name": "Mayo Clinic",
+    "source_url": "https://www.mayoclinic.org/drugs-supplements/aspirin-oral-route/description/drg-20070086",
+    "retrieved_date": "2025-01-15",
+    "content": "Aspirin is used to reduce pain, fever, and inflammation. Low-dose aspirin is also used to prevent heart attacks and strokes in high-risk individuals, but should only be used for this purpose under doctor supervision.",
     "uses": [
       "Pain relief",
       "Reducing fever",
       "Anti-inflammatory",
-      "Heart attack and stroke prevention (low dose)",
-      "During a heart attack (if advised by emergency services)"
+      "Heart attack and stroke prevention (low dose, doctor prescribed only)"
     ],
-    "dosage": "Pain/fever: 300-650mg every 4-6 hours. Heart protection: 75-100mg daily (doctor prescribed).",
+    "dosage_info": {
+      "pain_fever": "300-650mg every 4-6 hours as needed",
+      "max_daily": "Maximum 4g in 24 hours for pain",
+      "heart_protection": "75-100mg daily (ONLY with doctor prescription)",
+      "note": "Take with food or milk"
+    },
     "side_effects": [
-      "Stomach irritation and bleeding",
+      "Stomach irritation and pain",
       "Heartburn",
       "Nausea",
       "Increased bleeding risk",
-      "Allergic reactions"
+      "Allergic reactions",
+      "Stomach ulcers and bleeding (especially long-term)"
+    ],
+    "contraindications": [
+      "Children under 16 (Reye's syndrome risk)",
+      "Known aspirin or NSAID allergy",
+      "Active stomach ulcer or GI bleeding",
+      "Bleeding disorders (hemophilia)",
+      "Severe liver or kidney disease",
+      "Third trimester of pregnancy"
     ],
     "warnings": [
-      "Not for children under 16 (Reye's syndrome risk)",
-      "Avoid with stomach ulcers",
-      "Caution with asthma",
-      "Stop before surgery",
-      "May interact with blood thinners"
+      "NEVER give to children under 16 (risk of Reye's syndrome)",
+      "Avoid with stomach ulcers or history of GI bleeding",
+      "Caution with asthma - may trigger attacks",
+      "Stop 7 days before surgery unless doctor advises otherwise",
+      "May interact with blood thinners",
+      "Do NOT start daily aspirin for heart without doctor advice"
     ],
-    "keywords": ["aspirin", "asetilsalisilik asit", "blood thinner", "heart attack prevention"]
+    "drug_interactions": [
+      "Warfarin and other blood thinners - significantly increased bleeding risk",
+      "Other NSAIDs - increased GI and bleeding risk",
+      "Methotrexate - increased toxicity",
+      "ACE inhibitors - reduced effectiveness"
+    ],
+    "emergency_use_note": "During a suspected heart attack, emergency services may advise chewing 300mg aspirin. Do NOT do this on your own - wait for medical advice as aspirin can be dangerous for some people (allergies, bleeding disorders, ulcers).",
+    "safety_disclaimer": "Do not start daily aspirin therapy without consulting your doctor. The risks may outweigh benefits for some people.",
+    "keywords_en": ["aspirin", "acetylsalicylic acid", "blood thinner", "heart attack prevention", "pain relief"],
+    "keywords_tr": [
+      "aspirin", "ağrı kesici", "kan sulandırıcı", "ateş düşürücü",
+      "aspirin yan etkileri", "aspirin ne için kullanılır", "aspirin dozu",
+      "kalp krizi aspirini", "günlük aspirin"
+    ],
+    "typos_tr": ["aspirin", "aspirn", "asprin", "asetilsalisilik asit"],
+    "brand_examples_tr": ["Aspirin", "Coraspin", "Ecopirin", "Dispril"]
   },
   {
     "id": "antihistamine_001",
     "title": "Antihistamines",
+    "title_tr": "Antihistaminikler",
     "category": "medications",
-    "source": "NHS",
-    "content": "Antihistamines are medications that help relieve allergy symptoms by blocking histamine. They can be sedating (drowsy) or non-sedating types.",
+    "drug_class": "Antihistamine",
+    "source_name": "NHS UK",
+    "source_url": "https://www.nhs.uk/conditions/antihistamines/",
+    "retrieved_date": "2025-01-15",
+    "content": "Antihistamines are medications that help relieve allergy symptoms by blocking histamine. They can be sedating (drowsy) or non-sedating types. Choose based on your needs and read labels carefully.",
     "uses": [
       "Hay fever and allergic rhinitis",
-      "Allergic skin reactions",
-      "Hives (urticaria)",
+      "Allergic skin reactions and hives",
+      "Itching",
       "Insect bites and stings",
       "Motion sickness (some types)",
-      "Sleep aid (sedating types)"
+      "Sleep aid (sedating types only)"
     ],
-    "types": [
-      "Non-drowsy: cetirizine, loratadine, fexofenadine",
-      "Drowsy: diphenhydramine, chlorphenamine, promethazine"
-    ],
+    "types": {
+      "non_drowsy": ["Cetirizine (Zyrtec)", "Loratadine (Claritin)", "Fexofenadine (Allegra)"],
+      "drowsy": ["Diphenhydramine (Benadryl)", "Chlorphenamine", "Promethazine"]
+    },
+    "dosage_info": {
+      "note": "Varies by specific medication - always read product label",
+      "cetirizine": "10mg once daily",
+      "loratadine": "10mg once daily",
+      "general": "Most non-drowsy types taken once daily"
+    },
     "side_effects": [
-      "Drowsiness (especially older types)",
+      "Drowsiness (especially older/sedating types)",
       "Dry mouth",
       "Blurred vision",
       "Difficulty urinating",
-      "Dizziness"
+      "Dizziness",
+      "Headache"
+    ],
+    "contraindications": [
+      "Known allergy to the specific antihistamine",
+      "Certain types contraindicated with glaucoma",
+      "Certain types contraindicated with prostate problems",
+      "Some not suitable for children under certain ages"
     ],
     "warnings": [
-      "May impair driving (sedating types)",
+      "Sedating types may impair driving - do not drive if drowsy",
       "Avoid alcohol with drowsy antihistamines",
-      "Caution with glaucoma, prostate problems",
-      "Some not suitable for children"
+      "Caution with glaucoma, enlarged prostate",
+      "Some not suitable for children - check age restrictions",
+      "May interact with other sedating medications"
     ],
-    "keywords": ["antihistamin", "alerji ilacı", "allergy medication", "cetirizine", "loratadine", "hay fever"]
+    "drug_interactions": [
+      "Alcohol - increased sedation",
+      "Other sedating medications - increased drowsiness",
+      "MAO inhibitors - may increase effects"
+    ],
+    "safety_disclaimer": "Choose non-drowsy types if you need to drive or operate machinery. Consult pharmacist for appropriate choice.",
+    "keywords_en": ["allergy medication", "antihistamine", "hay fever", "hives", "itching"],
+    "keywords_tr": [
+      "alerji ilacı", "antihistamin", "saman nezlesi", "kaşıntı", "ürtiker",
+      "alerji hapı", "setirizin", "loratadin", "alerji belirtileri",
+      "burun akıntısı ilacı", "kaşıntı ilacı"
+    ],
+    "typos_tr": ["alerji ilaci", "antihistamin", "setirizin", "loratadin", "kaşinti"],
+    "brand_examples_tr": ["Zyrtec", "Cetrin", "Xyzal", "Aerius", "Telfast"]
   },
   {
     "id": "antacid_001",
     "title": "Antacids",
+    "title_tr": "Antiasitler (Mide İlaçları)",
     "category": "medications",
-    "source": "MedlinePlus",
-    "content": "Antacids are medications that neutralize stomach acid. They provide quick relief for heartburn, acid reflux, and indigestion.",
+    "drug_class": "Antacid",
+    "source_name": "MedlinePlus - NIH",
+    "source_url": "https://medlineplus.gov/ency/patientinstructions/000198.htm",
+    "retrieved_date": "2025-01-15",
+    "content": "Antacids are medications that neutralize stomach acid. They provide quick relief for heartburn, acid reflux, and indigestion. For frequent symptoms, consult a doctor as this may indicate an underlying condition.",
     "uses": [
       "Heartburn",
-      "Acid reflux (GERD)",
+      "Acid reflux (GERD symptoms)",
       "Indigestion",
-      "Stomach upset",
-      "Ulcer symptom relief"
+      "Stomach upset after eating"
     ],
-    "types": [
-      "Aluminum hydroxide",
-      "Magnesium hydroxide",
-      "Calcium carbonate (Tums)",
-      "Sodium bicarbonate",
-      "Combination products"
-    ],
+    "types": {
+      "aluminum_based": "May cause constipation",
+      "magnesium_based": "May cause diarrhea",
+      "calcium_carbonate": "Tums, Rennie - also provides calcium",
+      "combination": "Balance constipation/diarrhea effects"
+    },
+    "dosage_info": {
+      "note": "Follow product label instructions",
+      "timing": "Usually taken when symptoms occur or after meals",
+      "general": "Chewable tablets or liquid suspension"
+    },
     "side_effects": [
       "Constipation (aluminum-based)",
       "Diarrhea (magnesium-based)",
       "Belching",
-      "Nausea"
+      "Nausea",
+      "Calcium buildup with overuse (calcium-based)"
+    ],
+    "contraindications": [
+      "Severe kidney disease - some types",
+      "Hypercalcemia - calcium-based types",
+      "High sodium restrictions - some types"
     ],
     "warnings": [
-      "May affect absorption of other medications",
-      "Take 1-2 hours apart from other drugs",
+      "May affect absorption of other medications - take 1-2 hours apart",
       "Not for long-term regular use without doctor advice",
       "Kidney disease: avoid magnesium types",
-      "High sodium types: caution with high blood pressure"
+      "High blood pressure: avoid high sodium types",
+      "Frequent heartburn (more than twice a week) needs doctor evaluation"
     ],
-    "keywords": ["antasit", "mide ilacı", "heartburn relief", "acid reflux", "indigestion"]
+    "drug_interactions": [
+      "May reduce absorption of many medications including antibiotics",
+      "Iron supplements - reduced absorption",
+      "Thyroid medications - reduced absorption",
+      "Always separate antacids from other medications by 1-2 hours"
+    ],
+    "safety_disclaimer": "Occasional use is generally safe. See doctor if you need antacids regularly, as this may indicate a condition requiring different treatment.",
+    "keywords_en": ["heartburn relief", "acid reflux", "indigestion", "stomach acid", "antacid"],
+    "keywords_tr": [
+      "mide ilacı", "antiasit", "mide yanması", "mide ekşimesi", "reflü",
+      "hazımsızlık", "mide rahatsızlığı", "rennie", "talcid",
+      "mide yanmasına ne iyi gelir", "mide asidi"
+    ],
+    "typos_tr": ["mide ilaci", "antasit", "mide yanmasi", "mide eksimesi", "reflu"],
+    "brand_examples_tr": ["Rennie", "Talcid", "Gaviscon", "Majezik", "Kompensan"]
   },
   {
     "id": "cough_medicine_001",
     "title": "Cough Medicines",
+    "title_tr": "Öksürük İlaçları",
     "category": "medications",
-    "source": "NHS",
-    "content": "Cough medicines can help relieve coughing symptoms. There are two main types: expectorants (help bring up mucus) and suppressants (reduce the urge to cough).",
+    "drug_class": "Antitussive / Expectorant",
+    "source_name": "NHS UK",
+    "source_url": "https://www.nhs.uk/conditions/cough/",
+    "retrieved_date": "2025-01-15",
+    "content": "Cough medicines can help relieve coughing symptoms. There are two main types: expectorants (help bring up mucus) and suppressants (reduce the urge to cough). Evidence for effectiveness is limited; honey may be equally effective for cough.",
     "uses": [
-      "Dry cough (suppressants)",
-      "Productive/chesty cough (expectorants)",
-      "Cold and flu symptoms"
+      "Dry cough - suppressants",
+      "Productive/chesty cough - expectorants",
+      "Cold and flu related cough"
     ],
-    "types": [
-      "Suppressants: dextromethorphan, codeine (prescription)",
-      "Expectorants: guaifenesin",
-      "Mucolytics: acetylcysteine",
-      "Combination products"
-    ],
+    "types": {
+      "suppressants": "Dextromethorphan - for dry, irritating cough",
+      "expectorants": "Guaifenesin - helps loosen mucus",
+      "mucolytics": "Acetylcysteine - thins mucus",
+      "combination": "Multiple ingredients - check label carefully"
+    },
+    "dosage_info": {
+      "note": "Follow product label - varies by product",
+      "general": "Usually taken every 4-6 hours as needed",
+      "honey_alternative": "Honey (1-2 teaspoons) can be as effective for adults/children over 1"
+    },
     "side_effects": [
       "Drowsiness (some types)",
       "Dizziness",
       "Nausea",
-      "Constipation (codeine-based)"
+      "Constipation"
+    ],
+    "contraindications": [
+      "Children under 6 - most cough medicines not recommended",
+      "Children under 12 - some products not suitable",
+      "Chronic respiratory conditions - consult doctor first"
     ],
     "warnings": [
-      "Don't suppress a productive cough",
+      "Don't suppress a productive cough unnecessarily",
       "Not recommended for children under 6",
-      "May interact with other medications",
-      "Codeine products can be addictive",
-      "Check for alcohol content"
+      "Check for alcohol content",
+      "Many products contain multiple ingredients - check for duplications",
+      "May interact with other medications"
     ],
-    "keywords": ["öksürük şurubu", "öksürük ilacı", "cough syrup", "expectorant", "cough suppressant"]
+    "drug_interactions": [
+      "MAO inhibitors - dangerous with dextromethorphan",
+      "SSRIs - serotonin syndrome risk with dextromethorphan",
+      "Other sedating medications - increased drowsiness"
+    ],
+    "safety_disclaimer": "Cough lasting more than 3 weeks needs medical evaluation. Do not use cough suppressants if you have chronic lung conditions without doctor advice.",
+    "keywords_en": ["cough syrup", "expectorant", "cough suppressant", "dextromethorphan"],
+    "keywords_tr": [
+      "öksürük şurubu", "öksürük ilacı", "balgam söktürücü",
+      "kuru öksürük ilacı", "öksürük kesici", "öksürüğe ne iyi gelir",
+      "gece öksürüğü ilacı", "çocuk öksürük şurubu"
+    ],
+    "typos_tr": ["oksuruk surubu", "oksuruk ilaci", "balgam sokturucu"],
+    "brand_examples_tr": ["Benylin", "Prospan", "Sudafed", "Robitussin"]
   },
   {
     "id": "decongestant_001",
     "title": "Decongestants",
+    "title_tr": "Dekonjestanlar (Burun Açıcılar)",
     "category": "medications",
-    "source": "Mayo Clinic",
-    "content": "Decongestants reduce nasal congestion by narrowing blood vessels in the nasal passages. Available as oral tablets or nasal sprays.",
+    "drug_class": "Decongestant",
+    "source_name": "Mayo Clinic",
+    "source_url": "https://www.mayoclinic.org/diseases-conditions/common-cold/in-depth/decongestants/art-20045312",
+    "retrieved_date": "2025-01-15",
+    "content": "Decongestants reduce nasal congestion by narrowing blood vessels in the nasal passages. Available as oral tablets or nasal sprays. Nasal sprays should not be used for more than 7 days.",
     "uses": [
       "Blocked or stuffy nose",
       "Sinus congestion",
       "Cold and flu symptoms",
       "Sinusitis"
     ],
-    "types": [
-      "Oral: pseudoephedrine, phenylephrine",
-      "Nasal sprays: oxymetazoline, xylometazoline"
-    ],
+    "types": {
+      "oral": "Pseudoephedrine, Phenylephrine - systemic effect",
+      "nasal_sprays": "Oxymetazoline, Xylometazoline - local effect, faster acting"
+    },
+    "dosage_info": {
+      "oral": "Follow product label - usually every 4-6 hours",
+      "nasal_spray": "1-2 sprays per nostril, maximum 2-3 times daily",
+      "max_duration_spray": "Maximum 7 days for nasal sprays"
+    },
     "side_effects": [
-      "Restlessness, insomnia",
+      "Restlessness, difficulty sleeping",
       "Increased heart rate",
       "Increased blood pressure",
-      "Rebound congestion (nasal sprays, prolonged use)"
+      "Rebound congestion (nasal sprays with prolonged use)"
+    ],
+    "contraindications": [
+      "High blood pressure (uncontrolled)",
+      "Severe heart disease",
+      "Narrow-angle glaucoma",
+      "Within 14 days of MAO inhibitor use"
     ],
     "warnings": [
-      "Not for people with high blood pressure, heart disease",
+      "NOT suitable for people with high blood pressure or heart disease",
       "Avoid if taking MAO inhibitors",
-      "Nasal sprays: use max 7 days to avoid rebound",
-      "May interact with many medications",
-      "Caution with diabetes, thyroid problems, glaucoma"
+      "Nasal sprays: use MAXIMUM 7 days to avoid rebound congestion",
+      "May cause difficulty sleeping - take earlier in day",
+      "Caution with diabetes, thyroid problems, glaucoma",
+      "May affect athletic drug testing"
     ],
-    "keywords": ["dekonjestan", "burun tıkanıklığı", "nasal spray", "stuffy nose", "sinus relief"]
+    "drug_interactions": [
+      "MAO inhibitors - dangerous blood pressure increase",
+      "Blood pressure medications - may reduce effectiveness",
+      "Other stimulants - increased side effects",
+      "Caffeine - may increase stimulant effects"
+    ],
+    "rebound_warning": "Using nasal spray decongestants for more than 7 days can cause 'rebound congestion' - your nose becomes more blocked when you stop using them.",
+    "safety_disclaimer": "Not suitable for everyone. People with heart conditions or high blood pressure should consult doctor before use.",
+    "keywords_en": ["nasal spray", "stuffy nose", "sinus relief", "pseudoephedrine", "congestion"],
+    "keywords_tr": [
+      "burun açıcı", "burun spreyi", "burun tıkanıklığı", "dekonjestan",
+      "sinüzit ilacı", "tıkalı burun", "burun damlası",
+      "burnum tıkalı ne yapmalıyım", "nefes alamıyorum burnum"
+    ],
+    "typos_tr": ["burun acici", "burun spreyi", "burun tikanikligi", "sinuzit"],
+    "brand_examples_tr": ["Otrivine", "Sudafed", "Iliadin", "Afrin"]
   }
 ]

@@ -312,7 +312,7 @@
       "mide yanmasına ne iyi gelir", "mide asidi"
     ],
     "typos_tr": ["mide ilaci", "antasit", "mide yanmasi", "mide eksimesi", "reflu"],
-    "brand_examples_tr": ["Rennie", "Talcid", "Gaviscon", "Majezik", "Kompensan"]
+    "brand_examples_tr": ["Rennie", "Talcid", "Gaviscon", "Kompensan"]
   },
   {
     "id": "cough_medicine_001",
@@ -371,7 +371,7 @@
       "gece öksürüğü ilacı", "çocuk öksürük şurubu"
     ],
     "typos_tr": ["oksuruk surubu", "oksuruk ilaci", "balgam sokturucu"],
-    "brand_examples_tr": ["Benylin", "Prospan", "Sudafed", "Robitussin"]
+    "brand_examples_tr": ["Benylin", "Prospan", "Robitussin", "Herbion"]
   },
   {
     "id": "decongestant_001",

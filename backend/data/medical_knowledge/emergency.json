@@ -137,6 +137,7 @@
       "Do NOT delay calling for help"
     ],
     "asthma_note": "If person has asthma: help them use their reliever inhaler (usually blue). Give 1 puff every 30-60 seconds, up to 10 puffs. If no improvement after 10 puffs, or if you don't have an inhaler, call 112.",
+    "asthma_source": "Asthma + Lung UK: https://www.asthmaandlung.org.uk/conditions/asthma/asthma-attacks",
     "keywords_en": ["breathing difficulty", "shortness of breath", "asthma attack", "anaphylaxis", "choking", "cant breathe"],
     "keywords_tr": [
       "nefes darlığı", "nefes alamıyorum", "nefesim kesiliyor", "boğuluyorum",

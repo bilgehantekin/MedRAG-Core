@@ -43,13 +43,36 @@
       "Worst headache of your life"
     ],
     "when_to_see_doctor": "Seek immediate medical attention (112) if headache is sudden and severe, accompanied by fever, stiff neck, confusion, seizures, double vision, weakness, numbness, or difficulty speaking.",
-    "keywords_en": ["head pain", "migraine", "tension headache", "cephalalgia", "throbbing pain"],
-    "keywords_tr": [
-      "baş ağrısı", "başım ağrıyor", "başım zonkluyor", "başımda baskı var",
-      "migren", "şakak ağrısı", "ense ağrısı", "baş ağrım var",
-      "kafam ağrıyor", "kafam çatlıyor", "başım patlıyor", "başım çok ağrıyor"
+    "keywords_en": [
+      "head pain",
+      "migraine",
+      "tension headache",
+      "cephalalgia",
+      "throbbing pain"
     ],
-    "typos_tr": ["bas agrisi", "basim agriyor", "basim zonkluyor", "migren", "baş agrisı"]
+    "keywords_tr": [
+      "baş ağrısı",
+      "başım ağrıyor",
+      "başım zonkluyor",
+      "başımda baskı var",
+      "migren",
+      "şakak ağrısı",
+      "ense ağrısı",
+      "baş ağrım var",
+      "kafam ağrıyor",
+      "kafam çatlıyor",
+      "başım patlıyor",
+      "başım çok ağrıyor"
+    ],
+    "typos_tr": [
+      "bas agrisi",
+      "basim agriyor",
+      "basim zonkluyor",
+      "migren",
+      "baş agrisı"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "general"
   },
   {
     "id": "fever_001",
@@ -101,13 +124,36 @@
       "Fever in infants under 3 months"
     ],
     "when_to_see_doctor": "Seek medical attention for fever above 39.4C (103F), fever lasting more than 3 days, severe headache, stiff neck, confusion, persistent vomiting, difficulty breathing, or skin rash.",
-    "keywords_en": ["high temperature", "pyrexia", "febrile", "elevated temperature"],
-    "keywords_tr": [
-      "ateş", "ateşim var", "ateşim yükseldi", "yüksek ateş", "ateş düşmüyor",
-      "titreme", "üşüyorum", "terliyorum", "vücut ısım yüksek",
-      "38 derece ateş", "39 derece ateş", "ateşim 38", "ateşim 39"
+    "keywords_en": [
+      "high temperature",
+      "pyrexia",
+      "febrile",
+      "elevated temperature"
     ],
-    "typos_tr": ["ates", "atesim var", "yuksek ates", "atesim yuksek", "titremé"]
+    "keywords_tr": [
+      "ateş",
+      "ateşim var",
+      "ateşim yükseldi",
+      "yüksek ateş",
+      "ateş düşmüyor",
+      "titreme",
+      "üşüyorum",
+      "terliyorum",
+      "vücut ısım yüksek",
+      "38 derece ateş",
+      "39 derece ateş",
+      "ateşim 38",
+      "ateşim 39"
+    ],
+    "typos_tr": [
+      "ates",
+      "atesim var",
+      "yuksek ates",
+      "atesim yuksek",
+      "titremé"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "general"
   },
   {
     "id": "sore_throat_001",
@@ -158,13 +204,36 @@
       "Voice changes lasting more than 2 weeks"
     ],
     "when_to_see_doctor": "See a doctor if sore throat is severe or lasts longer than a week, difficulty swallowing or breathing, high fever, blood in saliva, frequent sore throats, or lump in neck.",
-    "keywords_en": ["throat pain", "pharyngitis", "strep throat", "tonsillitis", "swallowing pain"],
-    "keywords_tr": [
-      "boğaz ağrısı", "boğazım ağrıyor", "boğazım yanıyor", "yutkunamıyorum",
-      "boğazım şişti", "bademcik", "bademciklerim şiş", "boğazımda beyaz var",
-      "boğazım kızardı", "ses kısıklığı", "sesim kısıldı", "boğaz enfeksiyonu"
+    "keywords_en": [
+      "throat pain",
+      "pharyngitis",
+      "strep throat",
+      "tonsillitis",
+      "swallowing pain"
     ],
-    "typos_tr": ["bogaz agrisi", "bogazim agriyor", "bogazim yaniyor", "bademcik", "bogaz enfeksiyonu"]
+    "keywords_tr": [
+      "boğaz ağrısı",
+      "boğazım ağrıyor",
+      "boğazım yanıyor",
+      "yutkunamıyorum",
+      "boğazım şişti",
+      "bademcik",
+      "bademciklerim şiş",
+      "boğazımda beyaz var",
+      "boğazım kızardı",
+      "ses kısıklığı",
+      "sesim kısıldı",
+      "boğaz enfeksiyonu"
+    ],
+    "typos_tr": [
+      "bogaz agrisi",
+      "bogazim agriyor",
+      "bogazim yaniyor",
+      "bademcik",
+      "bogaz enfeksiyonu"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "general"
   },
   {
     "id": "cough_001",
@@ -217,13 +286,34 @@
       "Chest pain when coughing"
     ],
     "when_to_see_doctor": "Seek medical attention for cough lasting more than 3 weeks, coughing up blood, difficulty breathing, high fever, unexplained weight loss, or night sweats.",
-    "keywords_en": ["coughing", "bronchitis", "phlegm", "productive cough", "dry cough"],
-    "keywords_tr": [
-      "öksürük", "öksürüyorum", "kuru öksürük", "balgamlı öksürük",
-      "öksürük durmuyor", "gece öksürüğü", "boğazım gıcıklanıyor",
-      "göğsüm ağrıyor öksürünce", "balgam çıkıyor", "öksürükten uyuyamıyorum"
+    "keywords_en": [
+      "coughing",
+      "bronchitis",
+      "phlegm",
+      "productive cough",
+      "dry cough"
     ],
-    "typos_tr": ["oksuruk", "oksuruyorum", "balgam", "kuru oksuruk", "öksürük surubu"]
+    "keywords_tr": [
+      "öksürük",
+      "öksürüyorum",
+      "kuru öksürük",
+      "balgamlı öksürük",
+      "öksürük durmuyor",
+      "gece öksürüğü",
+      "boğazım gıcıklanıyor",
+      "göğsüm ağrıyor öksürünce",
+      "balgam çıkıyor",
+      "öksürükten uyuyamıyorum"
+    ],
+    "typos_tr": [
+      "oksuruk",
+      "oksuruyorum",
+      "balgam",
+      "kuru oksuruk",
+      "öksürük surubu"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "general"
   },
   {
     "id": "stomach_pain_001",
@@ -278,14 +368,38 @@
       "Pain in lower right abdomen (appendicitis)"
     ],
     "when_to_see_doctor": "Seek immediate care (112) for severe pain, pain with fever, bloody stool, persistent vomiting, swollen abdomen, pain during pregnancy, or pain lasting more than 24-48 hours.",
-    "keywords_en": ["abdominal cramps", "stomach ache", "gastric pain", "belly pain"],
-    "keywords_tr": [
-      "karın ağrısı", "mide ağrısı", "karnım ağrıyor", "midem ağrıyor",
-      "midem bulanıyor", "midem yanıyor", "şişkinlik", "gaz sancısı",
-      "kramp giriyor", "karnım şişti", "mide bulantısı", "midem kazınıyor",
-      "karın sancısı", "göbek ağrısı", "mide ekşimesi"
+    "keywords_en": [
+      "abdominal cramps",
+      "stomach ache",
+      "gastric pain",
+      "belly pain"
     ],
-    "typos_tr": ["karin agrisi", "mide agrisi", "karnim agriyor", "midem agriyor", "mide bulantisi"]
+    "keywords_tr": [
+      "karın ağrısı",
+      "mide ağrısı",
+      "karnım ağrıyor",
+      "midem ağrıyor",
+      "midem bulanıyor",
+      "midem yanıyor",
+      "şişkinlik",
+      "gaz sancısı",
+      "kramp giriyor",
+      "karnım şişti",
+      "mide bulantısı",
+      "midem kazınıyor",
+      "karın sancısı",
+      "göbek ağrısı",
+      "mide ekşimesi"
+    ],
+    "typos_tr": [
+      "karin agrisi",
+      "mide agrisi",
+      "karnim agriyor",
+      "midem agriyor",
+      "mide bulantisi"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "general"
   },
   {
     "id": "back_pain_001",
@@ -336,13 +450,35 @@
       "Unexplained weight loss"
     ],
     "when_to_see_doctor": "See a doctor if pain persists beyond a few weeks, is severe and doesn't improve with rest, spreads down legs (especially below knee), causes weakness/numbness/tingling, or is accompanied by unexplained weight loss.",
-    "keywords_en": ["lower back pain", "lumbar pain", "sciatica", "spine pain"],
-    "keywords_tr": [
-      "bel ağrısı", "sırt ağrısı", "belim ağrıyor", "sırtım ağrıyor",
-      "bel fıtığı", "siyatik", "belim tutuldu", "kamburlaştım",
-      "bacağıma vuruyor", "kalçam ağrıyor", "omurga ağrısı", "bel kayması"
+    "keywords_en": [
+      "lower back pain",
+      "lumbar pain",
+      "sciatica",
+      "spine pain"
     ],
-    "typos_tr": ["bel agrisi", "sirt agrisi", "belim agriyor", "bel fitigi", "siyatik"]
+    "keywords_tr": [
+      "bel ağrısı",
+      "sırt ağrısı",
+      "belim ağrıyor",
+      "sırtım ağrıyor",
+      "bel fıtığı",
+      "siyatik",
+      "belim tutuldu",
+      "kamburlaştım",
+      "bacağıma vuruyor",
+      "kalçam ağrıyor",
+      "omurga ağrısı",
+      "bel kayması"
+    ],
+    "typos_tr": [
+      "bel agrisi",
+      "sirt agrisi",
+      "belim agriyor",
+      "bel fitigi",
+      "siyatik"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "general"
   },
   {
     "id": "chest_pain_001",
@@ -393,14 +529,34 @@
       "Chest pain lasting more than a few minutes"
     ],
     "when_to_see_doctor": "CALL 112 IMMEDIATELY if chest pain is sudden and severe, accompanied by shortness of breath, pain spreading to arm/jaw/back, sweating, nausea, or dizziness. These could be signs of a heart attack.",
-    "keywords_en": ["heart pain", "angina", "cardiac", "chest tightness"],
-    "keywords_tr": [
-      "göğüs ağrısı", "göğsüm ağrıyor", "kalbim ağrıyor", "kalp ağrısı",
-      "göğsümde baskı var", "göğsüm sıkışıyor", "nefes alamıyorum",
-      "koluma vuruyor", "çenem ağrıyor", "kalp krizi belirtileri",
-      "göğsümde yanma", "göğüs sıkışması"
+    "keywords_en": [
+      "heart pain",
+      "angina",
+      "cardiac",
+      "chest tightness"
     ],
-    "typos_tr": ["gogus agrisi", "gogsüm agriyor", "kalp agrisi", "kalbim agriyor"]
+    "keywords_tr": [
+      "göğüs ağrısı",
+      "göğsüm ağrıyor",
+      "kalbim ağrıyor",
+      "kalp ağrısı",
+      "göğsümde baskı var",
+      "göğsüm sıkışıyor",
+      "nefes alamıyorum",
+      "koluma vuruyor",
+      "çenem ağrıyor",
+      "kalp krizi belirtileri",
+      "göğsümde yanma",
+      "göğüs sıkışması"
+    ],
+    "typos_tr": [
+      "gogus agrisi",
+      "gogsüm agriyor",
+      "kalp agrisi",
+      "kalbim agriyor"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "general"
   },
   {
     "id": "nausea_001",
@@ -453,13 +609,35 @@
       "Vomiting after head injury"
     ],
     "when_to_see_doctor": "Seek medical care if vomiting persists more than 24 hours, there's blood in vomit, signs of dehydration, severe abdominal pain, high fever, or stiff neck with headache.",
-    "keywords_en": ["vomiting", "queasy", "sick stomach", "throwing up"],
-    "keywords_tr": [
-      "mide bulantısı", "bulantı", "kusma", "kusuyorum", "midem bulanıyor",
-      "öğürtü", "kusmak istiyorum", "midem kalkıyor", "iğrenme hissi",
-      "sabah bulantısı", "yemek yiyemiyorum", "midemi tutamıyorum"
+    "keywords_en": [
+      "vomiting",
+      "queasy",
+      "sick stomach",
+      "throwing up"
     ],
-    "typos_tr": ["mide bulantisi", "bulanti", "kusma", "midem bulaniyor", "kusmak"]
+    "keywords_tr": [
+      "mide bulantısı",
+      "bulantı",
+      "kusma",
+      "kusuyorum",
+      "midem bulanıyor",
+      "öğürtü",
+      "kusmak istiyorum",
+      "midem kalkıyor",
+      "iğrenme hissi",
+      "sabah bulantısı",
+      "yemek yiyemiyorum",
+      "midemi tutamıyorum"
+    ],
+    "typos_tr": [
+      "mide bulantisi",
+      "bulanti",
+      "kusma",
+      "midem bulaniyor",
+      "kusmak"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "general"
   },
   {
     "id": "dizziness_001",
@@ -513,13 +691,34 @@
       "Double vision or vision loss"
     ],
     "when_to_see_doctor": "Seek immediate care (112) if dizziness is accompanied by sudden severe headache, chest pain, difficulty breathing, numbness/weakness, fainting, rapid heartbeat, or head injury.",
-    "keywords_en": ["vertigo", "lightheaded", "balance problems", "spinning"],
-    "keywords_tr": [
-      "baş dönmesi", "başım dönüyor", "sersemlik", "dengesizlik",
-      "her yer dönüyor", "vertigo", "ayakta duramıyorum", "düşecek gibiyim",
-      "bayılacak gibiyim", "gözüm kararıyor", "kafam dönüyor"
+    "keywords_en": [
+      "vertigo",
+      "lightheaded",
+      "balance problems",
+      "spinning"
     ],
-    "typos_tr": ["bas donmesi", "basim donuyor", "sersemlik", "vertigo", "gozum karariyor"]
+    "keywords_tr": [
+      "baş dönmesi",
+      "başım dönüyor",
+      "sersemlik",
+      "dengesizlik",
+      "her yer dönüyor",
+      "vertigo",
+      "ayakta duramıyorum",
+      "düşecek gibiyim",
+      "bayılacak gibiyim",
+      "gözüm kararıyor",
+      "kafam dönüyor"
+    ],
+    "typos_tr": [
+      "bas donmesi",
+      "basim donuyor",
+      "sersemlik",
+      "vertigo",
+      "gozum karariyor"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "general"
   },
   {
     "id": "fatigue_001",
@@ -572,13 +771,33 @@
       "Fatigue with thoughts of self-harm"
     ],
     "when_to_see_doctor": "See a doctor if fatigue persists despite rest, is accompanied by unexplained weight loss, fever, or other symptoms, significantly impacts daily life, or if you suspect an underlying condition.",
-    "keywords_en": ["tiredness", "exhaustion", "weakness", "lack of energy"],
-    "keywords_tr": [
-      "yorgunluk", "halsizlik", "çok yorgunum", "enerjim yok",
-      "bitkinlik", "güçsüzlük", "tükenmişlik", "uyusam da yorgunum",
-      "kendimi zayıf hissediyorum", "hiçbir şey yapasım yok"
+    "keywords_en": [
+      "tiredness",
+      "exhaustion",
+      "weakness",
+      "lack of energy"
     ],
-    "typos_tr": ["yorgunluk", "halsizlik", "cok yorgunum", "enerjim yok", "bitkinlik"]
+    "keywords_tr": [
+      "yorgunluk",
+      "halsizlik",
+      "çok yorgunum",
+      "enerjim yok",
+      "bitkinlik",
+      "güçsüzlük",
+      "tükenmişlik",
+      "uyusam da yorgunum",
+      "kendimi zayıf hissediyorum",
+      "hiçbir şey yapasım yok"
+    ],
+    "typos_tr": [
+      "yorgunluk",
+      "halsizlik",
+      "cok yorgunum",
+      "enerjim yok",
+      "bitkinlik"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "general"
   },
   {
     "id": "common_cold_001",
@@ -629,13 +848,35 @@
       "Ear pain"
     ],
     "when_to_see_doctor": "See a doctor if symptoms last more than 10 days, high fever (above 39.4C/103F), fever returning after improvement, severe sinus pain, or difficulty breathing.",
-    "keywords_en": ["runny nose", "nasal congestion", "cold symptoms", "upper respiratory infection"],
-    "keywords_tr": [
-      "soğuk algınlığı", "nezle", "grip", "burun akıyor", "burun tıkanıklığı",
-      "hapşırık", "burnum tıkalı", "üşüttüm", "soğuk aldım",
-      "burun akıntısı", "nezle oldum", "grip oldum"
+    "keywords_en": [
+      "runny nose",
+      "nasal congestion",
+      "cold symptoms",
+      "upper respiratory infection"
     ],
-    "typos_tr": ["soguk alginligi", "nezle", "burun akiyor", "burun tikali", "grip"]
+    "keywords_tr": [
+      "soğuk algınlığı",
+      "nezle",
+      "grip",
+      "burun akıyor",
+      "burun tıkanıklığı",
+      "hapşırık",
+      "burnum tıkalı",
+      "üşüttüm",
+      "soğuk aldım",
+      "burun akıntısı",
+      "nezle oldum",
+      "grip oldum"
+    ],
+    "typos_tr": [
+      "soguk alginligi",
+      "nezle",
+      "burun akiyor",
+      "burun tikali",
+      "grip"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "general"
   },
   {
     "id": "flu_001",
@@ -682,13 +923,31 @@
       "Bluish lips or face"
     ],
     "when_to_see_doctor": "Seek emergency care for difficulty breathing, persistent chest pain, confusion, severe vomiting, or flu-like symptoms that improve but return with fever and worse cough.",
-    "keywords_en": ["influenza", "flu symptoms", "seasonal flu", "viral infection"],
-    "keywords_tr": [
-      "grip", "influenza", "grip oldum", "grip belirtileri",
-      "tüm vücudum ağrıyor", "kemiklerim ağrıyor", "grip aşısı",
-      "mevsimsel grip", "ateşim var ve öksürüyorum"
+    "keywords_en": [
+      "influenza",
+      "flu symptoms",
+      "seasonal flu",
+      "viral infection"
     ],
-    "typos_tr": ["grip", "influenza", "grip oldum", "grip belirtileri"]
+    "keywords_tr": [
+      "grip",
+      "influenza",
+      "grip oldum",
+      "grip belirtileri",
+      "tüm vücudum ağrıyor",
+      "kemiklerim ağrıyor",
+      "grip aşısı",
+      "mevsimsel grip",
+      "ateşim var ve öksürüyorum"
+    ],
+    "typos_tr": [
+      "grip",
+      "influenza",
+      "grip oldum",
+      "grip belirtileri"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "general"
   },
   {
     "id": "diabetes_001",
@@ -738,13 +997,35 @@
       "Rapid breathing"
     ],
     "when_to_see_doctor": "See a doctor if you experience symptoms of diabetes, have risk factors, or if you have diabetes and experience very high or low blood sugar, signs of ketoacidosis, or other complications.",
-    "keywords_en": ["blood sugar", "insulin", "high glucose", "type 2 diabetes"],
-    "keywords_tr": [
-      "şeker hastalığı", "diyabet", "kan şekeri", "şekerim yüksek",
-      "insülin", "tip 2 diyabet", "şeker ölçümü", "şeker hastasıyım",
-      "açlık şekeri", "tokluk şekeri", "şeker düştü", "hipoglisemi"
+    "keywords_en": [
+      "blood sugar",
+      "insulin",
+      "high glucose",
+      "type 2 diabetes"
     ],
-    "typos_tr": ["seker hastaligi", "diyabet", "kan sekeri", "insulin", "sekarim yuksek"]
+    "keywords_tr": [
+      "şeker hastalığı",
+      "diyabet",
+      "kan şekeri",
+      "şekerim yüksek",
+      "insülin",
+      "tip 2 diyabet",
+      "şeker ölçümü",
+      "şeker hastasıyım",
+      "açlık şekeri",
+      "tokluk şekeri",
+      "şeker düştü",
+      "hipoglisemi"
+    ],
+    "typos_tr": [
+      "seker hastaligi",
+      "diyabet",
+      "kan sekeri",
+      "insulin",
+      "sekarim yuksek"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "general"
   },
   {
     "id": "hypertension_001",
@@ -798,13 +1079,32 @@
       "Difficulty speaking"
     ],
     "when_to_see_doctor": "Get regular blood pressure checks. Seek immediate care (112) if blood pressure is very high (180/120 or higher) or accompanied by chest pain, severe headache, difficulty breathing, or neurological symptoms.",
-    "keywords_en": ["blood pressure", "cardiovascular", "heart disease risk", "hypertensive"],
-    "keywords_tr": [
-      "yüksek tansiyon", "hipertansiyon", "tansiyon", "tansiyonum yüksek",
-      "kan basıncı", "tansiyon ölçümü", "tansiyon ilacı",
-      "tansiyonum 14", "tansiyonum 16", "tansiyonum 18"
+    "keywords_en": [
+      "blood pressure",
+      "cardiovascular",
+      "heart disease risk",
+      "hypertensive"
     ],
-    "typos_tr": ["yuksek tansiyon", "hipertansiyon", "tansiyonum yuksek", "kan basinci"]
+    "keywords_tr": [
+      "yüksek tansiyon",
+      "hipertansiyon",
+      "tansiyon",
+      "tansiyonum yüksek",
+      "kan basıncı",
+      "tansiyon ölçümü",
+      "tansiyon ilacı",
+      "tansiyonum 14",
+      "tansiyonum 16",
+      "tansiyonum 18"
+    ],
+    "typos_tr": [
+      "yuksek tansiyon",
+      "hipertansiyon",
+      "tansiyonum yuksek",
+      "kan basinci"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "general"
   },
   {
     "id": "anxiety_001",
@@ -857,13 +1157,34 @@
       "Physical symptoms without medical cause"
     ],
     "when_to_see_doctor": "Seek help if anxiety interferes with work, relationships, or daily life, if you have suicidal thoughts (call crisis line immediately), or if anxiety is accompanied by depression or substance use problems.",
-    "keywords_en": ["worry", "panic attack", "stress", "generalized anxiety"],
-    "keywords_tr": [
-      "anksiyete", "kaygı", "panik atak", "endişe", "stres",
-      "kalbim çarpıyor", "ellerim titriyor", "nefes alamıyorum panik",
-      "sürekli endişeleniyorum", "uyuyamıyorum kaygıdan", "gergin hissediyorum"
+    "keywords_en": [
+      "worry",
+      "panic attack",
+      "stress",
+      "generalized anxiety"
     ],
-    "typos_tr": ["anksiyete", "kaygi", "panik atak", "endise", "stres"]
+    "keywords_tr": [
+      "anksiyete",
+      "kaygı",
+      "panik atak",
+      "endişe",
+      "stres",
+      "kalbim çarpıyor",
+      "ellerim titriyor",
+      "nefes alamıyorum panik",
+      "sürekli endişeleniyorum",
+      "uyuyamıyorum kaygıdan",
+      "gergin hissediyorum"
+    ],
+    "typos_tr": [
+      "anksiyete",
+      "kaygi",
+      "panik atak",
+      "endise",
+      "stres"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "sensitive"
   },
   {
     "id": "depression_001",
@@ -917,13 +1238,34 @@
     ],
     "when_to_see_doctor": "Seek help immediately (call crisis line or 112) if you have thoughts of suicide or self-harm. Also see a doctor if symptoms persist for more than two weeks, significantly impact daily functioning, or if depression returns after improvement.",
     "crisis_info": "Acil risk varsa 112'yi arayın veya en yakın acil servise gidin.",
-    "keywords_en": ["mood disorder", "sadness", "mental health", "clinical depression"],
-    "keywords_tr": [
-      "depresyon", "mutsuzluk", "üzgünlük", "hayattan zevk alamıyorum",
-      "hiçbir şey yapmak istemiyorum", "umutsuzluk", "kendimi değersiz hissediyorum",
-      "uyuyamıyorum", "çok uyuyorum", "iştahım yok", "sürekli ağlıyorum",
-      "intihar düşüncesi", "yaşamak istemiyorum"
+    "keywords_en": [
+      "mood disorder",
+      "sadness",
+      "mental health",
+      "clinical depression"
     ],
-    "typos_tr": ["depresyon", "mutsuzluk", "uzgunluk", "umutsuzluk"]
+    "keywords_tr": [
+      "depresyon",
+      "mutsuzluk",
+      "üzgünlük",
+      "hayattan zevk alamıyorum",
+      "hiçbir şey yapmak istemiyorum",
+      "umutsuzluk",
+      "kendimi değersiz hissediyorum",
+      "uyuyamıyorum",
+      "çok uyuyorum",
+      "iştahım yok",
+      "sürekli ağlıyorum",
+      "intihar düşüncesi",
+      "yaşamak istemiyorum"
+    ],
+    "typos_tr": [
+      "depresyon",
+      "mutsuzluk",
+      "uzgunluk",
+      "umutsuzluk"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "sensitive"
   }
 ]

@@ -75,7 +75,9 @@ class MedicalKnowledgeBase:
                 "category": item.get("category", "general"),
                 "source": source,
                 "source_url": item.get("source_url", ""),
-                "keywords": all_keywords
+                "keywords": all_keywords,
+                "jurisdiction": item.get("jurisdiction", "TR"),
+                "safety_level": item.get("safety_level", "general")
             }
             metadatas.append(metadata)
             self.categories.add(metadata["category"])

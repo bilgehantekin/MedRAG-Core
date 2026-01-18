@@ -48,14 +48,42 @@
     ],
     "overdose_warning": "Paracetamol overdose is serious and can cause liver failure. Seek immediate medical attention if overdose suspected, even if feeling well.",
     "safety_disclaimer": "Always consult a pharmacist or doctor before use if you have existing health conditions or take other medications.",
-    "keywords_en": ["acetaminophen", "pain relief", "fever reducer", "analgesic", "tylenol"],
-    "keywords_tr": [
-      "parasetamol", "parol", "tylol", "ağrı kesici", "ateş düşürücü",
-      "parol alabilir miyim", "tylol ne işe yarar", "parasetamol dozu",
-      "parol yan etkileri", "ateşim var ne alayım"
+    "keywords_en": [
+      "acetaminophen",
+      "pain relief",
+      "fever reducer",
+      "analgesic",
+      "tylenol"
     ],
-    "typos_tr": ["parasetamol", "parol", "tilol", "tylol", "parasetemol", "paracetamol"],
-    "brand_examples_tr": ["Parol", "Tylol", "Tamol", "Minoset", "Paranox"]
+    "keywords_tr": [
+      "parasetamol",
+      "parol",
+      "tylol",
+      "ağrı kesici",
+      "ateş düşürücü",
+      "parol alabilir miyim",
+      "tylol ne işe yarar",
+      "parasetamol dozu",
+      "parol yan etkileri",
+      "ateşim var ne alayım"
+    ],
+    "typos_tr": [
+      "parasetamol",
+      "parol",
+      "tilol",
+      "tylol",
+      "parasetemol",
+      "paracetamol"
+    ],
+    "brand_examples_tr": [
+      "Parol",
+      "Tylol",
+      "Tamol",
+      "Minoset",
+      "Paranox"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "medication"
   },
   {
     "id": "ibuprofen_001",
@@ -116,14 +144,40 @@
       "Methotrexate - increased toxicity risk"
     ],
     "safety_disclaimer": "Consult doctor before use if you have heart disease, high blood pressure, kidney disease, or are over 65. Not recommended for long-term use without medical supervision.",
-    "keywords_en": ["NSAID", "anti-inflammatory", "pain relief", "advil", "nurofen"],
-    "keywords_tr": [
-      "ibuprofen", "advil", "nurofen", "ağrı kesici", "iltihap giderici",
-      "ibuprofen ne işe yarar", "ibuprofen yan etkileri", "ibuprofen dozu",
-      "eklem ağrısı ilacı", "kas ağrısı ilacı"
+    "keywords_en": [
+      "NSAID",
+      "anti-inflammatory",
+      "pain relief",
+      "advil",
+      "nurofen"
     ],
-    "typos_tr": ["ibuprofen", "ibuprufen", "ibuprofen", "advil", "nurofen"],
-    "brand_examples_tr": ["Advil", "Nurofen", "Brufen", "Dolgit"]
+    "keywords_tr": [
+      "ibuprofen",
+      "advil",
+      "nurofen",
+      "ağrı kesici",
+      "iltihap giderici",
+      "ibuprofen ne işe yarar",
+      "ibuprofen yan etkileri",
+      "ibuprofen dozu",
+      "eklem ağrısı ilacı",
+      "kas ağrısı ilacı"
+    ],
+    "typos_tr": [
+      "ibuprofen",
+      "ibuprufen",
+      "ibuprofen",
+      "advil",
+      "nurofen"
+    ],
+    "brand_examples_tr": [
+      "Advil",
+      "Nurofen",
+      "Brufen",
+      "Dolgit"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "medication"
   },
   {
     "id": "aspirin_001",
@@ -179,14 +233,38 @@
     ],
     "emergency_use_note": "During a suspected heart attack, emergency services may advise chewing 300mg aspirin. Do NOT do this on your own - wait for medical advice as aspirin can be dangerous for some people (allergies, bleeding disorders, ulcers).",
     "safety_disclaimer": "Do not start daily aspirin therapy without consulting your doctor. The risks may outweigh benefits for some people.",
-    "keywords_en": ["aspirin", "acetylsalicylic acid", "blood thinner", "heart attack prevention", "pain relief"],
-    "keywords_tr": [
-      "aspirin", "ağrı kesici", "kan sulandırıcı", "ateş düşürücü",
-      "aspirin yan etkileri", "aspirin ne için kullanılır", "aspirin dozu",
-      "kalp krizi aspirini", "günlük aspirin"
+    "keywords_en": [
+      "aspirin",
+      "acetylsalicylic acid",
+      "blood thinner",
+      "heart attack prevention",
+      "pain relief"
     ],
-    "typos_tr": ["aspirin", "aspirn", "asprin", "asetilsalisilik asit"],
-    "brand_examples_tr": ["Aspirin", "Coraspin", "Ecopirin", "Dispril"]
+    "keywords_tr": [
+      "aspirin",
+      "ağrı kesici",
+      "kan sulandırıcı",
+      "ateş düşürücü",
+      "aspirin yan etkileri",
+      "aspirin ne için kullanılır",
+      "aspirin dozu",
+      "kalp krizi aspirini",
+      "günlük aspirin"
+    ],
+    "typos_tr": [
+      "aspirin",
+      "aspirn",
+      "asprin",
+      "asetilsalisilik asit"
+    ],
+    "brand_examples_tr": [
+      "Aspirin",
+      "Coraspin",
+      "Ecopirin",
+      "Dispril"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "medication"
   },
   {
     "id": "antihistamine_001",
@@ -207,8 +285,16 @@
       "Sleep aid (sedating types only)"
     ],
     "types": {
-      "non_drowsy": ["Cetirizine (Zyrtec)", "Loratadine (Claritin)", "Fexofenadine (Allegra)"],
-      "drowsy": ["Diphenhydramine (Benadryl)", "Chlorphenamine", "Promethazine"]
+      "non_drowsy": [
+        "Cetirizine (Zyrtec)",
+        "Loratadine (Claritin)",
+        "Fexofenadine (Allegra)"
+      ],
+      "drowsy": [
+        "Diphenhydramine (Benadryl)",
+        "Chlorphenamine",
+        "Promethazine"
+      ]
     },
     "dosage_info": {
       "note": "Varies by specific medication - always read product label",
@@ -243,14 +329,42 @@
       "MAO inhibitors - may increase effects"
     ],
     "safety_disclaimer": "Choose non-drowsy types if you need to drive or operate machinery. Consult pharmacist for appropriate choice.",
-    "keywords_en": ["allergy medication", "antihistamine", "hay fever", "hives", "itching"],
-    "keywords_tr": [
-      "alerji ilacı", "antihistamin", "saman nezlesi", "kaşıntı", "ürtiker",
-      "alerji hapı", "setirizin", "loratadin", "alerji belirtileri",
-      "burun akıntısı ilacı", "kaşıntı ilacı"
+    "keywords_en": [
+      "allergy medication",
+      "antihistamine",
+      "hay fever",
+      "hives",
+      "itching"
     ],
-    "typos_tr": ["alerji ilaci", "antihistamin", "setirizin", "loratadin", "kaşinti"],
-    "brand_examples_tr": ["Zyrtec", "Cetrin", "Xyzal", "Aerius", "Telfast"]
+    "keywords_tr": [
+      "alerji ilacı",
+      "antihistamin",
+      "saman nezlesi",
+      "kaşıntı",
+      "ürtiker",
+      "alerji hapı",
+      "setirizin",
+      "loratadin",
+      "alerji belirtileri",
+      "burun akıntısı ilacı",
+      "kaşıntı ilacı"
+    ],
+    "typos_tr": [
+      "alerji ilaci",
+      "antihistamin",
+      "setirizin",
+      "loratadin",
+      "kaşinti"
+    ],
+    "brand_examples_tr": [
+      "Zyrtec",
+      "Cetrin",
+      "Xyzal",
+      "Aerius",
+      "Telfast"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "medication"
   },
   {
     "id": "antacid_001",
@@ -305,14 +419,41 @@
       "Always separate antacids from other medications by 1-2 hours"
     ],
     "safety_disclaimer": "Occasional use is generally safe. See doctor if you need antacids regularly, as this may indicate a condition requiring different treatment.",
-    "keywords_en": ["heartburn relief", "acid reflux", "indigestion", "stomach acid", "antacid"],
-    "keywords_tr": [
-      "mide ilacı", "antiasit", "mide yanması", "mide ekşimesi", "reflü",
-      "hazımsızlık", "mide rahatsızlığı", "rennie", "talcid",
-      "mide yanmasına ne iyi gelir", "mide asidi"
+    "keywords_en": [
+      "heartburn relief",
+      "acid reflux",
+      "indigestion",
+      "stomach acid",
+      "antacid"
     ],
-    "typos_tr": ["mide ilaci", "antasit", "mide yanmasi", "mide eksimesi", "reflu"],
-    "brand_examples_tr": ["Rennie", "Talcid", "Gaviscon", "Kompensan"]
+    "keywords_tr": [
+      "mide ilacı",
+      "antiasit",
+      "mide yanması",
+      "mide ekşimesi",
+      "reflü",
+      "hazımsızlık",
+      "mide rahatsızlığı",
+      "rennie",
+      "talcid",
+      "mide yanmasına ne iyi gelir",
+      "mide asidi"
+    ],
+    "typos_tr": [
+      "mide ilaci",
+      "antasit",
+      "mide yanmasi",
+      "mide eksimesi",
+      "reflu"
+    ],
+    "brand_examples_tr": [
+      "Rennie",
+      "Talcid",
+      "Gaviscon",
+      "Kompensan"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "medication"
   },
   {
     "id": "cough_medicine_001",
@@ -364,14 +505,35 @@
       "Other sedating medications - increased drowsiness"
     ],
     "safety_disclaimer": "Cough lasting more than 3 weeks needs medical evaluation. Do not use cough suppressants if you have chronic lung conditions without doctor advice.",
-    "keywords_en": ["cough syrup", "expectorant", "cough suppressant", "dextromethorphan"],
-    "keywords_tr": [
-      "öksürük şurubu", "öksürük ilacı", "balgam söktürücü",
-      "kuru öksürük ilacı", "öksürük kesici", "öksürüğe ne iyi gelir",
-      "gece öksürüğü ilacı", "çocuk öksürük şurubu"
+    "keywords_en": [
+      "cough syrup",
+      "expectorant",
+      "cough suppressant",
+      "dextromethorphan"
     ],
-    "typos_tr": ["oksuruk surubu", "oksuruk ilaci", "balgam sokturucu"],
-    "brand_examples_tr": ["Benylin", "Prospan", "Robitussin", "Herbion"]
+    "keywords_tr": [
+      "öksürük şurubu",
+      "öksürük ilacı",
+      "balgam söktürücü",
+      "kuru öksürük ilacı",
+      "öksürük kesici",
+      "öksürüğe ne iyi gelir",
+      "gece öksürüğü ilacı",
+      "çocuk öksürük şurubu"
+    ],
+    "typos_tr": [
+      "oksuruk surubu",
+      "oksuruk ilaci",
+      "balgam sokturucu"
+    ],
+    "brand_examples_tr": [
+      "Benylin",
+      "Prospan",
+      "Robitussin",
+      "Herbion"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "medication"
   },
   {
     "id": "decongestant_001",
@@ -426,13 +588,37 @@
     ],
     "rebound_warning": "Using nasal spray decongestants for more than 7 days can cause 'rebound congestion' - your nose becomes more blocked when you stop using them.",
     "safety_disclaimer": "Not suitable for everyone. People with heart conditions or high blood pressure should consult doctor before use.",
-    "keywords_en": ["nasal spray", "stuffy nose", "sinus relief", "pseudoephedrine", "congestion"],
-    "keywords_tr": [
-      "burun açıcı", "burun spreyi", "burun tıkanıklığı", "dekonjestan",
-      "sinüzit ilacı", "tıkalı burun", "burun damlası",
-      "burnum tıkalı ne yapmalıyım", "nefes alamıyorum burnum"
+    "keywords_en": [
+      "nasal spray",
+      "stuffy nose",
+      "sinus relief",
+      "pseudoephedrine",
+      "congestion"
     ],
-    "typos_tr": ["burun acici", "burun spreyi", "burun tikanikligi", "sinuzit"],
-    "brand_examples_tr": ["Otrivine", "Sudafed", "Iliadin", "Afrin"]
+    "keywords_tr": [
+      "burun açıcı",
+      "burun spreyi",
+      "burun tıkanıklığı",
+      "dekonjestan",
+      "sinüzit ilacı",
+      "tıkalı burun",
+      "burun damlası",
+      "burnum tıkalı ne yapmalıyım",
+      "nefes alamıyorum burnum"
+    ],
+    "typos_tr": [
+      "burun acici",
+      "burun spreyi",
+      "burun tikanikligi",
+      "sinuzit"
+    ],
+    "brand_examples_tr": [
+      "Otrivine",
+      "Sudafed",
+      "Iliadin",
+      "Afrin"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "medication"
   }
 ]

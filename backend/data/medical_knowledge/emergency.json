@@ -39,13 +39,32 @@
     ],
     "aspirin_safety_note": "Emergency services may advise chewing aspirin. However, do NOT take aspirin without being advised to, as it can be dangerous for some people: those with aspirin allergy, bleeding disorders, stomach ulcers, or already taking blood thinners. WAIT for medical guidance.",
     "time_critical": "With a heart attack, every minute counts. The faster treatment begins, the better the outcome. 'Time is muscle' - heart muscle dies without blood flow.",
-    "keywords_en": ["heart attack", "myocardial infarction", "cardiac emergency", "chest pain emergency", "cardiac arrest"],
-    "keywords_tr": [
-      "kalp krizi", "kalp krizi belirtileri", "göğsüm ağrıyor acil",
-      "kalbim durdu", "kalp çarpıntısı acil", "göğsümde baskı",
-      "koluma vuran ağrı", "kalp krizi geçiriyorum", "miyokard enfarktüsü"
+    "keywords_en": [
+      "heart attack",
+      "myocardial infarction",
+      "cardiac emergency",
+      "chest pain emergency",
+      "cardiac arrest"
     ],
-    "typos_tr": ["kalp krizi", "kalp kirizi", "gogus agrisi acil", "kalbim agriyor"]
+    "keywords_tr": [
+      "kalp krizi",
+      "kalp krizi belirtileri",
+      "göğsüm ağrıyor acil",
+      "kalbim durdu",
+      "kalp çarpıntısı acil",
+      "göğsümde baskı",
+      "koluma vuran ağrı",
+      "kalp krizi geçiriyorum",
+      "miyokard enfarktüsü"
+    ],
+    "typos_tr": [
+      "kalp krizi",
+      "kalp kirizi",
+      "gogus agrisi acil",
+      "kalbim agriyor"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "emergency"
   },
   {
     "id": "emergency_stroke",
@@ -90,13 +109,36 @@
       "Do NOT wait to see if symptoms improve"
     ],
     "time_critical": "Brain cells die at a rate of about 1.9 million per minute during a stroke. Treatment within 3-4.5 hours with clot-busting drugs can significantly improve outcomes.",
-    "keywords_en": ["stroke", "brain attack", "FAST", "facial drooping", "TIA", "transient ischemic attack"],
-    "keywords_tr": [
-      "inme", "felç", "beyin kanaması", "yüzüm düştü", "konuşamıyorum",
-      "kolum kalkmiyor", "bir tarafım uyuştu", "felç belirtileri",
-      "beyin felci", "inme geçiriyorum", "bir tarafım felç oldu"
+    "keywords_en": [
+      "stroke",
+      "brain attack",
+      "FAST",
+      "facial drooping",
+      "TIA",
+      "transient ischemic attack"
     ],
-    "typos_tr": ["inme", "felc", "felc belirtileri", "beyin kanamasi", "yuzum dustu"]
+    "keywords_tr": [
+      "inme",
+      "felç",
+      "beyin kanaması",
+      "yüzüm düştü",
+      "konuşamıyorum",
+      "kolum kalkmiyor",
+      "bir tarafım uyuştu",
+      "felç belirtileri",
+      "beyin felci",
+      "inme geçiriyorum",
+      "bir tarafım felç oldu"
+    ],
+    "typos_tr": [
+      "inme",
+      "felc",
+      "felc belirtileri",
+      "beyin kanamasi",
+      "yuzum dustu"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "emergency"
   },
   {
     "id": "emergency_breathing",
@@ -138,13 +180,34 @@
     ],
     "asthma_note": "If person has asthma: help them use their reliever inhaler (usually blue). Give 1 puff every 30-60 seconds, up to 10 puffs. If no improvement after 10 puffs, or if you don't have an inhaler, call 112.",
     "asthma_source": "Asthma + Lung UK: https://www.asthmaandlung.org.uk/conditions/asthma/asthma-attacks",
-    "keywords_en": ["breathing difficulty", "shortness of breath", "asthma attack", "anaphylaxis", "choking", "cant breathe"],
-    "keywords_tr": [
-      "nefes darlığı", "nefes alamıyorum", "nefesim kesiliyor", "boğuluyorum",
-      "astım krizi", "astım atağı", "hırıltı", "nefes nefese kaldım",
-      "göğsüm sıkışıyor nefes alamıyorum", "morarma"
+    "keywords_en": [
+      "breathing difficulty",
+      "shortness of breath",
+      "asthma attack",
+      "anaphylaxis",
+      "choking",
+      "cant breathe"
     ],
-    "typos_tr": ["nefes darligi", "nefes alamiyorum", "boguluyorum", "astim krizi"]
+    "keywords_tr": [
+      "nefes darlığı",
+      "nefes alamıyorum",
+      "nefesim kesiliyor",
+      "boğuluyorum",
+      "astım krizi",
+      "astım atağı",
+      "hırıltı",
+      "nefes nefese kaldım",
+      "göğsüm sıkışıyor nefes alamıyorum",
+      "morarma"
+    ],
+    "typos_tr": [
+      "nefes darligi",
+      "nefes alamiyorum",
+      "boguluyorum",
+      "astim krizi"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "emergency"
   },
   {
     "id": "emergency_severe_bleeding",
@@ -184,12 +247,31 @@
       "Do NOT give food or water"
     ],
     "shock_warning": "Severe blood loss can cause shock. Signs include: pale/cold/clammy skin, rapid weak pulse, rapid breathing, confusion. Lay person down, elevate legs (if no broken bones), keep warm, and call 112.",
-    "keywords_en": ["severe bleeding", "hemorrhage", "blood loss", "wound emergency", "arterial bleeding"],
-    "keywords_tr": [
-      "ciddi kanama", "çok kan kaybı", "kanama durmuyor", "kan fışkırıyor",
-      "derin kesik", "bıçak yarası", "kaza kanama", "şok belirtileri kanama"
+    "keywords_en": [
+      "severe bleeding",
+      "hemorrhage",
+      "blood loss",
+      "wound emergency",
+      "arterial bleeding"
     ],
-    "typos_tr": ["ciddi kanama", "kan kaybi", "kanama durmuyor", "derin kesik"]
+    "keywords_tr": [
+      "ciddi kanama",
+      "çok kan kaybı",
+      "kanama durmuyor",
+      "kan fışkırıyor",
+      "derin kesik",
+      "bıçak yarası",
+      "kaza kanama",
+      "şok belirtileri kanama"
+    ],
+    "typos_tr": [
+      "ciddi kanama",
+      "kan kaybi",
+      "kanama durmuyor",
+      "derin kesik"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "emergency"
   },
   {
     "id": "emergency_allergic_reaction",
@@ -237,13 +319,35 @@
       "Do NOT have person sit up if feeling faint (lay flat with legs raised)"
     ],
     "epipen_note": "EpiPen is injected into the outer thigh (can be through clothing). Hold in place for 10 seconds. Massage area after. Call 112 even after using EpiPen - effects wear off and reaction may return.",
-    "keywords_en": ["anaphylaxis", "severe allergy", "allergic shock", "epinephrine", "EpiPen", "swelling throat"],
-    "keywords_tr": [
-      "anafilaksi", "şiddetli alerji", "alerjik şok", "boğazım şişiyor",
-      "nefes alamıyorum alerji", "adrenalin iğnesi", "epipen",
-      "arı sokması alerji", "fıstık alerjisi", "yüzüm şişiyor"
+    "keywords_en": [
+      "anaphylaxis",
+      "severe allergy",
+      "allergic shock",
+      "epinephrine",
+      "EpiPen",
+      "swelling throat"
     ],
-    "typos_tr": ["anafilaksi", "alerjik sok", "bogazim sisiyor", "epipen", "siddetli alerji"]
+    "keywords_tr": [
+      "anafilaksi",
+      "şiddetli alerji",
+      "alerjik şok",
+      "boğazım şişiyor",
+      "nefes alamıyorum alerji",
+      "adrenalin iğnesi",
+      "epipen",
+      "arı sokması alerji",
+      "fıstık alerjisi",
+      "yüzüm şişiyor"
+    ],
+    "typos_tr": [
+      "anafilaksi",
+      "alerjik sok",
+      "bogazim sisiyor",
+      "epipen",
+      "siddetli alerji"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "emergency"
   },
   {
     "id": "emergency_unconscious",
@@ -289,13 +393,35 @@
       "Do NOT leave them alone",
       "Do NOT delay calling for help"
     ],
-    "keywords_en": ["unconscious", "unresponsive", "fainting", "passed out", "CPR", "not breathing"],
-    "keywords_tr": [
-      "bilinç kaybı", "bayıldı", "baygın", "yanıt vermiyor", "cevap vermiyor",
-      "nefes almıyor", "kalbi durdu", "CPR", "kalp masajı",
-      "yere yığıldı", "kendinden geçti"
+    "keywords_en": [
+      "unconscious",
+      "unresponsive",
+      "fainting",
+      "passed out",
+      "CPR",
+      "not breathing"
     ],
-    "typos_tr": ["bilinc kaybi", "bayildi", "nefes almiyor", "kalp masaji"]
+    "keywords_tr": [
+      "bilinç kaybı",
+      "bayıldı",
+      "baygın",
+      "yanıt vermiyor",
+      "cevap vermiyor",
+      "nefes almıyor",
+      "kalbi durdu",
+      "CPR",
+      "kalp masajı",
+      "yere yığıldı",
+      "kendinden geçti"
+    ],
+    "typos_tr": [
+      "bilinc kaybi",
+      "bayildi",
+      "nefes almiyor",
+      "kalp masaji"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "emergency"
   },
   {
     "id": "emergency_poisoning",
@@ -335,13 +461,32 @@
       "Do NOT wait for symptoms before calling for help"
     ],
     "bring_to_hospital": "If possible, bring the container, pill bottle, or substance with you to the hospital. This helps medical staff provide proper treatment.",
-    "keywords_en": ["poisoning", "overdose", "toxic ingestion", "chemical exposure", "drug overdose"],
-    "keywords_tr": [
-      "zehirlenme", "ilaç zehirlenmesi", "temizlik malzemesi yuttu",
-      "çocuk ilaç içti", "aşırı doz", "mantar zehirlenmesi",
-      "kimyasal madde yuttu", "zehirli madde", "gıda zehirlenmesi acil"
+    "keywords_en": [
+      "poisoning",
+      "overdose",
+      "toxic ingestion",
+      "chemical exposure",
+      "drug overdose"
     ],
-    "typos_tr": ["zehirlenme", "ilac zehirlenmesi", "asiri doz", "gida zehirlenmesi"]
+    "keywords_tr": [
+      "zehirlenme",
+      "ilaç zehirlenmesi",
+      "temizlik malzemesi yuttu",
+      "çocuk ilaç içti",
+      "aşırı doz",
+      "mantar zehirlenmesi",
+      "kimyasal madde yuttu",
+      "zehirli madde",
+      "gıda zehirlenmesi acil"
+    ],
+    "typos_tr": [
+      "zehirlenme",
+      "ilac zehirlenmesi",
+      "asiri doz",
+      "gida zehirlenmesi"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "emergency"
   },
   {
     "id": "emergency_seizure",
@@ -393,12 +538,33 @@
       "Do NOT leave them alone"
     ],
     "after_seizure": "Person may be confused, tired, or have a headache after seizure. Stay with them, speak calmly, and help them get oriented. They may not remember the seizure.",
-    "keywords_en": ["seizure", "convulsion", "epilepsy", "epileptic fit", "convulsions"],
+    "keywords_en": [
+      "seizure",
+      "convulsion",
+      "epilepsy",
+      "epileptic fit",
+      "convulsions"
+    ],
     "keywords_tr": [
-      "nöbet", "sara krizi", "epilepsi", "kasılma", "çırpınma",
-      "havale", "sara nöbeti", "bayılıp kasıldı", "ağzından köpük geliyor",
+      "nöbet",
+      "sara krizi",
+      "epilepsi",
+      "kasılma",
+      "çırpınma",
+      "havale",
+      "sara nöbeti",
+      "bayılıp kasıldı",
+      "ağzından köpük geliyor",
       "nöbet geçiriyor"
     ],
-    "typos_tr": ["nobet", "sara krizi", "epilepsi", "havale", "kasılma"]
+    "typos_tr": [
+      "nobet",
+      "sara krizi",
+      "epilepsi",
+      "havale",
+      "kasılma"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "emergency"
   }
 ]

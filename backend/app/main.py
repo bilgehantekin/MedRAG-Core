@@ -42,27 +42,9 @@ en_to_tr = GoogleTranslator(source='en', target='tr')
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Application lifespan events - preload models at startup"""
-    # Startup: preload X-ray model if not in demo mode
-    try:
-        from app.image.config import DEMO_MODE
-        if not DEMO_MODE:
-            print("🔄 Pre-loading X-ray analysis model at startup...")
-            from app.image import inference
-            if inference.load_model():
-                print("✅ X-ray model pre-loaded successfully")
-            else:
-                print("⚠️ X-ray model failed to pre-load, will use DEMO mode")
-        else:
-            print("ℹ️ X-ray model in DEMO mode - skipping pre-load")
-    except ImportError as e:
-        print(f"⚠️ Image module not available: {e}")
-    except Exception as e:
-        print(f"⚠️ Error pre-loading model: {e}")
-
+    """Application lifespan events"""
+    print("🚀 Medical Chatbot API starting...")
     yield  # Application runs here
-
-    # Shutdown: cleanup if needed
     print("👋 Shutting down...")
 
 
@@ -80,14 +62,6 @@ try:
     print("✅ RAG router yüklendi - /rag/* endpoint'leri aktif")
 except ImportError as e:
     print(f"⚠️ RAG router yüklenemedi (sentence-transformers/faiss kurulu değil): {e}")
-
-# Image Analysis Router'ı dahil et (opsiyonel - torch kuruluysa)
-try:
-    from app.image.router import router as image_router
-    app.include_router(image_router)
-    print("✅ Image Analysis router yüklendi - /image/* endpoint'leri aktif")
-except ImportError as e:
-    print(f"⚠️ Image Analysis router yüklenemedi (torch/torchxrayvision kurulu değil): {e}")
 
 # CORS ayarları
 # NOT: Prod'da allow_origins'i whitelist'e çevirin veya allow_credentials=False yapın

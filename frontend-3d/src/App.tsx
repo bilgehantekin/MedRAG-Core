@@ -1,15 +1,12 @@
-import { useState } from 'react';
 import { Scene3D } from './components/Scene3D';
 import { SymptomPanel } from './components/SymptomPanel';
 import { ChatPanel } from './components/ChatPanel';
-import { ImageAnalysis } from './components/ImageAnalysis';
 import { useAppStore } from './store/useAppStore';
 
 function App() {
   const { currentStep, interactionMode, setInteractionMode, setCurrentStep } = useAppStore();
-  const [showImageAnalysis, setShowImageAnalysis] = useState(false);
   const showChat = currentStep === 'chat';
-  const showWelcome = currentStep === 'welcome' && interactionMode === null && !showImageAnalysis;
+  const showWelcome = currentStep === 'welcome' && interactionMode === null;
 
   // 3D model ile başla
   const handleModelMode = () => {
@@ -21,16 +18,6 @@ function App() {
   const handleDirectChatMode = () => {
     setInteractionMode('direct_chat');
     setCurrentStep('chat');
-  };
-
-  // Görüntü analizi sayfasına git
-  const handleImageAnalysisMode = () => {
-    setShowImageAnalysis(true);
-  };
-
-  // Görüntü analizinden geri dön
-  const handleBackFromImageAnalysis = () => {
-    setShowImageAnalysis(false);
   };
 
   return (
@@ -55,12 +42,7 @@ function App() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-6">
-        {showImageAnalysis ? (
-          // Görüntü analizi sayfası
-          <div className="h-[calc(100vh-140px)] overflow-auto pb-8">
-            <ImageAnalysis onBack={handleBackFromImageAnalysis} />
-          </div>
-        ) : showWelcome ? (
+        {showWelcome ? (
           // Başlangıç ekranı - mod seçimi
           <div className="h-[calc(100vh-140px)] flex items-center justify-center">
             <div className="max-w-4xl w-full">
@@ -73,7 +55,7 @@ function App() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
                 {/* 3D Model ile */}
                 <button
                   onClick={handleModelMode}
@@ -118,30 +100,6 @@ function App() {
                     <li>✓ Hizli baslangic</li>
                   </ul>
                   <div className="mt-4 text-primary-600 font-medium group-hover:translate-x-2 transition-transform text-sm">
-                    Basla →
-                  </div>
-                </button>
-
-                {/* Görüntü Analizi */}
-                <button
-                  onClick={handleImageAnalysisMode}
-                  className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-blue-500 text-left"
-                >
-                  <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">
-                    🩻
-                  </div>
-                  <h3 className="text-lg font-bold text-slate-800 mb-2">
-                    Rontgen Analizi
-                  </h3>
-                  <p className="text-slate-600 mb-4 text-sm">
-                    Gogus rontgeni goruntunuzu yukleyin, yapay zeka destekli analiz sonuclarini gorun.
-                  </p>
-                  <ul className="text-xs text-slate-500 space-y-1">
-                    <li>✓ Goruntu yukleme</li>
-                    <li>✓ AI destekli analiz</li>
-                    <li>✓ Isi haritasi gorsellestirme</li>
-                  </ul>
-                  <div className="mt-4 text-blue-600 font-medium group-hover:translate-x-2 transition-transform text-sm">
                     Basla →
                   </div>
                 </button>

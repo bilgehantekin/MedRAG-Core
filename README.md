@@ -36,20 +36,14 @@ Chatbot'a doğrudan yazarak şikayetlerinizi kendi cümlelerinizle anlatın.
 - ✅ Groq LLM + Translation Pipeline (TR → EN → LLM → TR)
 - ✅ LLM tabanlı yüksek kaliteli Türkçe çeviri
 
-### X-ray Görüntü Analizi
-- ✅ **Akciğer X-ray Analizi** - DenseNet121 tabanlı derin öğrenme modeli
-- ✅ 14 farklı akciğer patolojisi tespiti
-- ✅ **GradCAM** ile görsel açıklama (hangi bölgeye bakıldığını gösterir)
-- ✅ Türkçe sonuç ve açıklamalar
-
 ## 🛠️ Teknoloji Stack
 
-| Frontend | Backend | RAG | Image Analysis |
-|----------|---------|-----|----------------|
-| React 18 + TypeScript | FastAPI | FAISS Vector Store | PyTorch |
-| Three.js (@react-three/fiber) | Groq LLM (Llama 3.3) | Sentence Transformers | DenseNet121 |
-| Zustand | Deep Translator | Medical Knowledge Base | GradCAM |
-| Tailwind CSS | Pydantic | Semantic Search | PIL/OpenCV |
+| Frontend | Backend | RAG |
+|----------|---------|-----|
+| React 18 + TypeScript | FastAPI | FAISS Vector Store |
+| Three.js (@react-three/fiber) | Groq LLM (Llama 3.3) | Sentence Transformers |
+| Zustand | Deep Translator | Medical Knowledge Base |
+| Tailwind CSS | Pydantic | Semantic Search |
 
 ## 📁 Proje Yapısı
 
@@ -61,13 +55,6 @@ medical_chatbot/
 │   │   ├── health_filter.py  # Sağlık/acil durum filtresi
 │   │   ├── medicines.py      # İlaç veritabanı (tek kaynak)
 │   │   ├── prompts.py        # LLM prompt şablonları
-│   │   ├── image/            # X-ray Görüntü Analizi Modülü
-│   │   │   ├── router.py     # Image API endpoint'leri
-│   │   │   ├── model.py      # DenseNet121 model tanımı
-│   │   │   ├── inference.py  # Model inference
-│   │   │   ├── gradcam.py    # GradCAM görsel açıklama
-│   │   │   ├── preprocessing.py  # Görüntü ön işleme
-│   │   │   └── config.py     # Konfigürasyon
 │   │   └── rag/              # RAG Modülü
 │   │       ├── router.py     # RAG API endpoint'leri
 │   │       ├── rag_chain.py  # RAG zinciri ve LLM entegrasyonu
@@ -92,8 +79,7 @@ medical_chatbot/
 │       ├── components/
 │       │   ├── HumanModel/   # 3D insan modeli
 │       │   ├── ChatPanel/    # Sohbet paneli
-│       │   ├── SymptomPanel/ # Semptom seçimi
-│       │   └── ImageAnalysis/  # X-ray analiz arayüzü
+│       │   └── SymptomPanel/ # Semptom seçimi
 │       ├── store/            # Zustand state management
 │       └── data/             # Vücut bölgeleri verisi
 └── docs/screenshots/
@@ -137,8 +123,6 @@ Tarayıcıda: **http://localhost:3000**
 | POST /rag/chat | RAG destekli sohbet endpoint'i |
 | POST /rag/search | Bilgi tabanında arama |
 | GET /rag/stats | RAG istatistikleri |
-| POST /image/analyze | X-ray görüntü analizi |
-| GET /image/info | Model bilgisi |
 | GET /health | API sağlık kontrolü |
 | GET /models | Mevcut Groq modelleri |
 
@@ -150,15 +134,7 @@ Tarayıcıda: **http://localhost:3000**
 
 ## 📝 Sürüm Geçmişi
 
-### v4.0 (Ocak 2026) - X-ray Görüntü Analizi & ETL Pipeline
-
-#### X-ray Akciğer Görüntüsü Analizi
-- ✨ DenseNet121 tabanlı akciğer X-ray sınıflandırma modeli
-- ✨ 14 farklı patoloji tespiti (Atelectasis, Cardiomegaly, Effusion, Infiltration, Mass, Nodule, Pneumonia, Pneumothorax, Consolidation, Edema, Emphysema, Fibrosis, Pleural Thickening, Hernia)
-- ✨ GradCAM ile görsel açıklama (ısı haritası overlay)
-- ✨ Türkçe etiket ve açıklamalar
-- ✨ Güven skoru ve eşik bazlı pozitif bulgu tespiti
-- ✨ Frontend'de görüntü yükleme ve sonuç gösterim bileşenleri
+### v4.0 (Ocak 2026) - ETL Pipeline & RAG İyileştirmeleri
 
 #### ETL Pipeline (Veri Çıkarma ve Zenginleştirme)
 - ✨ MedlinePlus Health Topics XML veri çıkarma

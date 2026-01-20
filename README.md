@@ -51,37 +51,41 @@ Chatbot'a doğrudan yazarak şikayetlerinizi kendi cümlelerinizle anlatın.
 medical_chatbot/
 ├── backend/
 │   ├── app/
-│   │   ├── main.py           # FastAPI ana uygulama
-│   │   ├── health_filter.py  # Sağlık/acil durum filtresi
-│   │   ├── medicines.py      # İlaç veritabanı (tek kaynak)
-│   │   ├── prompts.py        # LLM prompt şablonları
-│   │   └── rag/              # RAG Modülü
-│   │       ├── router.py     # RAG API endpoint'leri
-│   │       ├── rag_chain.py  # RAG zinciri ve LLM entegrasyonu
-│   │       ├── knowledge_base.py  # Tıbbi bilgi tabanı
-│   │       ├── vector_store.py    # FAISS vektör deposu
-│   │       └── embeddings.py      # Sentence Transformers
+│   │   ├── main.py              # FastAPI ana uygulama
+│   │   ├── health_filter.py     # Sağlık/acil durum filtresi
+│   │   ├── medicines.py         # İlaç sözlüğü (v2.0 - canonical isimler)
+│   │   ├── medicine_utils.py    # İlaç işleme yardımcı fonksiyonları
+│   │   ├── domain.py            # Domain sınıflandırma
+│   │   ├── prompts.py           # LLM prompt şablonları
+│   │   └── rag/                 # RAG Modülü
+│   │       ├── router.py            # RAG API endpoint'leri
+│   │       ├── rag_chain.py         # RAG zinciri ve LLM entegrasyonu
+│   │       ├── knowledge_base.py    # Tıbbi bilgi tabanı (3-doküman chunking)
+│   │       ├── vector_store.py      # FAISS vektör deposu
+│   │       └── embeddings.py        # Sentence Transformers
 │   ├── scripts/
-│   │   ├── etl/              # ETL Pipeline
-│   │   │   ├── medlineplus_etl.py  # MedlinePlus veri çıkarma
-│   │   │   ├── openfda_etl.py      # OpenFDA veri çıkarma
-│   │   │   ├── clean_enrich.py     # Temizleme ve zenginleştirme
-│   │   │   └── run_etl.py          # Ana ETL çalıştırıcı
-│   │   └── evaluate_rag.py   # RAG performans değerlendirme
+│   │   ├── etl/                         # ETL Pipeline
+│   │   │   ├── fetch_openfda_targeted.py    # Hedefli OpenFDA veri çekme
+│   │   │   ├── medlineplus_etl.py           # MedlinePlus veri çıkarma
+│   │   │   ├── clean_enrich.py              # Temizleme ve zenginleştirme
+│   │   │   ├── clean_medications_v2.py      # İlaç verisi temizleme
+│   │   │   └── run_etl.py                   # Ana ETL çalıştırıcı
+│   │   └── evaluate_rag.py              # RAG performans değerlendirme
 │   └── data/
-│       └── medical_knowledge/    # Tıbbi bilgi JSON dosyaları
-│           ├── symptoms_diseases.json
-│           ├── symptoms_diseases_medlineplus_tr_enriched.json
-│           ├── medications.json
-│           └── emergency.json
+│       └── medical_knowledge/           # Tıbbi bilgi JSON dosyaları
+│           ├── emergency.json                              # Acil durumlar
+│           ├── medications.json                            # El yapımı ilaç verileri
+│           ├── medications_openfda_only_tr.json            # OpenFDA hedefli (75 ilaç)
+│           ├── symptoms_diseases.json                      # Semptom-hastalık
+│           └── symptoms_diseases_medlineplus_tr_enriched.json  # MedlinePlus TR
 ├── frontend-3d/
 │   └── src/
 │       ├── components/
-│       │   ├── HumanModel/   # 3D insan modeli
-│       │   ├── ChatPanel/    # Sohbet paneli
-│       │   └── SymptomPanel/ # Semptom seçimi
-│       ├── store/            # Zustand state management
-│       └── data/             # Vücut bölgeleri verisi
+│       │   ├── HumanModel/      # 3D insan modeli
+│       │   ├── ChatPanel/       # Sohbet paneli
+│       │   └── SymptomPanel/    # Semptom seçimi
+│       ├── store/               # Zustand state management
+│       └── data/                # Vücut bölgeleri verisi
 └── docs/screenshots/
 ```
 

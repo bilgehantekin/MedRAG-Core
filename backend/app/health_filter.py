@@ -248,7 +248,7 @@ EMERGENCY_RESPONSE_TEMPLATE = """🚨 **ACİL DURUM UYARISI** 🚨
 ⏰ Zaman çok önemli! Acil sağlık ekibi size en hızlı şekilde ulaşacaktır.
 
 📞 **112** - Acil Sağlık Hattı
-📞 **182** - ALO Sağlık Danışma Hattı
+📞 **184** - ALO SABİM (Sağlık Bakanlığı İletişim Merkezi)
 
 Eğer konuşamıyorsanız, yanınızdaki birisinden yardım isteyin.
 

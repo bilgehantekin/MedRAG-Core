@@ -4,10 +4,16 @@ Tıbbi bilgi kaynaklarını yönetme ve yükleme
 """
 
 import json
-from typing import List, Dict, Optional
+import unicodedata
+from typing import List, Dict, Optional, Tuple
 from pathlib import Path
 
 from app.rag.vector_store import VectorStore
+
+# Chunking constants
+MAX_CHUNK_CHARS = 1500  # ~375 tokens (approx 4 chars/token)
+CHUNK_OVERLAP_CHARS = 200  # Overlap between chunks
+MAX_RELATED_TERMS = 30  # Limit keywords in document text
 
 
 class MedicalKnowledgeBase:
@@ -44,37 +50,87 @@ class MedicalKnowledgeBase:
                 return False
         return False
 
+    def _normalize_text(self, text: str) -> str:
+        """
+        Türkçe-safe metin normalizasyonu: casefold + NFKC unicode normalize
+        Bu, İ/i ve diğer unicode sorunlarını önler
+        """
+        # NFKC: Uyumluluk dönüşümü (kombine karakterleri birleştirir)
+        normalized = unicodedata.normalize('NFKC', text)
+        # casefold: lower() yerine - Türkçe İ→i, Almanca ß→ss vb. doğru handle eder
+        return normalized.casefold().strip()
+
     def _normalize_keywords(self, raw_keywords: List) -> List[str]:
         """
-        Keyword listesini normalize et: non-str filtrele, lower/strip, dedupe, sırayı koru
+        Keyword listesini normalize et: non-str filtrele, casefold/strip, dedupe, sırayı koru
         """
         out = []
         seen = set()
         for kw in raw_keywords:
             if not isinstance(kw, str):
                 continue
-            k = kw.strip().lower()
+            k = self._normalize_text(kw)
             if not k or k in seen:
                 continue
             seen.add(k)
             out.append(k)
         return out
     
+    def _chunk_text(self, text: str, doc_id: str) -> List[Tuple[str, str]]:
+        """
+        Uzun metni chunk'lara böl
+
+        Args:
+            text: Bölünecek metin
+            doc_id: Parent doküman ID'si
+
+        Returns:
+            List of (chunk_text, chunk_id) tuples
+        """
+        if len(text) <= MAX_CHUNK_CHARS:
+            return [(text, doc_id)]
+
+        chunks = []
+        start = 0
+        chunk_num = 0
+
+        while start < len(text):
+            end = start + MAX_CHUNK_CHARS
+
+            # Chunk sınırını cümle/paragraf sonuna denk getirmeye çalış
+            if end < len(text):
+                # Önce paragraf sonu ara
+                newline_pos = text.rfind('\n', start + MAX_CHUNK_CHARS // 2, end)
+                if newline_pos > start:
+                    end = newline_pos + 1
+                else:
+                    # Cümle sonu ara
+                    for sep in ['. ', '! ', '? ', '; ']:
+                        sep_pos = text.rfind(sep, start + MAX_CHUNK_CHARS // 2, end)
+                        if sep_pos > start:
+                            end = sep_pos + len(sep)
+                            break
+
+            chunk_text = text[start:end].strip()
+            if chunk_text:
+                chunk_id = f"{doc_id}_chunk{chunk_num}" if chunk_num > 0 else doc_id
+                chunks.append((chunk_text, chunk_id))
+                chunk_num += 1
+
+            # Overlap ile sonraki chunk'a geç
+            start = end - CHUNK_OVERLAP_CHARS if end < len(text) else len(text)
+
+        return chunks
+
     def load_from_json(self, file_path: str) -> int:
         """
         JSON dosyasından tıbbi bilgi yükle
-        
-        Expected format:
-        [
-            {
-                "title": "Headache",
-                "category": "symptoms",
-                "content": "A headache is pain in any region of the head...",
-                "source": "MedlinePlus",
-                "keywords": ["head pain", "migraine", "tension headache"]
-            }
-        ]
-        
+
+        Features:
+        - Uzun içerikleri chunk'lara böler
+        - File prefix ile ID çakışmasını önler
+        - Türkçe-safe keyword normalizasyonu
+
         Returns:
             Yüklenen döküman sayısı
         """
@@ -85,6 +141,9 @@ class MedicalKnowledgeBase:
         if not isinstance(data, list):
             raise ValueError(f"JSON root must be a list, got {type(data).__name__}")
 
+        # File prefix for ID collision prevention
+        file_name = Path(file_path).stem  # e.g., "emergency" from "emergency.json"
+
         texts = []
         metadatas = []
         ids = []
@@ -94,22 +153,19 @@ class MedicalKnowledgeBase:
             if not isinstance(item, dict):
                 print(f"⚠️  Skipping item {i}: expected dict, got {type(item).__name__}")
                 continue
+
             # Ana içerik
             text = self._format_document(item)
-            texts.append(text)
-            
+
             # Metadata - yeni schema desteği (v3.3+)
-            # source_name (yeni) veya source (eski) - backward compatible
             source = item.get("source_name") or item.get("source", "unknown")
 
             # Tüm keyword'leri birleştir (EN + TR + typos) + dedupe + normalize
-            # `or []` ile null değerler handle edilir (item.get default None döner)
             raw_keywords = []
-            raw_keywords.extend(item.get("keywords") or [])  # Eski format
+            raw_keywords.extend(item.get("keywords") or [])
             raw_keywords.extend(item.get("keywords_en") or [])
             raw_keywords.extend(item.get("keywords_tr") or [])
             raw_keywords.extend(item.get("typos_tr") or [])
-            # Normalize: non-str filtrele, lower + strip, dedupe, sırayı koru
             all_keywords = self._normalize_keywords(raw_keywords)
 
             metadata = {
@@ -121,20 +177,32 @@ class MedicalKnowledgeBase:
                 "keywords": all_keywords,
                 "jurisdiction": item.get("jurisdiction", "TR"),
                 "safety_level": item.get("safety_level", "general"),
-                # Ek metadata alanları (v3.3+)
                 "severity": item.get("severity", ""),
                 "call_emergency": self._to_bool(item.get("call_emergency", False)),
                 "emergency_number": item.get("emergency_number", ""),
                 "drug_class": item.get("drug_class", ""),
                 "retrieved_date": item.get("retrieved_date", "")
             }
-            metadatas.append(metadata)
             self.categories.add(metadata["category"])
-            
-            # ID
-            doc_id = item.get("id", f"{metadata['category']}_{i}")
-            ids.append(doc_id)
-        
+
+            # ID with file prefix to prevent collision
+            base_id = item.get("id")
+            if not base_id:
+                base_id = f"{file_name}_{metadata['category']}_{i}"
+
+            # Chunk long documents
+            chunks = self._chunk_text(text, base_id)
+
+            for chunk_text, chunk_id in chunks:
+                texts.append(chunk_text)
+                # Chunk metadata includes parent info
+                chunk_metadata = metadata.copy()
+                if len(chunks) > 1:
+                    chunk_metadata["parent_id"] = base_id
+                    chunk_metadata["is_chunk"] = True
+                metadatas.append(chunk_metadata)
+                ids.append(chunk_id)
+
         self.vector_store.add_documents(texts, metadatas, ids)
         return len(texts)
     
@@ -311,55 +379,178 @@ class MedicalKnowledgeBase:
         raw_keywords.extend(item.get("keywords_tr") or [])
         raw_keywords.extend(item.get("typos_tr") or [])
         normalized_keywords = self._normalize_keywords(raw_keywords)
+        # Limit related terms to prevent embedding noise
         if normalized_keywords:
-            parts.append(f"Related terms: {', '.join(normalized_keywords)}")
+            limited_keywords = normalized_keywords[:MAX_RELATED_TERMS]
+            parts.append(f"Related terms: {', '.join(limited_keywords)}")
 
         return "\n".join(parts)
     
     def load_default_knowledge(self) -> int:
         """
         Varsayılan tıbbi bilgi tabanını yükle
-        data/medical_knowledge/ klasöründeki tüm JSON dosyalarını yükler
+
+        Yükleme stratejisi:
+        - emergency.json: Acil durum verileri (el yapımı, kaliteli)
+        - medications.json: İlaç verileri (el yapımı, kaliteli)
+        - symptoms_diseases_medlineplus_tr_enriched.json: MedlinePlus verileri (ETL + TR zenginleştirme)
+
+        Atlanacak dosyalar:
+        - symptoms_diseases.json: Eski el yapımı veri (enriched ile değiştirildi)
+        - *_medlineplus.json (enriched hariç): Ara dosyalar
+        - *_clean_en.json: Ara dosyalar
         """
         if not self.data_dir.exists():
             print(f"⚠️  Veri klasörü bulunamadı: {self.data_dir}")
             return 0
-        
+
+        # Yüklenecek dosyalar (öncelik sırasına göre)
+        files_to_load = [
+            "emergency.json",
+            "medications.json",
+            "symptoms_diseases_medlineplus_tr_enriched.json",
+        ]
+
+        # Fallback: Eğer enriched dosya yoksa, orijinal curated dosyayı yükle
+        enriched_file = self.data_dir / "symptoms_diseases_medlineplus_tr_enriched.json"
+        if not enriched_file.exists():
+            print("ℹ️  Enriched dosya bulunamadı, orijinal symptoms_diseases.json yüklenecek")
+            files_to_load.append("symptoms_diseases.json")
+
         total_loaded = 0
-        for json_file in self.data_dir.glob("*.json"):
+        for filename in files_to_load:
+            json_file = self.data_dir / filename
+
+            if not json_file.exists():
+                print(f"⚠️  {filename}: dosya bulunamadı, atlanıyor")
+                continue
+
             # Tekrarlı yükleme kontrolü
             file_key = str(json_file.resolve())
             if file_key in self._loaded_files:
-                print(f"ℹ️  {json_file.name}: zaten yüklendi, atlanıyor")
+                print(f"ℹ️  {filename}: zaten yüklendi, atlanıyor")
                 continue
 
             try:
                 count = self.load_from_json(str(json_file))
                 self._loaded_files.add(file_key)
-                print(f"📚 {json_file.name}: {count} döküman yüklendi")
+                print(f"📚 {filename}: {count} döküman yüklendi")
                 total_loaded += count
             except Exception as e:
-                print(f"❌ {json_file.name} yüklenemedi: {e}")
-        
+                print(f"❌ {filename} yüklenemedi: {e}")
+
         return total_loaded
     
+    def _keyword_search(self, query_terms: set, top_k: int = 10) -> List[Dict]:
+        """
+        Keyword-based document retrieval from stored metadata.
+        Finds documents where query terms match stored keywords.
+        """
+        matches = []
+
+        # Search through all stored documents
+        for doc in self.vector_store.documents:
+            metadata = doc.get("metadata", {})
+            keywords = metadata.get("keywords", [])
+
+            if not keywords:
+                continue
+
+            # Normalize keywords
+            keywords_normalized = set()
+            for kw in keywords:
+                if isinstance(kw, str):
+                    keywords_normalized.add(self._normalize_text(kw))
+
+            # Check for matches
+            match_score = 0
+            for qt in query_terms:
+                if qt in keywords_normalized:
+                    match_score += 2  # Exact match
+                else:
+                    for kw in keywords_normalized:
+                        if qt in kw:
+                            match_score += 1
+                            break
+
+            if match_score > 0:
+                matches.append({
+                    "text": doc.get("text", ""),
+                    "metadata": metadata,
+                    "score": 0.5 - (match_score * 0.1),  # Convert to distance-like score (lower is better)
+                    "keyword_matched": True,
+                    "id": doc.get("id", "")
+                })
+
+        # Sort by match score and return top_k
+        matches.sort(key=lambda x: x["score"])
+        return matches[:top_k]
+
     def search(self, query: str, top_k: int = 5, category: Optional[str] = None) -> List[Dict]:
         """
-        Bilgi tabanında arama yap
-        
+        Hybrid search: Vector similarity + keyword retrieval
+
+        Sentence-transformers may not understand brand names (e.g., "Calpol").
+        We combine vector search with keyword-based retrieval to improve recall.
+
         Args:
-            query: Arama sorgusu (İngilizce)
+            query: Arama sorgusu (İngilizce veya Türkçe)
             top_k: Döndürülecek sonuç sayısı
             category: Belirli bir kategoride ara (symptoms, diseases, etc.)
         """
-        results = self.vector_store.search(query, top_k=top_k * 2 if category else top_k)
-        
+        # Normalize query for keyword matching
+        query_normalized = self._normalize_text(query)
+        query_terms = set(query_normalized.split())
+        # Filter out common stop words (Turkish + English)
+        # "drug/drugs" is too generic - matches "Drugs and Young People" etc.
+        stop_words = {"bir", "bu", "ile", "için", "ve", "de", "da", "ne", "nasıl",
+                      "hakkında", "bilgi", "nedir", "the", "a", "an", "is", "what",
+                      "how", "about", "ilacı", "ilaç", "alabilir", "miyim", "var",
+                      "drug", "drugs", "medicine", "medication", "can", "you", "give",
+                      "information", "tell", "me"}
+        meaningful_terms = {t for t in query_terms if t not in stop_words and len(t) >= 3}
+
+        # 1. Vector search
+        fetch_k = max(top_k * 2, 10)
+        vector_results = self.vector_store.search(query, top_k=fetch_k)
+
+        # 2. Keyword search (if we have meaningful terms)
+        keyword_results = []
+        if meaningful_terms:
+            keyword_results = self._keyword_search(meaningful_terms, top_k=top_k)
+
+        # 3. Merge results, prioritizing keyword matches
+        # doc_id ile dedupe - text[:200] chunking sonrası hatalı olabilir
+        seen_ids = set()
+        merged = []
+
+        # Add keyword matches first (they're more relevant for brand name queries)
+        for r in keyword_results:
+            doc_id = r.get("id", "")
+            if not doc_id:
+                # Fallback: text hash kullan
+                doc_id = hash(r["text"][:500])
+            if doc_id not in seen_ids:
+                seen_ids.add(doc_id)
+                merged.append(r)
+
+        # Add vector results
+        for r in vector_results:
+            doc_id = r.get("id", "")
+            if not doc_id:
+                doc_id = hash(r["text"][:500])
+            if doc_id not in seen_ids:
+                seen_ids.add(doc_id)
+                merged.append(r)
+
+        # Sort by score
+        merged.sort(key=lambda x: x.get("score", float("inf")))
+
         # Kategori filtresi
         if category:
-            results = [r for r in results if r["metadata"].get("category") == category]
-            results = results[:top_k]
-        
-        return results
+            merged = [r for r in merged if r["metadata"].get("category") == category]
+
+        return merged[:top_k]
     
     def get_context_for_query(self, query: str, max_tokens: int = 2500, search_results: Optional[List[Dict]] = None) -> str:
         """

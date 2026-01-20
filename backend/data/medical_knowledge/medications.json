@@ -50,22 +50,34 @@
     "safety_disclaimer": "Always consult a pharmacist or doctor before use if you have existing health conditions or take other medications.",
     "keywords_en": [
       "acetaminophen",
+      "paracetamol",
       "pain relief",
       "fever reducer",
       "analgesic",
-      "tylenol"
+      "tylenol",
+      "calpol",
+      "panadol",
+      "children paracetamol",
+      "infant paracetamol"
     ],
     "keywords_tr": [
       "parasetamol",
       "parol",
       "tylol",
+      "calpol",
+      "kalpol",
+      "panadol",
       "ağrı kesici",
       "ateş düşürücü",
       "parol alabilir miyim",
       "tylol ne işe yarar",
       "parasetamol dozu",
       "parol yan etkileri",
-      "ateşim var ne alayım"
+      "ateşim var ne alayım",
+      "çocuk ateş ilacı",
+      "bebek ateş düşürücü",
+      "calpol ne için",
+      "calpol nedir"
     ],
     "typos_tr": [
       "parasetamol",
@@ -73,17 +85,22 @@
       "tilol",
       "tylol",
       "parasetemol",
-      "paracetamol"
+      "paracetamol",
+      "kalpol",
+      "calpol",
+      "panadol"
     ],
     "brand_examples_tr": [
       "Parol",
       "Tylol",
       "Tamol",
       "Minoset",
-      "Paranox"
+      "Paranox",
+      "Calpol",
+      "Panadol"
     ],
     "jurisdiction": "TR",
-    "safety_level": "medication"
+    "safety_level": "general"
   },
   {
     "id": "ibuprofen_001",
@@ -177,7 +194,7 @@
       "Dolgit"
     ],
     "jurisdiction": "TR",
-    "safety_level": "medication"
+    "safety_level": "general"
   },
   {
     "id": "aspirin_001",
@@ -264,7 +281,7 @@
       "Dispril"
     ],
     "jurisdiction": "TR",
-    "safety_level": "medication"
+    "safety_level": "general"
   },
   {
     "id": "antihistamine_001",
@@ -364,7 +381,7 @@
       "Telfast"
     ],
     "jurisdiction": "TR",
-    "safety_level": "medication"
+    "safety_level": "general"
   },
   {
     "id": "antacid_001",
@@ -453,7 +470,7 @@
       "Kompensan"
     ],
     "jurisdiction": "TR",
-    "safety_level": "medication"
+    "safety_level": "general"
   },
   {
     "id": "cough_medicine_001",
@@ -533,7 +550,7 @@
       "Herbion"
     ],
     "jurisdiction": "TR",
-    "safety_level": "medication"
+    "safety_level": "general"
   },
   {
     "id": "decongestant_001",
@@ -619,6 +636,6 @@
       "Afrin"
     ],
     "jurisdiction": "TR",
-    "safety_level": "medication"
+    "safety_level": "general"
   }
 ]

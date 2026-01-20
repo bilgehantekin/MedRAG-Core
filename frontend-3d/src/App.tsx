@@ -1,12 +1,15 @@
+import { useState } from 'react';
 import { Scene3D } from './components/Scene3D';
 import { SymptomPanel } from './components/SymptomPanel';
 import { ChatPanel } from './components/ChatPanel';
+import { ImageAnalysis } from './components/ImageAnalysis';
 import { useAppStore } from './store/useAppStore';
 
 function App() {
   const { currentStep, interactionMode, setInteractionMode, setCurrentStep } = useAppStore();
+  const [showImageAnalysis, setShowImageAnalysis] = useState(false);
   const showChat = currentStep === 'chat';
-  const showWelcome = currentStep === 'welcome' && interactionMode === null;
+  const showWelcome = currentStep === 'welcome' && interactionMode === null && !showImageAnalysis;
 
   // 3D model ile başla
   const handleModelMode = () => {
@@ -18,6 +21,16 @@ function App() {
   const handleDirectChatMode = () => {
     setInteractionMode('direct_chat');
     setCurrentStep('chat');
+  };
+
+  // Görüntü analizi sayfasına git
+  const handleImageAnalysisMode = () => {
+    setShowImageAnalysis(true);
+  };
+
+  // Görüntü analizinden geri dön
+  const handleBackFromImageAnalysis = () => {
+    setShowImageAnalysis(false);
   };
 
   return (
@@ -42,73 +55,100 @@ function App() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-6">
-        {showWelcome ? (
+        {showImageAnalysis ? (
+          // Görüntü analizi sayfası
+          <div className="h-[calc(100vh-140px)] overflow-auto pb-8">
+            <ImageAnalysis onBack={handleBackFromImageAnalysis} />
+          </div>
+        ) : showWelcome ? (
           // Başlangıç ekranı - mod seçimi
           <div className="h-[calc(100vh-140px)] flex items-center justify-center">
-            <div className="max-w-3xl w-full">
+            <div className="max-w-4xl w-full">
               <div className="text-center mb-10">
                 <h2 className="text-3xl font-bold text-slate-800 mb-3">
-                  Hoş Geldiniz! 👋
+                  Hos Geldiniz! 👋
                 </h2>
                 <p className="text-lg text-slate-600">
-                  Şikayetinizi nasıl anlatmak istersiniz?
+                  Size nasil yardimci olabilirim?
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* 3D Model ile */}
                 <button
                   onClick={handleModelMode}
-                  className="group bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-primary-500 text-left"
+                  className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-primary-500 text-left"
                 >
-                  <div className="text-6xl mb-4 group-hover:scale-110 transition-transform">
+                  <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">
                     🧍
                   </div>
-                  <h3 className="text-xl font-bold text-slate-800 mb-2">
-                    3D Model ile Göster
+                  <h3 className="text-lg font-bold text-slate-800 mb-2">
+                    3D Model ile Goster
                   </h3>
-                  <p className="text-slate-600 mb-4">
-                    İnteraktif 3D insan modeli üzerinde şikayetinizin olduğu bölgeyi seçerek başlayın.
+                  <p className="text-slate-600 mb-4 text-sm">
+                    Interaktif 3D insan modeli uzerinde sikayetinizin oldugu bolgeyi secerek baslayin.
                   </p>
-                  <ul className="text-sm text-slate-500 space-y-1">
-                    <li>✓ Bölge seçimi</li>
-                    <li>✓ Semptom türü seçimi</li>
-                    <li>✓ Şiddet ve süre belirleme</li>
-                    <li>✓ Yapılandırılmış bilgi girişi</li>
+                  <ul className="text-xs text-slate-500 space-y-1">
+                    <li>✓ Bolge secimi</li>
+                    <li>✓ Semptom turu secimi</li>
+                    <li>✓ Siddet ve sure belirleme</li>
                   </ul>
-                  <div className="mt-4 text-primary-600 font-medium group-hover:translate-x-2 transition-transform">
-                    Başla →
+                  <div className="mt-4 text-primary-600 font-medium group-hover:translate-x-2 transition-transform text-sm">
+                    Basla →
                   </div>
                 </button>
 
                 {/* Direkt Chat ile */}
                 <button
                   onClick={handleDirectChatMode}
-                  className="group bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-primary-500 text-left"
+                  className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-primary-500 text-left"
                 >
-                  <div className="text-6xl mb-4 group-hover:scale-110 transition-transform">
+                  <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">
                     💬
                   </div>
-                  <h3 className="text-xl font-bold text-slate-800 mb-2">
+                  <h3 className="text-lg font-bold text-slate-800 mb-2">
                     Direkt Yazarak Anlat
                   </h3>
-                  <p className="text-slate-600 mb-4">
-                    Chatbot'a doğrudan yazarak şikayetlerinizi kendi cümlelerinizle anlatın.
+                  <p className="text-slate-600 mb-4 text-sm">
+                    Chatbot'a dogrudan yazarak sikayetlerinizi kendi cumlelerinizle anlatin.
                   </p>
-                  <ul className="text-sm text-slate-500 space-y-1">
-                    <li>✓ Serbest yazım</li>
-                    <li>✓ Doğal dil ile anlatım</li>
-                    <li>✓ Hızlı başlangıç</li>
-                    <li>✓ Sorulu cevaplı diyalog</li>
+                  <ul className="text-xs text-slate-500 space-y-1">
+                    <li>✓ Serbest yazim</li>
+                    <li>✓ Dogal dil ile anlatim</li>
+                    <li>✓ Hizli baslangic</li>
                   </ul>
-                  <div className="mt-4 text-primary-600 font-medium group-hover:translate-x-2 transition-transform">
-                    Başla →
+                  <div className="mt-4 text-primary-600 font-medium group-hover:translate-x-2 transition-transform text-sm">
+                    Basla →
+                  </div>
+                </button>
+
+                {/* Görüntü Analizi */}
+                <button
+                  onClick={handleImageAnalysisMode}
+                  className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-blue-500 text-left"
+                >
+                  <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">
+                    🩻
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-800 mb-2">
+                    Rontgen Analizi
+                  </h3>
+                  <p className="text-slate-600 mb-4 text-sm">
+                    Gogus rontgeni goruntunuzu yukleyin, yapay zeka destekli analiz sonuclarini gorun.
+                  </p>
+                  <ul className="text-xs text-slate-500 space-y-1">
+                    <li>✓ Goruntu yukleme</li>
+                    <li>✓ AI destekli analiz</li>
+                    <li>✓ Isi haritasi gorsellestirme</li>
+                  </ul>
+                  <div className="mt-4 text-blue-600 font-medium group-hover:translate-x-2 transition-transform text-sm">
+                    Basla →
                   </div>
                 </button>
               </div>
 
               <div className="mt-8 text-center text-sm text-slate-500">
-                Her iki yöntemde de AI destekli sağlık asistanımız size yardımcı olacak.
+                Tum ozellikler AI desteklidir ve sadece bilgilendirme amaclidir.
               </div>
             </div>
           </div>

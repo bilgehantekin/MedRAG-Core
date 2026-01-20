@@ -321,21 +321,45 @@ async def rag_chat(request: RAGChatRequest):
                 content_en = translate_to_english(msg.content)
             history_en.append({"role": msg.role, "content": content_en})
 
-        # 3b. Kullanıcı mesajındaki ilaçları maskele (counter kaldığı yerden devam)
+        # 3b. Kullanıcı mesajındaki ilaçları maskele (LLM için)
+        # Bunu search query'den önce yapıyoruz ki generic isimleri çıkarabilelim
         masked_message, global_mask_map, mask_counter = mask_medicines(
             user_message, start_counter=mask_counter, existing_mask_map=global_mask_map
         )
         print(f"[RAG MASK-MAP] {global_mask_map}")
 
-        # 3c. Maskelenmiş mesajı İngilizce'ye çevir
-        message_en = translate_to_english(masked_message)
+        # 3c. Maskesiz sorguyu çevir + generic isimler ekle (KB search için)
+        # Örn: "Calpol ilacı" → "Calpol paracetamol ilacı" → "Calpol paracetamol drug"
+        search_query_tr = user_message
+        if global_mask_map:
+            # Generic isimleri sorguya ekle - brand/generic uyuşmazlığını azaltır
+            generic_names = []
+            for mapping in global_mask_map.values():
+                en_name = mapping.get("en", "")
+                # "paracetamol (Turkish brand: Calpol)" → "paracetamol"
+                if "(" in en_name:
+                    generic = en_name.split("(")[0].strip()
+                else:
+                    generic = en_name.strip()
+                if generic and len(generic) > 2:
+                    generic_names.append(generic)
+            if generic_names:
+                search_query_tr = f"{user_message} {' '.join(generic_names)}"
+                print(f"[RAG Search Query] Enhanced with generic names: {search_query_tr}")
 
-        # RAG query - is_first_health_question'ı geç
+        search_query_en = translate_to_english(search_query_tr)
+
+        # 3d. Maskelenmiş mesajı İngilizce'ye çevir (LLM için)
+        llm_query_en = translate_to_english(masked_message)
+
+        # RAG query - search_query ayrı geçilir (maskesiz)
         result = rag_chain.query(
-            question=message_en,
+            question=llm_query_en,  # LLM'e gönderilecek (maskeli)
+            search_query=search_query_en,  # KB search için (maskesiz)
             chat_history=history_en,
             use_context=request.use_rag,
-            is_first_health_question=is_first_health_question
+            is_first_health_question=is_first_health_question,
+            mask_map=global_mask_map  # Token → ilaç adı eşleştirmesi
         )
 
         # 3d. Cevabı Türkçe'ye çevir
@@ -343,12 +367,14 @@ async def rag_chat(request: RAGChatRequest):
         response_en_raw = result["answer"]
 
         # 3e. ÖNCE LLM'in kendi eklediği İngilizce ilaç isimlerini Türkçe'ye çevir
-        # NOT: Bu unmask'ten ÖNCE yapılmalı, yoksa çift dönüşüm olur
-        response_tr = convert_english_medicines_to_turkish(response_tr, format_style="tr_with_en")
+        # format_style="tr_only": parantez içinde İngilizce isim KOYMUYORUZ
+        # Aksi halde "Parasetamol (Calpol (paracetamol))" gibi çirkin çıktılar oluşuyor
+        response_tr = convert_english_medicines_to_turkish(response_tr, format_style="tr_only")
 
-        # 3f. SONRA maskeleri aç: MEDTOK0 → "Parol (paracetamol)"
+        # 3f. SONRA maskeleri aç: MEDTOK0X → "Calpol"
+        # format_style="tr_only": kullanıcının yazdığı Türkçe ismi koru
         if global_mask_map:
-            response_tr = unmask_medicines(response_tr, global_mask_map, format_style="tr_with_en")
+            response_tr = unmask_medicines(response_tr, global_mask_map, format_style="tr_only")
             # response_en için en_only kullan (drift önleme - saf İngilizce kalmalı)
             response_en_raw = unmask_medicines(response_en_raw, global_mask_map, format_style="en_only")
 

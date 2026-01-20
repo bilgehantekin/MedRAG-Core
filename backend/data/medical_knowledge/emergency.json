@@ -566,5 +566,395 @@
     ],
     "jurisdiction": "TR",
     "safety_level": "emergency"
+  },
+  {
+    "id": "emergency_mental_health_crisis",
+    "title": "Mental Health Crisis - Suicide / Self-Harm",
+    "title_tr": "Ruh Sağlığı Krizi - İntihar / Kendine Zarar Verme",
+    "category": "emergency",
+    "severity": "CRITICAL",
+    "call_emergency": true,
+    "emergency_number": "112",
+    "source_name": "Sağlık Bakanlığı / WHO",
+    "source_url": "https://www.who.int/health-topics/suicide",
+    "retrieved_date": "2025-01-19",
+    "content": "If you or someone you know is having thoughts of suicide or self-harm, this is a crisis that requires immediate help. You are not alone, and help is available. Please reach out to emergency services or a crisis hotline immediately.",
+    "crisis_info": "Acil durumlarda 112'yi arayın. Alo 183 (Aile ve Sosyal Hizmetler danışma hattı) veya en yakın ruh sağlığı merkezine başvurun.",
+    "symptoms": [
+      "Thoughts of wanting to die or end life",
+      "Feeling hopeless or trapped",
+      "Talking about being a burden to others",
+      "Increasing alcohol or drug use",
+      "Acting anxious, agitated, or reckless",
+      "Withdrawing from family and friends",
+      "Extreme mood swings",
+      "Giving away important possessions",
+      "Saying goodbye to people",
+      "Self-harm behaviors (cutting, burning, etc.)"
+    ],
+    "what_to_do": [
+      "If immediate danger: CALL 112 NOW",
+      "Stay with the person - do not leave them alone",
+      "Remove access to harmful objects (medications, sharp objects, firearms)",
+      "Listen without judgment - let them talk",
+      "Call emergency: 112, or contact Alo 183 (family services helpline)",
+      "Take all talk of suicide seriously",
+      "Encourage professional help",
+      "Express that you care and want to help"
+    ],
+    "do_not": [
+      "Do NOT leave them alone if in immediate danger",
+      "Do NOT promise to keep it secret - get help",
+      "Do NOT judge or dismiss their feelings",
+      "Do NOT argue or try to talk them out of their feelings",
+      "Do NOT give advice like 'just think positive'"
+    ],
+    "keywords_en": [
+      "suicide",
+      "suicidal thoughts",
+      "self-harm",
+      "want to die",
+      "end my life",
+      "hurting myself",
+      "crisis",
+      "mental health emergency"
+    ],
+    "keywords_tr": [
+      "intihar",
+      "intihar düşüncesi",
+      "kendime zarar vermek",
+      "ölmek istiyorum",
+      "yaşamak istemiyorum",
+      "kendimi kesmek",
+      "kendimi öldürmek",
+      "hayatıma son vermek",
+      "umutsuzluk",
+      "kendime zarar veriyorum"
+    ],
+    "typos_tr": [
+      "intihar",
+      "kendime zarar vermek",
+      "olmek istiyorum",
+      "yasamak istemiyorum"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "emergency"
+  },
+  {
+    "id": "emergency_pediatric_fever",
+    "title": "Pediatric High Fever Emergency",
+    "title_tr": "Çocuklarda Yüksek Ateş Acil Durumu",
+    "category": "emergency",
+    "severity": "HIGH",
+    "call_emergency": true,
+    "emergency_number": "112",
+    "source_name": "American Academy of Pediatrics",
+    "source_url": "https://www.aap.org/en/patient-care/fever",
+    "retrieved_date": "2025-01-19",
+    "content": "High fever in children, especially above 39-40°C (102-104°F), can be a sign of serious infection and may require emergency care. Young infants with fever are especially at risk and need immediate medical attention.",
+    "symptoms": [
+      "Fever above 40°C (104°F)",
+      "Fever in infant under 3 months at any temperature above 38°C",
+      "Fever lasting more than 3 days",
+      "Child is unusually drowsy or difficult to wake",
+      "Stiff neck",
+      "Severe headache",
+      "Difficulty breathing",
+      "Purple spots or rash that doesn't fade when pressed",
+      "Refusing to drink fluids",
+      "Crying inconsolably"
+    ],
+    "what_to_do": [
+      "CALL 112 if: fever above 40°C, difficulty breathing, purple rash, extreme lethargy",
+      "Check temperature with thermometer",
+      "Give appropriate dose of paracetamol or ibuprofen (not aspirin for children)",
+      "Remove excess clothing",
+      "Give plenty of fluids",
+      "Keep child comfortable",
+      "Monitor for warning signs",
+      "Seek medical attention promptly"
+    ],
+    "do_not": [
+      "Do NOT give aspirin to children (risk of Reye's syndrome)",
+      "Do NOT bundle up a feverish child",
+      "Do NOT use cold baths or alcohol rubs",
+      "Do NOT ignore fever in infants under 3 months"
+    ],
+    "keywords_en": [
+      "child fever",
+      "pediatric fever",
+      "baby fever",
+      "high fever child",
+      "infant fever",
+      "febrile child"
+    ],
+    "keywords_tr": [
+      "çocukta yüksek ateş",
+      "bebekte ateş",
+      "çocuk ateş 40 derece",
+      "çocuğum ateşleniyor",
+      "yüksek ateş çocuk",
+      "bebeğimin ateşi var",
+      "çocukta 40 derece",
+      "ateşi düşmüyor çocuk"
+    ],
+    "typos_tr": [
+      "cocukta yuksek ates",
+      "bebekte ates",
+      "cocuk ates 40 derece"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "emergency"
+  },
+  {
+    "id": "emergency_pregnancy_bleeding",
+    "title": "Pregnancy Bleeding Emergency",
+    "title_tr": "Gebelikte Kanama Acil Durumu",
+    "category": "emergency",
+    "severity": "CRITICAL",
+    "call_emergency": true,
+    "emergency_number": "112",
+    "source_name": "American College of Obstetricians and Gynecologists",
+    "source_url": "https://www.acog.org/womens-health/faqs/bleeding-during-pregnancy",
+    "retrieved_date": "2025-01-19",
+    "content": "Bleeding during pregnancy can be a sign of serious complications including miscarriage, ectopic pregnancy, or placental problems. Any significant bleeding during pregnancy requires immediate medical evaluation.",
+    "symptoms": [
+      "Vaginal bleeding during pregnancy",
+      "Severe abdominal or pelvic pain",
+      "Dizziness or fainting",
+      "Shoulder tip pain (possible ectopic pregnancy)",
+      "Passing tissue or clots",
+      "Heavy bleeding (soaking a pad in an hour)",
+      "Fever with bleeding"
+    ],
+    "what_to_do": [
+      "CALL 112 or go to emergency room immediately",
+      "Note amount of bleeding (how many pads soaked)",
+      "Save any tissue passed for medical examination",
+      "Lie down and rest",
+      "Do not insert anything into vagina",
+      "Bring pregnancy records if available"
+    ],
+    "do_not": [
+      "Do NOT ignore any bleeding during pregnancy",
+      "Do NOT wait to see if bleeding stops",
+      "Do NOT use tampons",
+      "Do NOT have intercourse"
+    ],
+    "keywords_en": [
+      "pregnancy bleeding",
+      "pregnant bleeding",
+      "miscarriage",
+      "ectopic pregnancy",
+      "vaginal bleeding pregnant"
+    ],
+    "keywords_tr": [
+      "hamileyken kanama",
+      "gebelikte kanama",
+      "hamileyim kanama var",
+      "düşük yapıyorum",
+      "dış gebelik",
+      "hamileyim ve kanıyorum",
+      "gebelik kanaması"
+    ],
+    "typos_tr": [
+      "hamileyken kanama",
+      "hamileyim kanama var",
+      "gebelikte kanama"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "emergency"
+  },
+  {
+    "id": "emergency_vision_loss",
+    "title": "Sudden Vision Loss Emergency",
+    "title_tr": "Ani Görme Kaybı Acil Durumu",
+    "category": "emergency",
+    "severity": "CRITICAL",
+    "call_emergency": true,
+    "emergency_number": "112",
+    "source_name": "American Academy of Ophthalmology",
+    "source_url": "https://www.aao.org/eye-health/symptoms/sudden-vision-loss",
+    "retrieved_date": "2025-01-19",
+    "content": "Sudden vision loss is a medical emergency that can indicate stroke, retinal detachment, or other serious conditions. Immediate treatment may be needed to preserve vision. Every minute counts.",
+    "symptoms": [
+      "Sudden complete or partial vision loss in one or both eyes",
+      "Sudden blurred vision",
+      "Sudden appearance of floaters or flashes",
+      "Curtain-like shadow over vision",
+      "Sudden loss of peripheral (side) vision",
+      "Sudden double vision",
+      "Eye pain with vision changes"
+    ],
+    "what_to_do": [
+      "CALL 112 or go to emergency room IMMEDIATELY",
+      "Note exactly when vision loss started",
+      "Cover the unaffected eye to check if both eyes are affected",
+      "Do not drive",
+      "Do not rub the eye",
+      "Bring list of medications and medical history"
+    ],
+    "do_not": [
+      "Do NOT wait to see if vision returns",
+      "Do NOT assume it will get better on its own",
+      "Do NOT rub or press on the eye",
+      "Do NOT delay seeking care"
+    ],
+    "keywords_en": [
+      "sudden vision loss",
+      "sudden blindness",
+      "vision loss",
+      "cant see",
+      "eye emergency",
+      "retinal detachment"
+    ],
+    "keywords_tr": [
+      "ani görme kaybı",
+      "göremiyorum",
+      "gözüm görmüyor",
+      "ani körlük",
+      "görüşüm bulanık",
+      "gözümde siyah lekeler",
+      "bir gözüm görmüyor",
+      "ani görme bozukluğu"
+    ],
+    "typos_tr": [
+      "ani gorme kaybi",
+      "goremiyorum",
+      "gozum gormuyor"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "emergency"
+  },
+  {
+    "id": "emergency_hypoglycemia",
+    "title": "Severe Hypoglycemia (Low Blood Sugar) Emergency",
+    "title_tr": "Ciddi Hipoglisemi (Düşük Kan Şekeri) Acil Durumu",
+    "category": "emergency",
+    "severity": "HIGH",
+    "call_emergency": true,
+    "emergency_number": "112",
+    "source_name": "American Diabetes Association",
+    "source_url": "https://diabetes.org/healthy-living/medication-treatments/hypoglycemia",
+    "retrieved_date": "2025-01-19",
+    "content": "Severe hypoglycemia (very low blood sugar) is a medical emergency, especially in diabetics. It can cause confusion, loss of consciousness, and seizures. Quick treatment with sugar/glucose is essential, and emergency help may be needed.",
+    "symptoms": [
+      "Shakiness, trembling",
+      "Sweating, clammy skin",
+      "Fast heartbeat",
+      "Confusion, difficulty thinking",
+      "Blurred vision",
+      "Irritability, mood changes",
+      "Hunger",
+      "Dizziness, lightheadedness",
+      "Loss of consciousness",
+      "Seizures"
+    ],
+    "what_to_do": [
+      "If conscious: give fast-acting sugar immediately (glucose tablets, juice, regular soda, candy)",
+      "15-20 grams of fast-acting carbs",
+      "Wait 15 minutes and recheck",
+      "If unconscious: CALL 112 immediately",
+      "Do not give food or drink to unconscious person",
+      "If glucagon kit available and trained: administer glucagon",
+      "Place unconscious person on their side",
+      "Monitor breathing"
+    ],
+    "do_not": [
+      "Do NOT give food or drink if person is unconscious or confused",
+      "Do NOT give insulin for low blood sugar",
+      "Do NOT leave person alone",
+      "Do NOT assume symptoms will resolve on their own"
+    ],
+    "keywords_en": [
+      "hypoglycemia",
+      "low blood sugar",
+      "diabetic emergency",
+      "insulin shock",
+      "blood sugar drop"
+    ],
+    "keywords_tr": [
+      "hipoglisemi",
+      "düşük kan şekeri",
+      "kan şekerim düştü",
+      "şeker düşmesi",
+      "şeker hastalığı acil",
+      "diyabet acil",
+      "insülin şoku",
+      "kan şekeri düşük"
+    ],
+    "typos_tr": [
+      "hipoglisemi",
+      "dusuk kan sekeri",
+      "kan sekerim dustu",
+      "seker dusmesi"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "emergency"
+  },
+  {
+    "id": "emergency_airway_obstruction",
+    "title": "Airway Obstruction / Throat Swelling Emergency",
+    "title_tr": "Hava Yolu Tıkanması / Boğaz Şişmesi Acil Durumu",
+    "category": "emergency",
+    "severity": "CRITICAL",
+    "call_emergency": true,
+    "emergency_number": "112",
+    "source_name": "American Red Cross",
+    "source_url": "https://www.redcross.org/get-help/how-to-prepare-for-emergencies/types-of-emergencies/choking.html",
+    "retrieved_date": "2025-01-19",
+    "content": "Airway obstruction or throat swelling is a life-threatening emergency. Whether from choking, allergic reaction, or infection, an obstructed airway requires immediate action. Every second counts.",
+    "symptoms": [
+      "Cannot breathe or severe difficulty breathing",
+      "Cannot speak or only whisper",
+      "Cannot swallow",
+      "Throat or tongue swelling",
+      "Drooling (unable to swallow saliva)",
+      "High-pitched breathing sound (stridor)",
+      "Clutching throat (universal choking sign)",
+      "Blue or pale face/lips",
+      "Loss of consciousness"
+    ],
+    "what_to_do": [
+      "CALL 112 IMMEDIATELY",
+      "If choking on food/object: perform back blows and Heimlich maneuver",
+      "If allergic reaction: use EpiPen if available",
+      "Do not give food or water",
+      "Keep person calm",
+      "If unconscious and not breathing: start CPR",
+      "Monitor airway continuously"
+    ],
+    "do_not": [
+      "Do NOT leave person alone",
+      "Do NOT try to remove object with fingers (may push deeper)",
+      "Do NOT give anything by mouth",
+      "Do NOT delay calling emergency services"
+    ],
+    "keywords_en": [
+      "choking",
+      "cant swallow",
+      "throat swelling",
+      "airway obstruction",
+      "cant breathe throat"
+    ],
+    "keywords_tr": [
+      "boğazım şişti",
+      "yutamıyorum",
+      "yutkunamıyorum",
+      "nefes alamıyorum boğaz",
+      "boğuluyorum",
+      "tıkandım",
+      "boğazım kapandı",
+      "nefes borusu tıkandı",
+      "dilim şişti"
+    ],
+    "typos_tr": [
+      "bogazim sisti",
+      "yutamiyorum",
+      "yutkunamiyorum",
+      "nefes alamiyorum bogaz"
+    ],
+    "jurisdiction": "TR",
+    "safety_level": "emergency"
   }
 ]

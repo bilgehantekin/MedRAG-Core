@@ -10,3 +10,12 @@ deep-translator>=1.11.4
 sentence-transformers>=2.2.0
 faiss-cpu>=1.7.4
 numpy>=1.24.0
+
+# Image Analysis Dependencies
+torch>=2.0.0
+torchvision>=0.15.0
+torchxrayvision>=1.2.0
+Pillow>=10.0.0
+opencv-python-headless>=4.8.0
+python-multipart>=0.0.6
+aiofiles>=23.0.0

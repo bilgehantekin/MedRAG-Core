@@ -39,3 +39,6 @@ logs/
 dist/
 build/
 *.egg-info/
+backend/data/medical_knowledge/temp/
+backend/scripts/etl/*.log
+backend/scripts/etl/*_stats.json

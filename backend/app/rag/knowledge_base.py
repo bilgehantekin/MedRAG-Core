@@ -15,6 +15,11 @@ MAX_CHUNK_CHARS = 1500  # ~375 tokens (approx 4 chars/token)
 CHUNK_OVERLAP_CHARS = 200  # Overlap between chunks
 MAX_RELATED_TERMS = 30  # Limit keywords in document text
 
+# OpenFDA 3-doküman formatı için hedef boyutlar
+OPENFDA_TARGET_CHARS = 1000  # 900-1400 arası hedef
+OPENFDA_MAX_CHARS = 1400
+OPENFDA_MIN_CHARS = 300
+
 
 class MedicalKnowledgeBase:
     """
@@ -33,6 +38,7 @@ class MedicalKnowledgeBase:
         self.data_dir = Path(__file__).parent.parent.parent / "data" / "medical_knowledge"
         self.categories = set()
         self._loaded_files: set = set()  # Tekrarlı yükleme önleme
+        self._tr_drug_allowlist: set = set()  # TR'de geçerli ilaç isimleri
 
     def _to_bool(self, v) -> bool:
         """
@@ -75,7 +81,486 @@ class MedicalKnowledgeBase:
             seen.add(k)
             out.append(k)
         return out
-    
+
+    def _smart_truncate(self, text: str, max_len: int, min_len: int = 0) -> str:
+        """
+        Metni akıllıca kırp - kelime/cümle sınırlarına dikkat et.
+        Asla kelime ortasında kesme!
+
+        Args:
+            text: Kırpılacak metin
+            max_len: Maksimum uzunluk
+            min_len: Minimum uzunluk (bu kadar karakter kesin korunacak)
+        """
+        if not text or len(text) <= max_len:
+            return text
+
+        # min_len'e kadar korunacak, sonra kesim noktası arayacağız
+        search_start = max(min_len, max_len - 100)  # Son 100 karakterde ara
+        truncated = text[:max_len]
+
+        # 1. Önce cümle sonu ara (. ! ?)
+        for punct in ['. ', '! ', '? ', '.\n', '!\n', '?\n']:
+            last_punct = truncated.rfind(punct, search_start)
+            if last_punct > search_start:
+                return truncated[:last_punct + 1].rstrip()
+
+        # 2. Virgül veya noktalı virgül ara
+        for punct in [', ', '; ', ',\n', ';\n']:
+            last_punct = truncated.rfind(punct, search_start)
+            if last_punct > search_start:
+                return truncated[:last_punct + 1].rstrip()
+
+        # 3. Son çare: boşluk (kelime sınırı) ara
+        last_space = truncated.rfind(' ', search_start)
+        if last_space > search_start:
+            return truncated[:last_space].rstrip()
+
+        # 4. Hiçbiri yoksa, en son boşluğu bul
+        last_space = truncated.rfind(' ')
+        if last_space > min_len:
+            return truncated[:last_space].rstrip()
+
+        # 5. Boşluk bile yoksa mecburen kes (nadir durum)
+        return truncated.rstrip()
+
+    def _smart_truncate_item(self, item: str, max_len: int) -> str:
+        """Liste öğesi için akıllı truncate - kelime sınırında kes"""
+        if not item or len(item) <= max_len:
+            return item
+        return self._smart_truncate(item, max_len, min_len=max_len // 2)
+
+    def _clean_list_items(self, items: List, max_items: int = 10, max_item_len: int = 200) -> List[str]:
+        """Liste öğelerini temizle ve kırp - akıllı truncate ile"""
+        if not items:
+            return []
+
+        cleaned = []
+        seen = set()
+
+        for item in items[:max_items * 2]:
+            if not isinstance(item, str):
+                continue
+
+            # Temel temizlik
+            item = item.strip()
+            if len(item) < 10:
+                continue
+
+            # Table satırlarını temizle
+            if item.lower().startswith('table ') and len(item) > 100:
+                # Sadece table başlığını al
+                import re
+                match = re.match(r'^(Table\s+\d+[:\s]*[^:]+)', item, re.IGNORECASE)
+                if match:
+                    item = match.group(1).strip()
+                else:
+                    continue  # Çok uzun table satırını atla
+
+            # Akıllı truncate
+            item = self._smart_truncate_item(item, max_item_len)
+
+            # Duplicate kontrolü
+            item_key = item.lower()[:50]
+            if item_key in seen:
+                continue
+            seen.add(item_key)
+
+            cleaned.append(item)
+            if len(cleaned) >= max_items:
+                break
+
+        return cleaned
+
+    def _create_openfda_overview(self, med: Dict) -> Dict:
+        """OpenFDA ilaç kaydından overview dokümanı oluştur"""
+        title = med.get('title', '')
+        parent_id = med.get('id', '')
+
+        parts = [f"# {title}"]
+
+        # Drug class
+        if med.get('drug_class'):
+            parts.append(f"İlaç sınıfı: {med['drug_class']}")
+
+        # Uses (max 6)
+        uses = self._clean_list_items(med.get('uses', []), max_items=6, max_item_len=180)
+        if uses:
+            parts.append("\n## Ne İşe Yarar")
+            for use in uses:
+                parts.append(f"• {use}")
+
+        # Content özeti (varsa ve uses yoksa)
+        content = med.get('content', '')
+        if content and not uses:
+            content_short = self._smart_truncate(content, 300, 100)
+            parts.append(f"\n{content_short}")
+
+        # Önemli limitler (warnings'da "not indicated" veya "prn" geçiyorsa)
+        warnings = med.get('warnings', [])
+        if isinstance(warnings, list):
+            limitations = []
+            for w in warnings:
+                if isinstance(w, str):
+                    w_lower = w.lower()
+                    if 'not indicated' in w_lower or 'not for' in w_lower or 'prn' in w_lower:
+                        limitations.append(w)
+
+            if limitations:
+                parts.append("\n## Önemli Uyarı")
+                for lim in limitations[:2]:
+                    lim_short = self._smart_truncate_item(lim, 150)
+                    parts.append(f"⚠️ {lim_short}")
+
+        full_content = '\n'.join(parts)
+        full_content = self._smart_truncate(full_content, OPENFDA_MAX_CHARS, OPENFDA_MIN_CHARS)
+
+        return {
+            'id': f"{parent_id}_overview",
+            'parent_id': parent_id,
+            'section': 'overview',
+            'title': title,
+            'title_tr': f"{title} - Genel Bilgi",
+            'category': 'medications',
+            'content': full_content,
+            'keywords_en': med.get('keywords_en', []),
+            'keywords_tr': med.get('keywords_tr', []) + ['nedir', 'ne işe yarar', 'kullanım alanları'],
+            'typos_tr': med.get('typos_tr', []),
+            'brand_examples_tr': med.get('brand_examples_tr', []),
+            'source_name': med.get('source_name', 'openFDA'),
+            'source_url': med.get('source_url', ''),
+            'drug_class': med.get('drug_class', ''),
+        }
+
+    def _create_openfda_safety(self, med: Dict) -> Optional[Dict]:
+        """OpenFDA ilaç kaydından safety dokümanı oluştur"""
+        title = med.get('title', '')
+        parent_id = med.get('id', '')
+
+        parts = [f"# {title} - Güvenlik Bilgileri"]
+        has_content = False
+
+        # Warnings (max 8, boxed öncelikli)
+        warnings = med.get('warnings', [])
+        if isinstance(warnings, list) and warnings:
+            has_content = True
+            parts.append("\n## Uyarılar")
+
+            # Boxed warning'ları öne al
+            boxed = [w for w in warnings if isinstance(w, str) and ('boxed' in w.lower() or w.lower().startswith('warning:'))]
+            other = [w for w in warnings if isinstance(w, str) and w not in boxed]
+
+            sorted_warnings = boxed + other
+            cleaned_warnings = self._clean_list_items(sorted_warnings, max_items=8, max_item_len=220)
+            for w in cleaned_warnings:
+                prefix = "⚠️ " if any(w in boxed for w in [w]) else "• "
+                parts.append(f"{prefix}{w}")
+
+        # Contraindications (max 6)
+        contras = med.get('contraindications', [])
+        if isinstance(contras, list):
+            # "None" placeholder'larını filtrele
+            contras = [c for c in contras if isinstance(c, str) and 'none' not in c.lower()[:10]]
+            if contras:
+                has_content = True
+                parts.append("\n## Kimler Kullanmamalı")
+                cleaned_contras = self._clean_list_items(contras, max_items=6, max_item_len=180)
+                for c in cleaned_contras:
+                    parts.append(f"❌ {c}")
+
+        # Overdose warning
+        overdose = med.get('overdose_warning', '')
+        if isinstance(overdose, str) and overdose:
+            has_content = True
+            parts.append("\n## Doz Aşımı")
+            overdose_short = self._smart_truncate_item(overdose, 200)
+            parts.append(f"🚨 {overdose_short}")
+
+        if not has_content:
+            return None
+
+        full_content = '\n'.join(parts)
+        full_content = self._smart_truncate(full_content, OPENFDA_MAX_CHARS, OPENFDA_MIN_CHARS)
+
+        return {
+            'id': f"{parent_id}_safety",
+            'parent_id': parent_id,
+            'section': 'safety',
+            'title': f"{title} - Güvenlik",
+            'title_tr': f"{title} - Uyarılar ve Kontrendikasyonlar",
+            'category': 'medications',
+            'content': full_content,
+            'keywords_en': med.get('keywords_en', []),
+            'keywords_tr': med.get('keywords_tr', []) + ['uyarı', 'kontrendikasyon', 'kimler kullanamaz', 'tehlike'],
+            'source_name': med.get('source_name', 'openFDA'),
+            'source_url': med.get('source_url', ''),
+        }
+
+    def _create_openfda_how_to_use(self, med: Dict) -> Optional[Dict]:
+        """OpenFDA ilaç kaydından how_to_use dokümanı oluştur"""
+        title = med.get('title', '')
+        parent_id = med.get('id', '')
+
+        parts = [f"# {title} - Kullanım Bilgileri"]
+        has_content = False
+
+        # Dosage info
+        dosage_info = med.get('dosage_info', {})
+        if isinstance(dosage_info, dict) and dosage_info.get('note'):
+            has_content = True
+            parts.append("\n## Dozaj")
+            note = dosage_info['note']
+            note_short = self._smart_truncate_item(note, 220)
+            parts.append(note_short)
+            if dosage_info.get('disclaimer'):
+                parts.append(f"\n⚠️ {dosage_info['disclaimer']}")
+
+        # Drug interactions (max 8)
+        interactions = med.get('drug_interactions', [])
+        if isinstance(interactions, list) and interactions:
+            has_content = True
+            parts.append("\n## İlaç Etkileşimleri")
+            cleaned_inter = self._clean_list_items(interactions, max_items=8, max_item_len=180)
+            for inter in cleaned_inter:
+                parts.append(f"• {inter}")
+
+        # Side effects (max 10)
+        side_effects = med.get('side_effects', [])
+        if isinstance(side_effects, list) and side_effects:
+            has_content = True
+            parts.append("\n## Yan Etkiler")
+            cleaned_se = self._clean_list_items(side_effects, max_items=10, max_item_len=150)
+            for se in cleaned_se:
+                parts.append(f"• {se}")
+
+        if not has_content:
+            return None
+
+        full_content = '\n'.join(parts)
+        full_content = self._smart_truncate(full_content, OPENFDA_MAX_CHARS, OPENFDA_MIN_CHARS)
+
+        return {
+            'id': f"{parent_id}_how_to_use",
+            'parent_id': parent_id,
+            'section': 'how_to_use',
+            'title': f"{title} - Kullanım",
+            'title_tr': f"{title} - Nasıl Kullanılır",
+            'category': 'medications',
+            'content': full_content,
+            'keywords_en': med.get('keywords_en', []),
+            'keywords_tr': med.get('keywords_tr', []) + ['nasıl kullanılır', 'doz', 'yan etki', 'etkileşim'],
+            'source_name': med.get('source_name', 'openFDA'),
+            'source_url': med.get('source_url', ''),
+            'has_guardrail': bool(dosage_info and dosage_info.get('note')),
+        }
+
+    def _is_noise_medication(self, med: Dict) -> bool:
+        """Gürültü ilaç kaydı mı kontrol et (WATER, diluent, vb.)"""
+        import re
+
+        title = med.get('title', '').upper().strip()
+
+        # Title pattern kontrolü
+        noise_patterns = [
+            r'^WATER$', r'^STERILE\s+WATER', r'^SODIUM\s+CHLORIDE$',
+            r'^SALINE$', r'^DEXTROSE$', r'^GLUCOSE$',
+            r'^BACTERIOSTATIC\s+WATER', r'^DILUENT', r'^STERILE\s+DILUENT', r'^PLACEBO',
+        ]
+        for pattern in noise_patterns:
+            if re.match(pattern, title, re.IGNORECASE):
+                return True
+
+        # Keywords kontrolü
+        noise_keywords = {'sterile diluent', 'diluent for', 'sterile water for injection', 'placebo'}
+        keywords = med.get('keywords_en', []) + med.get('keywords_tr', [])
+        for kw in keywords:
+            if isinstance(kw, str):
+                kw_lower = kw.lower()
+                for noise in noise_keywords:
+                    if noise in kw_lower:
+                        return True
+
+        return False
+
+    def _build_tr_allowlist_from_curated(self) -> None:
+        """
+        medications.json'dan TR'de bilinen ilaç isimlerinin allowlist'ini oluştur.
+        Bu liste OpenFDA yüklemesinde filtre olarak kullanılacak.
+        """
+        curated_path = self.data_dir / "medications.json"
+        if not curated_path.exists():
+            print("ℹ️  medications.json bulunamadı, allowlist oluşturulamadı")
+            return
+
+        with open(curated_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        terms = set()
+        for item in data:
+            if not isinstance(item, dict):
+                continue
+
+            # Title ve title_tr
+            for field in ["title", "title_tr"]:
+                if item.get(field):
+                    terms.add(self._normalize_text(item[field]))
+
+            # Keywords ve brand examples
+            keyword_fields = ["keywords_tr", "keywords_en", "brand_examples_tr"]
+            for field in keyword_fields:
+                for kw in (item.get(field) or []):
+                    if isinstance(kw, str) and kw.strip():
+                        terms.add(self._normalize_text(kw))
+
+        # Yaygın jenerik ilaç isimleri (manuel seed)
+        common_generics = [
+            "acetaminophen", "paracetamol", "ibuprofen", "aspirin", "naproxen",
+            "diclofenac", "metformin", "omeprazole", "pantoprazole", "lansoprazole",
+            "amoxicillin", "azithromycin", "ciprofloxacin", "metronidazole",
+            "atorvastatin", "simvastatin", "amlodipine", "lisinopril", "losartan",
+            "metoprolol", "carvedilol", "furosemide", "hydrochlorothiazide",
+            "gabapentin", "pregabalin", "sertraline", "fluoxetine", "escitalopram",
+            "alprazolam", "lorazepam", "diazepam", "zolpidem",
+            "levothyroxine", "prednisone", "prednisolone", "dexamethasone",
+            "insulin", "metformin", "glimepiride", "sitagliptin",
+            "salbutamol", "albuterol", "fluticasone", "montelukast",
+            "cetirizine", "loratadine", "fexofenadine", "diphenhydramine",
+            "ranitidine", "famotidine", "sucralfate",
+            "warfarin", "clopidogrel", "enoxaparin", "rivaroxaban",
+            "tramadol", "codeine", "morphine", "fentanyl",
+            "sildenafil", "tadalafil",
+        ]
+        for g in common_generics:
+            terms.add(self._normalize_text(g))
+
+        self._tr_drug_allowlist = terms
+        print(f"✅ TR ilaç allowlist oluşturuldu: {len(terms)} terim")
+
+    def _is_in_tr_allowlist(self, med: Dict) -> bool:
+        """OpenFDA ilacının TR allowlist'te olup olmadığını kontrol et"""
+        if not self._tr_drug_allowlist:
+            return True  # Allowlist yoksa hepsini kabul et
+
+        # Title kontrolü
+        title_norm = self._normalize_text(med.get("title", ""))
+        if title_norm in self._tr_drug_allowlist:
+            return True
+
+        # Title'daki kelimeleri kontrol et (ACETAMINOPHEN AND CAFFEINE gibi)
+        title_words = title_norm.split()
+        for word in title_words:
+            if len(word) >= 4 and word in self._tr_drug_allowlist:
+                return True
+
+        # Keywords kontrolü
+        for kw in (med.get("keywords_tr") or []) + (med.get("keywords_en") or []):
+            if isinstance(kw, str):
+                kw_norm = self._normalize_text(kw)
+                if kw_norm in self._tr_drug_allowlist:
+                    return True
+                # Keyword'deki kelimeleri de kontrol et
+                for word in kw_norm.split():
+                    if len(word) >= 4 and word in self._tr_drug_allowlist:
+                        return True
+
+        return False
+
+    def load_openfda_medications(self, file_path: str) -> int:
+        """
+        OpenFDA medications_openfda_only_tr.json dosyasını yükle.
+        Her ilaç için 3 doküman oluşturur: overview, safety, how_to_use
+
+        Returns:
+            Yüklenen döküman sayısı
+        """
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        if not isinstance(data, list):
+            raise ValueError(f"JSON root must be a list, got {type(data).__name__}")
+
+        texts = []
+        metadatas = []
+        ids = []
+        noise_count = 0
+        allowlist_filtered = 0
+        section_counts = {'overview': 0, 'safety': 0, 'how_to_use': 0}
+
+        for med in data:
+            if not isinstance(med, dict):
+                continue
+
+            # Gürültü filtresi
+            if self._is_noise_medication(med):
+                noise_count += 1
+                continue
+
+            # TR allowlist filtresi
+            if not self._is_in_tr_allowlist(med):
+                allowlist_filtered += 1
+                continue
+
+            # 3-doküman formatı oluştur
+            docs_to_add = []
+
+            # 1. Overview (her zaman)
+            overview = self._create_openfda_overview(med)
+            docs_to_add.append(overview)
+            section_counts['overview'] += 1
+
+            # 2. Safety (içerik varsa)
+            safety = self._create_openfda_safety(med)
+            if safety:
+                docs_to_add.append(safety)
+                section_counts['safety'] += 1
+
+            # 3. How to use (içerik varsa)
+            how_to_use = self._create_openfda_how_to_use(med)
+            if how_to_use:
+                docs_to_add.append(how_to_use)
+                section_counts['how_to_use'] += 1
+
+            # Dokümanları ekle
+            for doc in docs_to_add:
+                # OpenFDA için _format_document BYPASS - content zaten markdown formatında
+                text = doc.get("content", "").strip()
+                if not text:
+                    continue
+
+                # Tüm keyword'leri birleştir
+                raw_keywords = []
+                raw_keywords.extend(doc.get('keywords_en') or [])
+                raw_keywords.extend(doc.get('keywords_tr') or [])
+                raw_keywords.extend(doc.get('typos_tr') or [])
+                all_keywords = self._normalize_keywords(raw_keywords)
+
+                metadata = {
+                    "title": doc.get("title", ""),
+                    "title_tr": doc.get("title_tr", ""),
+                    "category": doc.get("category", "medications"),
+                    "source": doc.get("source_name", "openFDA"),
+                    "source_url": doc.get("source_url", ""),
+                    "keywords": all_keywords,
+                    "section": doc.get("section", ""),
+                    "parent_id": doc.get("parent_id", ""),
+                    "drug_class": doc.get("drug_class", ""),
+                    "has_guardrail": self._to_bool(doc.get("has_guardrail", False)),
+                }
+                self.categories.add(metadata["category"])
+
+                texts.append(text)
+                metadatas.append(metadata)
+                ids.append(doc.get("id", ""))
+
+        if texts:
+            self.vector_store.add_documents(texts, metadatas, ids)
+
+        print(f"  → Gürültü filtresi: {noise_count} kayıt elendi")
+        print(f"  → TR allowlist filtresi: {allowlist_filtered} kayıt elendi")
+        print(f"  → Section dağılımı: {section_counts}")
+
+        return len(texts)
+
     def _chunk_text(self, text: str, doc_id: str) -> List[Tuple[str, str]]:
         """
         Uzun metni chunk'lara böl
@@ -181,7 +666,11 @@ class MedicalKnowledgeBase:
                 "call_emergency": self._to_bool(item.get("call_emergency", False)),
                 "emergency_number": item.get("emergency_number", ""),
                 "drug_class": item.get("drug_class", ""),
-                "retrieved_date": item.get("retrieved_date", "")
+                "retrieved_date": item.get("retrieved_date", ""),
+                # OpenFDA chunks için ek alanlar
+                "section": item.get("section", ""),
+                "parent_id": item.get("parent_id", ""),
+                "has_guardrail": self._to_bool(item.get("has_guardrail", False)),
             }
             self.categories.add(metadata["category"])
 
@@ -207,13 +696,34 @@ class MedicalKnowledgeBase:
         return len(texts)
     
     def _format_document(self, item: Dict) -> str:
-        """Dökümanı arama için optimize edilmiş formata çevir (v3.3+ schema)"""
+        """Dökümanı arama için optimize edilmiş formata çevir (v3.3+ schema + OpenFDA chunks)"""
         parts = []
+
+        # === CHUNK BİLGİSİ (OpenFDA chunks için) ===
+        if item.get("section"):
+            section = item['section']
+            # Section'ı human-readable hale getir (v2 3-doküman formatı)
+            section_names = {
+                # v2 format (3-doküman)
+                'overview': 'Genel Bilgi',
+                'safety': 'Güvenlik (Uyarılar/Kontrendikasyonlar)',
+                'how_to_use': 'Kullanım (Doz/Yan Etki/Etkileşim)',
+                # v1 format (backward compatibility)
+                'main': 'Genel Bilgi',
+                'uses': 'Kullanım Alanları',
+                'warnings': 'Uyarılar',
+                'contraindications': 'Kontrendikasyonlar',
+                'interactions': 'İlaç Etkileşimleri',
+                'side_effects': 'Yan Etkiler',
+                'dosage': 'Dozaj Bilgisi'
+            }
+            readable_section = section_names.get(section, section)
+            parts.append(f"Section: {readable_section}")
 
         # === TEMEL BİLGİLER ===
         if item.get("title"):
             title = item['title']
-            if item.get("title_tr"):
+            if item.get("title_tr") and item['title_tr'] != title:
                 title += f" / {item['title_tr']}"
             parts.append(f"Title: {title}")
 
@@ -392,11 +902,14 @@ class MedicalKnowledgeBase:
 
         Yükleme stratejisi:
         - emergency.json: Acil durum verileri (el yapımı, kaliteli)
-        - medications.json: İlaç verileri (el yapımı, kaliteli)
+        - medications.json: İlaç verileri (el yapımı, kaliteli, TR)
+        - medications_openfda_only_tr.json: OpenFDA ilaç verileri (3-doküman formatı dinamik oluşturulur)
         - symptoms_diseases_medlineplus_tr_enriched.json: MedlinePlus verileri (ETL + TR zenginleştirme)
 
         Atlanacak dosyalar:
         - symptoms_diseases.json: Eski el yapımı veri (enriched ile değiştirildi)
+        - medications_openfda.json: Ham veri (clean versiyonu kullanılıyor)
+        - medications_openfda_chunks.json: Eski chunk dosyası (artık dinamik oluşturuluyor)
         - *_medlineplus.json (enriched hariç): Ara dosyalar
         - *_clean_en.json: Ara dosyalar
         """
@@ -404,8 +917,10 @@ class MedicalKnowledgeBase:
             print(f"⚠️  Veri klasörü bulunamadı: {self.data_dir}")
             return 0
 
-        # Yüklenecek dosyalar (öncelik sırasına göre)
-        files_to_load = [
+        total_loaded = 0
+
+        # 1. Standart JSON dosyaları (normal yükleme)
+        standard_files = [
             "emergency.json",
             "medications.json",
             "symptoms_diseases_medlineplus_tr_enriched.json",
@@ -415,10 +930,9 @@ class MedicalKnowledgeBase:
         enriched_file = self.data_dir / "symptoms_diseases_medlineplus_tr_enriched.json"
         if not enriched_file.exists():
             print("ℹ️  Enriched dosya bulunamadı, orijinal symptoms_diseases.json yüklenecek")
-            files_to_load.append("symptoms_diseases.json")
+            standard_files.append("symptoms_diseases.json")
 
-        total_loaded = 0
-        for filename in files_to_load:
+        for filename in standard_files:
             json_file = self.data_dir / filename
 
             if not json_file.exists():
@@ -438,6 +952,25 @@ class MedicalKnowledgeBase:
                 total_loaded += count
             except Exception as e:
                 print(f"❌ {filename} yüklenemedi: {e}")
+
+        # TR ilaç allowlist'i oluştur (medications.json'dan)
+        self._build_tr_allowlist_from_curated()
+
+        # 2. OpenFDA medications - özel 3-doküman formatı ile yükle (TR allowlist ile filtrelenir)
+        openfda_file = self.data_dir / "medications_openfda_only_tr.json"
+        if openfda_file.exists():
+            file_key = str(openfda_file.resolve())
+            if file_key not in self._loaded_files:
+                try:
+                    print(f"📦 OpenFDA medications yükleniyor (3-doküman formatı)...")
+                    count = self.load_openfda_medications(str(openfda_file))
+                    self._loaded_files.add(file_key)
+                    print(f"📚 medications_openfda_only_tr.json: {count} döküman yüklendi")
+                    total_loaded += count
+                except Exception as e:
+                    print(f"❌ medications_openfda_only_tr.json yüklenemedi: {e}")
+        else:
+            print(f"⚠️  medications_openfda_only_tr.json: dosya bulunamadı, atlanıyor")
 
         return total_loaded
     
@@ -514,10 +1047,19 @@ class MedicalKnowledgeBase:
         fetch_k = max(top_k * 2, 10)
         vector_results = self.vector_store.search(query, top_k=fetch_k)
 
-        # 2. Keyword search (if we have meaningful terms)
+        # 2. Keyword search - sadece ilaç adı gibi kısa sorgularda çalıştır (hız optimizasyonu)
+        # "başım ağrıyor ne yapayım" gibi semptom sorularında keyword taraması atlanır
         keyword_results = []
         if meaningful_terms:
-            keyword_results = self._keyword_search(meaningful_terms, top_k=top_k)
+            tokens = list(meaningful_terms)
+            # İlaç sorgusu gibi görünüyor mu? (kısa veya rakam içeriyor)
+            looks_like_drug_query = (
+                len(tokens) <= 3 or
+                any(any(ch.isdigit() for ch in t) for t in tokens) or
+                any(t in self._tr_drug_allowlist for t in tokens)
+            )
+            if looks_like_drug_query:
+                keyword_results = self._keyword_search(meaningful_terms, top_k=top_k)
 
         # 3. Merge results, prioritizing keyword matches
         # doc_id ile dedupe - text[:200] chunking sonrası hatalı olabilir

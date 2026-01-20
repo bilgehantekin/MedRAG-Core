@@ -134,6 +134,17 @@ Tarayıcıda: **http://localhost:3000**
 
 ## 📝 Sürüm Geçmişi
 
+### v4.1 (Ocak 2026) - Hedefli OpenFDA ETL & Veri Optimizasyonu
+- ✨ `fetch_openfda_targeted.py` - TURKISH_MEDICINE_DICTIONARY bazlı hedefli OpenFDA veri çekme
+- ✨ Sadece Türkiye'de kullanılan ilaçların canonical isimleri için API sorgusu
+- ✨ Full veri çekme (truncation kapalı) - chunking knowledge_base.py'de yapılıyor
+- ✨ `medications_openfda_only_tr.json` - 75 hedefli ilaç kaydı (726 KB)
+- ✨ Veri seti %83 küçültüldü (1.2 MB → 196 KB → 726 KB full)
+- ✨ Gürültü filtreleme (WATER, DILUENT, PLACEBO vb. atlanıyor)
+- ✨ `clean_medications_v2.py` - keywords_tr ve typos_tr temizleme
+- ✨ Kullanılmayan veri dosyaları temp/ klasörüne arşivlendi
+- ✨ 676 MB ham OpenFDA verisi silindi (openfda_drug_labels.json)
+
 ### v4.0 (Ocak 2026) - ETL Pipeline & RAG İyileştirmeleri
 - ✨ MedlinePlus Health Topics XML veri çıkarma
 - ✨ OpenFDA ilaç veritabanı entegrasyonu

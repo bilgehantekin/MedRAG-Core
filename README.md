@@ -36,14 +36,20 @@ Chatbot'a doğrudan yazarak şikayetlerinizi kendi cümlelerinizle anlatın.
 - ✅ Groq LLM + Translation Pipeline (TR → EN → LLM → TR)
 - ✅ LLM tabanlı yüksek kaliteli Türkçe çeviri
 
+### X-ray Görüntü Analizi
+- ✅ **Akciğer X-ray Analizi** - DenseNet121 tabanlı derin öğrenme modeli
+- ✅ 14 farklı akciğer patolojisi tespiti
+- ✅ **GradCAM** ile görsel açıklama (hangi bölgeye bakıldığını gösterir)
+- ✅ Türkçe sonuç ve açıklamalar
+
 ## 🛠️ Teknoloji Stack
 
-| Frontend | Backend | RAG |
-|----------|---------|-----|
-| React 18 + TypeScript | FastAPI | FAISS Vector Store |
-| Three.js (@react-three/fiber) | Groq LLM (Llama 3.3) | Sentence Transformers |
-| Zustand | Deep Translator | Medical Knowledge Base |
-| Tailwind CSS | Pydantic | Semantic Search |
+| Frontend | Backend | RAG | Image Analysis |
+|----------|---------|-----|----------------|
+| React 18 + TypeScript | FastAPI | FAISS Vector Store | PyTorch |
+| Three.js (@react-three/fiber) | Groq LLM (Llama 3.3) | Sentence Transformers | DenseNet121 |
+| Zustand | Deep Translator | Medical Knowledge Base | GradCAM |
+| Tailwind CSS | Pydantic | Semantic Search | PIL/OpenCV |
 
 ## 📁 Proje Yapısı
 
@@ -55,20 +61,39 @@ medical_chatbot/
 │   │   ├── health_filter.py  # Sağlık/acil durum filtresi
 │   │   ├── medicines.py      # İlaç veritabanı (tek kaynak)
 │   │   ├── prompts.py        # LLM prompt şablonları
+│   │   ├── image/            # X-ray Görüntü Analizi Modülü
+│   │   │   ├── router.py     # Image API endpoint'leri
+│   │   │   ├── model.py      # DenseNet121 model tanımı
+│   │   │   ├── inference.py  # Model inference
+│   │   │   ├── gradcam.py    # GradCAM görsel açıklama
+│   │   │   ├── preprocessing.py  # Görüntü ön işleme
+│   │   │   └── config.py     # Konfigürasyon
 │   │   └── rag/              # RAG Modülü
 │   │       ├── router.py     # RAG API endpoint'leri
 │   │       ├── rag_chain.py  # RAG zinciri ve LLM entegrasyonu
 │   │       ├── knowledge_base.py  # Tıbbi bilgi tabanı
 │   │       ├── vector_store.py    # FAISS vektör deposu
 │   │       └── embeddings.py      # Sentence Transformers
+│   ├── scripts/
+│   │   ├── etl/              # ETL Pipeline
+│   │   │   ├── medlineplus_etl.py  # MedlinePlus veri çıkarma
+│   │   │   ├── openfda_etl.py      # OpenFDA veri çıkarma
+│   │   │   ├── clean_enrich.py     # Temizleme ve zenginleştirme
+│   │   │   └── run_etl.py          # Ana ETL çalıştırıcı
+│   │   └── evaluate_rag.py   # RAG performans değerlendirme
 │   └── data/
 │       └── medical_knowledge/    # Tıbbi bilgi JSON dosyaları
 │           ├── symptoms_diseases.json
+│           ├── symptoms_diseases_medlineplus_tr_enriched.json
 │           ├── medications.json
 │           └── emergency.json
 ├── frontend-3d/
 │   └── src/
-│       ├── components/       # HumanModel, ChatPanel, SymptomPanel
+│       ├── components/
+│       │   ├── HumanModel/   # 3D insan modeli
+│       │   ├── ChatPanel/    # Sohbet paneli
+│       │   ├── SymptomPanel/ # Semptom seçimi
+│       │   └── ImageAnalysis/  # X-ray analiz arayüzü
 │       ├── store/            # Zustand state management
 │       └── data/             # Vücut bölgeleri verisi
 └── docs/screenshots/
@@ -112,6 +137,8 @@ Tarayıcıda: **http://localhost:3000**
 | POST /rag/chat | RAG destekli sohbet endpoint'i |
 | POST /rag/search | Bilgi tabanında arama |
 | GET /rag/stats | RAG istatistikleri |
+| POST /image/analyze | X-ray görüntü analizi |
+| GET /image/info | Model bilgisi |
 | GET /health | API sağlık kontrolü |
 | GET /models | Mevcut Groq modelleri |
 
@@ -122,6 +149,30 @@ Tarayıcıda: **http://localhost:3000**
 - **Teşhis Engeli:** LLM teşhis koymamak üzere yapılandırılmış
 
 ## 📝 Sürüm Geçmişi
+
+### v4.0 (Ocak 2026) - X-ray Görüntü Analizi & ETL Pipeline
+
+#### X-ray Akciğer Görüntüsü Analizi
+- ✨ DenseNet121 tabanlı akciğer X-ray sınıflandırma modeli
+- ✨ 14 farklı patoloji tespiti (Atelectasis, Cardiomegaly, Effusion, Infiltration, Mass, Nodule, Pneumonia, Pneumothorax, Consolidation, Edema, Emphysema, Fibrosis, Pleural Thickening, Hernia)
+- ✨ GradCAM ile görsel açıklama (ısı haritası overlay)
+- ✨ Türkçe etiket ve açıklamalar
+- ✨ Güven skoru ve eşik bazlı pozitif bulgu tespiti
+- ✨ Frontend'de görüntü yükleme ve sonuç gösterim bileşenleri
+
+#### ETL Pipeline (Veri Çıkarma ve Zenginleştirme)
+- ✨ MedlinePlus Health Topics XML veri çıkarma
+- ✨ OpenFDA ilaç veritabanı entegrasyonu
+- ✨ Türkçe çeviri ve zenginleştirme pipeline'ı
+- ✨ Veri temizleme ve deduplication
+- ✨ Yapılandırılmış JSON çıktı formatı
+
+#### RAG Değerlendirme ve İyileştirmeler
+- ✨ evaluate_rag.py - Otomatik RAG performans değerlendirme scripti
+- ✨ evaluation_test_set.json - Test soruları ve beklenen yanıtlar
+- ✨ Zenginleştirilmiş Türkçe semptom-hastalık veri seti (MedlinePlus kaynaklı)
+- ✨ knowledge_base.py defensive coding iyileştirmeleri
+- ✨ rag_chain.py performans ve güvenilirlik iyileştirmeleri
 
 ### v3.3 (Ocak 2026) - RAG Bilgi Tabanı Güçlendirmesi
 - ✨ Gerçek kaynak URL'leri ve metadata (source_name, source_url, retrieved_date)

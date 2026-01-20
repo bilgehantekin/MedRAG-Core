@@ -135,15 +135,11 @@ Tarayıcıda: **http://localhost:3000**
 ## 📝 Sürüm Geçmişi
 
 ### v4.0 (Ocak 2026) - ETL Pipeline & RAG İyileştirmeleri
-
-#### ETL Pipeline (Veri Çıkarma ve Zenginleştirme)
 - ✨ MedlinePlus Health Topics XML veri çıkarma
 - ✨ OpenFDA ilaç veritabanı entegrasyonu
 - ✨ Türkçe çeviri ve zenginleştirme pipeline'ı
 - ✨ Veri temizleme ve deduplication
 - ✨ Yapılandırılmış JSON çıktı formatı
-
-#### RAG Değerlendirme ve İyileştirmeler
 - ✨ evaluate_rag.py - Otomatik RAG performans değerlendirme scripti
 - ✨ evaluation_test_set.json - Test soruları ve beklenen yanıtlar
 - ✨ Zenginleştirilmiş Türkçe semptom-hastalık veri seti (MedlinePlus kaynaklı)

@@ -146,8 +146,6 @@ Tarayıcıda: **http://localhost:3000**
 - ✨ Döküman duplikasyonu önleme (index diskten yüklendiyse JSON atlanıyor)
 - ✨ Deep merge ile timing metriklerinin birleştirilmesi
 - ✨ Streaming sırasında otomatik scroll (UX iyileştirmesi)
-- 🐛 Keyword score hesaplamasında sıfıra bölme hatası düzeltildi
-- 🐛 Yüksek match score'larında division by zero koruması eklendi
 
 ### v4.1 (Ocak 2026) - Hedefli OpenFDA ETL & Veri Optimizasyonu
 - ✨ `fetch_openfda_targeted.py` - TURKISH_MEDICINE_DICTIONARY bazlı hedefli OpenFDA veri çekme

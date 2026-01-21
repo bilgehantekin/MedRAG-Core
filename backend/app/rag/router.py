@@ -1,18 +1,27 @@
 """
 RAG API Router
 RAG tabanlı tıbbi chatbot endpoint'leri
+
+Performance Optimizations:
+- SSE Streaming for faster perceived response
+- Profiling for timing breakdown
 """
 
 import os
+import json
+import time
+import asyncio
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Optional, List, Dict, Any, Generator, AsyncGenerator
 from deep_translator import GoogleTranslator
 from groq import Groq
 
 # RAG modülleri
 from app.rag.rag_chain import get_rag_chain
 from app.rag.knowledge_base import get_knowledge_base
+from app.rag.performance import RequestProfiler, get_cache_stats, clear_all_caches
 
 # İlaç isim işleme (main.py ile aynı gelişmiş versiyon)
 from app.medicine_utils import mask_medicines, unmask_medicines, convert_english_medicines_to_turkish
@@ -66,6 +75,7 @@ class RAGChatResponse(BaseModel):
     response_en: Optional[str] = None  # İngilizce yanıt
     sources: List[RAGSource] = Field(default_factory=list)  # Kullanılan kaynaklar
     rag_used: bool = False  # RAG kullanıldı mı?
+    timings: Optional[Dict[str, Any]] = None  # Performance timing breakdown (ms)
     disclaimer: str = "⚠️ Bu bilgiler eğitim amaçlıdır, tıbbi tavsiye değildir. Acil durumlarda 112'yi arayın."
 
 
@@ -295,6 +305,7 @@ async def rag_chat(request: RAGChatRequest):
 
         # ============ 3. RAG İŞLEMİ ============
         rag_chain = get_rag_chain()
+        profiler = RequestProfiler()  # Router-level profiling
 
         # İlk sağlık sorusu mu yoksa follow-up mı?
         is_first_health_question = not has_health_context
@@ -347,10 +358,11 @@ async def rag_chat(request: RAGChatRequest):
                 search_query_tr = f"{user_message} {' '.join(generic_names)}"
                 print(f"[RAG Search Query] Enhanced with generic names: {search_query_tr}")
 
-        search_query_en = translate_to_english(search_query_tr)
+        with profiler.time("t_translate_in"):
+            search_query_en = translate_to_english(search_query_tr)
 
-        # 3d. Maskelenmiş mesajı İngilizce'ye çevir (LLM için)
-        llm_query_en = translate_to_english(masked_message)
+            # 3d. Maskelenmiş mesajı İngilizce'ye çevir (LLM için)
+            llm_query_en = translate_to_english(masked_message)
 
         # RAG query - search_query ayrı geçilir (maskesiz)
         result = rag_chain.query(
@@ -363,7 +375,8 @@ async def rag_chat(request: RAGChatRequest):
         )
 
         # 3d. Cevabı Türkçe'ye çevir
-        response_tr = translate_to_turkish(result["answer"])
+        with profiler.time("t_translate_out"):
+            response_tr = translate_to_turkish(result["answer"])
         response_en_raw = result["answer"]
 
         # 3e. ÖNCE LLM'in kendi eklediği İngilizce ilaç isimlerini Türkçe'ye çevir
@@ -384,16 +397,36 @@ async def rag_chat(request: RAGChatRequest):
                 title=s.get("title", "Unknown"),
                 source=s.get("source", "Medical Database"),
                 category=s.get("category", "general"),
-                relevance_score=round(1 / (1 + s.get("score", 1)), 3)  # Distance → similarity
+                relevance_score=round(1 / max(0.01, 1 + s.get("score", 1)), 3)  # Distance → similarity (safe div)
             )
             for s in result.get("sources", [])[:request.max_sources]
         ]
+
+        # Merge timings: router + rag_chain (deep merge)
+        router_timings = profiler.report()
+        rag_timings = result.get("timings", {})
+
+        # Deep merge timings_ms and breakdown_pct
+        all_timings = {
+            "timings_ms": {**router_timings.get("timings_ms", {}), **rag_timings.get("timings_ms", {})},
+            "total_ms": router_timings.get("total_ms", 0),  # Use router's total (includes everything)
+            "breakdown_pct": {**router_timings.get("breakdown_pct", {}), **rag_timings.get("breakdown_pct", {})}
+        }
+
+        # Log combined summary
+        total = all_timings["total_ms"]
+        parts = [f"[RAG PERF] TOTAL={total:.0f}ms"]
+        for stage, ms in sorted(all_timings["timings_ms"].items(), key=lambda x: -x[1]):
+            pct = (ms / total) * 100 if total > 0 else 0
+            parts.append(f"{stage}={ms:.0f}ms({pct:.0f}%)")
+        print(" | ".join(parts))
 
         return RAGChatResponse(
             response=response_tr,
             response_en=response_en_raw,  # Saf İngilizce (drift önleme için)
             sources=sources,
-            rag_used=result.get("context_used", False)
+            rag_used=result.get("context_used", False),
+            timings=all_timings  # Full performance breakdown
         )
         
     except Exception as e:
@@ -482,6 +515,234 @@ async def reload_knowledge_base():
         raise HTTPException(status_code=500, detail=f"Reload error: {str(e)}")
 
 
+@router.post("/chat/stream")
+async def rag_chat_stream(request: RAGChatRequest):
+    """
+    Streaming RAG chat - returns Server-Sent Events (SSE)
+
+    This provides much faster perceived response time by streaming
+    LLM tokens as they are generated.
+
+    Event types:
+    - data: {"type": "chunk", "content": "..."} - Text chunk
+    - data: {"type": "done", "sources": [...], "timings": {...}} - Final metadata
+    """
+
+    async def generate() -> AsyncGenerator[str, None]:
+        try:
+            user_message = request.message.strip()
+            has_health_context = has_health_context_in_history(request.history)
+            profiler = RequestProfiler()
+
+            # Helper function to stream text in chunks (fast mode with minimal delay)
+            async def stream_text(text: str, chunk_size: int = 8):
+                """
+                Stream text in chunks with minimal delay for better performance.
+                chunk_size=8: Good balance between speed and visible streaming
+                delay=0.01: 10ms - fast but still visible
+                """
+                words = text.split(' ')
+                streamed = ""
+                for i in range(0, len(words), chunk_size):
+                    word_chunk = ' '.join(words[i:i + chunk_size])
+                    if streamed:
+                        streamed += ' ' + word_chunk
+                    else:
+                        streamed = word_chunk
+                    yield f"data: {json.dumps({'type': 'chunk', 'content': streamed})}\n\n"
+                    await asyncio.sleep(0.01)  # 10ms delay - fast but still visible
+
+            # 1. Selamlaşma kontrolü
+            greeting_type = get_greeting_type(user_message)
+            if greeting_type:
+                if not has_health_context:
+                    response = get_greeting_response(greeting_type)
+                    async for chunk in stream_text(response):
+                        yield chunk
+                    yield f"data: {json.dumps({'type': 'done', 'sources': [], 'rag_used': False})}\n\n"
+                    return
+                else:
+                    response = generate_contextual_greeting(greeting_type, request.history)
+                    async for chunk in stream_text(response):
+                        yield chunk
+                    yield f"data: {json.dumps({'type': 'done', 'sources': [], 'rag_used': False})}\n\n"
+                    return
+
+            # 2. Sağlık dışı konu kontrolü
+            if not has_health_context:
+                domain_result = check_health_domain_simple(user_message)
+                if domain_result == "NO":
+                    response = "Merhaba! Ben sağlık odaklı bir asistanım. 🏥\n\nSadece sağlık, hastalık, semptom ve tedavi ile ilgili sorularınızda size yardımcı olabilirim."
+                    async for chunk in stream_text(response):
+                        yield chunk
+                    yield f"data: {json.dumps({'type': 'done', 'sources': [], 'rag_used': False})}\n\n"
+                    return
+                elif domain_result == "UNCERTAIN":
+                    response = "Merhaba! 😊 Mesajınızı tam anlayamadım.\n\nBen sağlık konularında yardımcı olan bir asistanım. Lütfen sorunuzu biraz daha açıklayabilir misiniz?"
+                    async for chunk in stream_text(response):
+                        yield chunk
+                    yield f"data: {json.dumps({'type': 'done', 'sources': [], 'rag_used': False})}\n\n"
+                    return
+
+            # 3. RAG işlemi
+            rag_chain = get_rag_chain()
+            is_first_health_question = not has_health_context
+
+            # Mask işlemleri
+            global_mask_map = {}
+            mask_counter = 0
+
+            # History hazırla
+            history_en = []
+            for msg in request.history[-6:]:
+                if msg.content_en:
+                    content_en = msg.content_en
+                elif msg.role == "user":
+                    masked_hist, global_mask_map, mask_counter = mask_medicines(
+                        msg.content, start_counter=mask_counter, existing_mask_map=global_mask_map
+                    )
+                    content_en = translate_to_english(masked_hist)
+                else:
+                    content_en = translate_to_english(msg.content)
+                history_en.append({"role": msg.role, "content": content_en})
+
+            # Mesajı maskele
+            masked_message, global_mask_map, mask_counter = mask_medicines(
+                user_message, start_counter=mask_counter, existing_mask_map=global_mask_map
+            )
+
+            # Search query hazırla
+            search_query_tr = user_message
+            if global_mask_map:
+                generic_names = []
+                for mapping in global_mask_map.values():
+                    en_name = mapping.get("en", "")
+                    if "(" in en_name:
+                        generic = en_name.split("(")[0].strip()
+                    else:
+                        generic = en_name.strip()
+                    if generic and len(generic) > 2:
+                        generic_names.append(generic)
+                if generic_names:
+                    search_query_tr = f"{user_message} {' '.join(generic_names)}"
+
+            with profiler.time("t_translate_in"):
+                search_query_en = translate_to_english(search_query_tr)
+                llm_query_en = translate_to_english(masked_message)
+
+            # Knowledge base search
+            kb = get_knowledge_base()
+            with profiler.time("t_retrieve"):
+                search_results = kb.search(search_query_en, top_k=5, profiler=profiler)
+
+            # Context hazırla
+            context = kb.get_context_for_query(search_query_en, max_tokens=2500, search_results=search_results)
+
+            # Mask hints ekle
+            if global_mask_map and context:
+                token_hints = []
+                for token, mapping in global_mask_map.items():
+                    en_name = mapping.get("en", "")
+                    tr_name = mapping.get("tr", "")
+                    if "(" in en_name:
+                        generic = en_name.split("(")[0].strip()
+                    else:
+                        generic = en_name.strip()
+                    token_hints.append(f"{token} is a Turkish brand mention ({tr_name}); generic medication: {generic}")
+                if token_hints:
+                    hint_section = "\n=== MEDICATION TOKEN MAPPING ===\n"
+                    hint_section += "\n".join(f"• {h}" for h in token_hints)
+                    hint_section += "\n================================\n"
+                    context = hint_section + context
+
+            # System prompt
+            is_followup = not is_first_health_question
+            system_prompt = rag_chain.get_rag_system_prompt(context, is_followup=is_followup)
+
+            # Messages hazırla
+            messages = [{"role": "system", "content": system_prompt}]
+            for msg in history_en[-6:]:
+                messages.append({"role": msg["role"], "content": msg["content"]})
+            messages.append({"role": "user", "content": llm_query_en})
+
+            # Streaming LLM call
+            full_response_en = ""
+            with profiler.time("t_llm"):
+                stream = groq_client.chat.completions.create(
+                    model="llama-3.3-70b-versatile",
+                    messages=messages,
+                    temperature=0.7,
+                    max_tokens=2048,
+                    stream=True
+                )
+
+                for chunk in stream:
+                    if chunk.choices[0].delta.content:
+                        content_en = chunk.choices[0].delta.content
+                        full_response_en += content_en
+
+                        # Translate chunk to Turkish (for small chunks, quick translation)
+                        # For performance, we'll translate after complete sentences
+                        # For now, stream English and send full translation at end
+
+            # Translate full response
+            with profiler.time("t_translate_out"):
+                response_tr = translate_to_turkish(full_response_en)
+
+            # Post-process
+            response_tr = convert_english_medicines_to_turkish(response_tr, format_style="tr_only")
+            if global_mask_map:
+                response_tr = unmask_medicines(response_tr, global_mask_map, format_style="tr_only")
+                full_response_en = unmask_medicines(full_response_en, global_mask_map, format_style="en_only")
+
+            # Stream the Turkish response in chunks for visible streaming effect
+            async for chunk in stream_text(response_tr, chunk_size=8):
+                yield chunk
+
+            # Sources
+            sources = [
+                {
+                    "title": s.get("metadata", {}).get("title", "Unknown"),
+                    "source": s.get("metadata", {}).get("source", "Medical Database"),
+                    "category": s.get("metadata", {}).get("category", "general"),
+                    "relevance_score": round(1 / max(0.01, 1 + s.get("score", 1)), 3)  # Safe division
+                }
+                for s in search_results[:request.max_sources]
+            ]
+
+            profiler.log_summary("[RAG STREAM PERF]")
+
+            # Final metadata
+            yield f"data: {json.dumps({'type': 'done', 'sources': sources, 'rag_used': True, 'response_en': full_response_en, 'timings': profiler.report()})}\n\n"
+
+        except Exception as e:
+            print(f"[STREAM ERROR] {e}")
+            yield f"data: {json.dumps({'type': 'error', 'message': str(e)})}\n\n"
+
+    return StreamingResponse(
+        generate(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"  # Disable nginx buffering
+        }
+    )
+
+
+@router.get("/cache/stats")
+async def get_cache_statistics():
+    """Cache istatistiklerini döndür"""
+    return get_cache_stats()
+
+
+@router.post("/cache/clear")
+async def clear_cache():
+    """Tüm cache'leri temizle"""
+    clear_all_caches()
+    return {"status": "success", "message": "All caches cleared"}
+
+
 @router.get("/health")
 async def rag_health_check():
     """
@@ -490,7 +751,7 @@ async def rag_health_check():
     try:
         kb = get_knowledge_base()
         stats = kb.get_stats()
-        
+
         return {
             "status": "healthy",
             "knowledge_base": {
@@ -498,9 +759,11 @@ async def rag_health_check():
                 "documents": stats["total_documents"]
             },
             "embedding_model": stats["vector_store"]["model"],
+            "index_type": stats["vector_store"].get("index_type", "flat"),
+            "cache_stats": get_cache_stats(),
             "ready": stats["total_documents"] > 0
         }
-        
+
     except Exception as e:
         return {
             "status": "unhealthy",

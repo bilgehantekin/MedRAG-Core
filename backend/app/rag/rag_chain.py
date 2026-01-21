@@ -1,15 +1,20 @@
 """
 RAG Chain Module
 Retrieval-Augmented Generation pipeline
+
+Performance Optimizations:
+- Request-level profiling for timing breakdown
+- Streaming support for faster perceived response
 """
 
 import os
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Generator
 from groq import Groq
 from dotenv import load_dotenv
 from pathlib import Path
 
 from app.rag.knowledge_base import MedicalKnowledgeBase, get_knowledge_base
+from app.rag.performance import RequestProfiler
 
 # .env yükle
 env_path = Path(__file__).parent.parent.parent / ".env"
@@ -372,7 +377,8 @@ RULES:
         max_context_tokens: int = 2500,
         is_first_health_question: bool = True,
         search_query: Optional[str] = None,
-        mask_map: Optional[Dict] = None
+        mask_map: Optional[Dict] = None,
+        enable_profiling: bool = True
     ) -> Dict:
         """
         RAG query yap
@@ -385,6 +391,7 @@ RULES:
             is_first_health_question: İlk sağlık sorusu mu? (True = detaylı, False = kısa)
             search_query: Knowledge base araması için soru (maskesiz). None ise question kullanılır.
             mask_map: İlaç maskeleme haritası (örn: {'MEDTOK0X': {'tr': 'Calpol', 'en': 'paracetamol'}})
+            enable_profiling: Enable timing profiler (default True)
 
         Returns:
             {
@@ -394,9 +401,13 @@ RULES:
                 "context_used": bool,
                 "is_emergency": bool,
                 "is_crisis": bool,
-                "is_sensitive": bool
+                "is_sensitive": bool,
+                "timings": Dict  # Performance timing breakdown
             }
         """
+        # Initialize profiler
+        profiler = RequestProfiler() if enable_profiling else None
+
         sources = []
         source_urls = []
         context = ""
@@ -410,7 +421,7 @@ RULES:
         if use_context:
             # search_query belirtilmişse kullan (maskesiz sorgu), yoksa question kullan
             kb_query = search_query if search_query else question
-            search_results = self.knowledge_base.search(kb_query, top_k=5)
+            search_results = self.knowledge_base.search(kb_query, top_k=5, profiler=profiler)
 
             # Acil durum kontrolü (geliştirilmiş - score threshold)
             emergency_check = self._check_emergency(search_results)
@@ -550,15 +561,30 @@ Be helpful but concise. Do NOT diagnose. Recommend seeing a doctor for proper ca
         
         # LLM çağrısı - dynamic temperature based on content type
         try:
-            response = self.groq_client.chat.completions.create(
-                model=self.model,
-                messages=messages,
-                temperature=temperature,  # Dynamic: 0.3 for emergency/crisis, 0.5 for sensitive, 0.7 for normal
-                max_tokens=2048
-            )
+            if profiler:
+                with profiler.time("t_llm"):
+                    response = self.groq_client.chat.completions.create(
+                        model=self.model,
+                        messages=messages,
+                        temperature=temperature,  # Dynamic: 0.3 for emergency/crisis, 0.5 for sensitive, 0.7 for normal
+                        max_tokens=2048
+                    )
+            else:
+                response = self.groq_client.chat.completions.create(
+                    model=self.model,
+                    messages=messages,
+                    temperature=temperature,
+                    max_tokens=2048
+                )
             answer = response.choices[0].message.content
         except Exception as e:
             answer = f"Error generating response: {str(e)}"
+
+        # Log profiling summary
+        timings = {}
+        if profiler:
+            profiler.log_summary("[RAG PERF]")
+            timings = profiler.report()
 
         return {
             "answer": answer,
@@ -572,7 +598,8 @@ Be helpful but concise. Do NOT diagnose. Recommend seeing a doctor for proper ca
             "emergency_number": emergency_number if is_emergency else None,
             "response_mode": response_mode,
             "temperature": temperature,
-            "model": self.model
+            "model": self.model,
+            "timings": timings  # Performance breakdown
         }
     
     def query_with_translation(

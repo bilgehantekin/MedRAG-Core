@@ -5,9 +5,6 @@ import { SymptomReport } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
-// Streaming hızı (ms cinsinden karakter başına gecikme)
-const STREAM_SPEED = 8; // Hızlı ama okunabilir
-
 export function ChatPanel() {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -15,7 +12,7 @@ export function ChatPanel() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const initialMessageSent = useRef(false);
   const isUserScrolledUp = useRef(false);
-  
+
   const {
     messages,
     addMessage,
@@ -42,12 +39,11 @@ export function ChatPanel() {
   const handleScroll = useCallback(() => {
     if (messagesContainerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
-      // Eğer kullanıcı en alttan 100px'den fazla yukarıdaysa
       isUserScrolledUp.current = scrollHeight - scrollTop - clientHeight > 100;
     }
   }, []);
 
-  // Akıllı auto-scroll - sadece kullanıcı yukarı scroll yapmadıysa
+  // Akıllı auto-scroll
   const scrollToBottom = useCallback((force = false) => {
     if (force || !isUserScrolledUp.current) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -56,53 +52,35 @@ export function ChatPanel() {
 
   // Yeni mesaj geldiğinde scroll
   useEffect(() => {
-    // Kullanıcı mesajı geldiğinde her zaman scroll yap
     const lastMessage = messages[messages.length - 1];
     if (lastMessage?.role === 'user') {
       scrollToBottom(true);
     }
   }, [messages.length]);
 
-  // Streaming efekti ile mesaj göster
-  const streamMessage = useCallback(async (fullContent: string, isEmergency?: boolean, contentEn?: string) => {
-    setIsStreaming(true);
+  // Streaming sırasında son mesaj içeriği değiştiğinde auto-scroll
+  useEffect(() => {
+    if (isStreaming) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage?.role === 'assistant') {
+        // Streaming sırasında her zaman aşağı kay (kullanıcı yukarı kaydırmadıysa)
+        scrollToBottom();
+      }
+    }
+  }, [messages[messages.length - 1]?.content, isStreaming, scrollToBottom]);
 
-    // Boş mesaj ile başla - content_en dahil (drift önleme için)
+  // Mesajı anında göster (streaming olmadan)
+  const showMessage = useCallback((content: string, isEmergency?: boolean, contentEn?: string) => {
     addMessage({
       role: 'assistant',
-      content: '',
+      content: content,
       content_en: contentEn,
       isEmergency
     });
-
-    // Karakterleri kademeli olarak ekle
-    let currentIndex = 0;
-    const totalLength = fullContent.length;
-    
-    // Chunk boyutu - daha hızlı görünmesi için birkaç karakter birden
-    const chunkSize = 3;
-    
-    while (currentIndex < totalLength) {
-      const nextIndex = Math.min(currentIndex + chunkSize, totalLength);
-      const currentContent = fullContent.slice(0, nextIndex);
-      
-      updateLastMessage(currentContent);
-      currentIndex = nextIndex;
-      
-      // Scroll - her 50 karakterde bir kontrol et
-      if (currentIndex % 50 === 0 || currentIndex >= totalLength) {
-        scrollToBottom();
-      }
-      
-      // Gecikme
-      await new Promise(resolve => setTimeout(resolve, STREAM_SPEED));
-    }
-    
-    setIsStreaming(false);
     scrollToBottom();
-  }, [addMessage, updateLastMessage, setIsStreaming, scrollToBottom]);
+  }, [addMessage, scrollToBottom]);
 
-  // Direkt chat modunda hoş geldin mesajı göster
+  // Direkt chat modunda hoş geldin mesajı
   useEffect(() => {
     if (isDirectChatMode && messages.length === 0 && !initialMessageSent.current) {
       initialMessageSent.current = true;
@@ -111,16 +89,16 @@ export function ChatPanel() {
 Size yardımcı olmak için buradayım. Lütfen şikayetlerinizi kendi cümlelerinizle anlatın. Örneğin:
 
 • "Başım çok ağrıyor, midem bulanıyor"
-• "Dün akşamdan beri sırtımda ağrı var"  
+• "Dün akşamdan beri sırtımda ağrı var"
 • "Sol dizim şişti, hareket ettiremiyorum"
 • "Bir haftadır öksürüğüm var, ateşim çıkıyor"
 
 Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz nedir?`;
-      streamMessage(welcomeMessage);
+      showMessage(welcomeMessage);
     }
-  }, [isDirectChatMode, streamMessage]);
+  }, [isDirectChatMode, showMessage, messages.length]);
 
-  // 3D model modunda ilk mesajı gönder (symptom report ile) - sadece 1 kere
+  // 3D model modunda ilk mesajı gönder
   useEffect(() => {
     if (!isDirectChatMode && symptomReport && messages.length === 0 && !initialMessageSent.current) {
       initialMessageSent.current = true;
@@ -128,7 +106,7 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
     }
   }, [symptomReport, isDirectChatMode]);
 
-  // Başlangıç zamanı için Türkçe cümle oluştur
+  // Başlangıç zamanı için Türkçe cümle
   const getOnsetMessage = (onsetId: string): string => {
     const onsetMessages: Record<string, string> = {
       'just_now': 'Az önce başladı.',
@@ -143,7 +121,7 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
     return onsetMessages[onsetId] || '';
   };
 
-  // Tetikleyici için Türkçe cümle oluştur
+  // Tetikleyici için Türkçe cümle
   const getTriggerMessage = (triggerId: string): string => {
     const triggerMessages: Record<string, string> = {
       'injury': 'Bir darbe veya yaralanma sonrası oluştu.',
@@ -158,7 +136,7 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
     return triggerMessages[triggerId] || '';
   };
 
-  // Kırmızı bayraklar için Türkçe cümle oluştur
+  // Kırmızı bayraklar için Türkçe cümle
   const getRedFlagMessage = (flagId: string): string => {
     const flagMessages: Record<string, string> = {
       'cannot_bear_weight': 'Üzerine basamıyorum.',
@@ -180,7 +158,6 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
     const region = BODY_REGIONS[report.region];
     const symptom = SYMPTOMS[report.symptom];
 
-    // Kullanıcı mesajını oluştur
     let userMessage = `${region.name_tr} bölgemde ${symptom.name_tr.toLowerCase()} var.`;
     userMessage += ` Şiddeti 10 üzerinden ${report.severity}.`;
     userMessage += ` ${getOnsetMessage(report.onset)}`;
@@ -197,7 +174,6 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
       symptomContext: report
     });
 
-    // API'ye gönder
     await sendToAPI(userMessage, report);
   };
 
@@ -206,8 +182,8 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
     if (!sources || sources.length === 0) return '';
 
     const sourceLines = sources
-      .filter(s => s.relevance_score > 0.3) // Sadece yüksek ilgili kaynaklar
-      .slice(0, 3) // Maksimum 3 kaynak
+      .filter(s => s.relevance_score > 0.3)
+      .slice(0, 3)
       .map(s => `• ${s.title} (${s.source})`)
       .join('\n');
 
@@ -215,24 +191,134 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
     return `\n\n📚 **Kaynaklar:**\n${sourceLines}`;
   };
 
-  // Yapısal context'i API'ye gönder
-  const sendToAPI = async (userMessage: string, report?: SymptomReport) => {
+  // SSE Streaming ile API'ye gönder
+  const sendToAPIWithStreaming = async (userMessage: string) => {
     setIsLoading(true);
+    // isStreaming'i henüz true yapmıyoruz - loading animasyonu gösterilecek
+    let streamingStarted = false;
 
     try {
-      // History'yi hazırla (content_en dahil - drift önleme için)
       const history = messages.slice(-10).map(m => ({
         role: m.role,
         content: m.content,
-        content_en: m.content_en  // Backend'e geri gönder
+        content_en: m.content_en
+      }));
+
+      const ragBody = {
+        message: userMessage,
+        history,
+        use_rag: true,
+        max_sources: 5
+      };
+
+      const response = await fetch(`${API_URL}/rag/chat/stream`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(ragBody)
+      });
+
+      if (!response.ok) {
+        throw new Error('Streaming API hatası');
+      }
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+
+      if (!reader) {
+        throw new Error('Stream reader yok');
+      }
+
+      let fullContent = '';
+      let sources: any[] = [];
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\n');
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const data = JSON.parse(line.slice(6));
+
+              if (data.type === 'chunk') {
+                // İlk chunk geldiğinde streaming moduna geç
+                if (!streamingStarted) {
+                  streamingStarted = true;
+                  setIsStreaming(true);
+                  // Streaming başladığında scroll durumunu sıfırla - aşağı kaymayı garantile
+                  isUserScrolledUp.current = false;
+                  // Boş assistant mesajı ekle (streaming için)
+                  addMessage({
+                    role: 'assistant',
+                    content: '',
+                    isEmergency: false
+                  });
+                }
+                fullContent = data.content;
+                updateLastMessage(fullContent);
+                scrollToBottom();
+              } else if (data.type === 'done') {
+                sources = data.sources || [];
+                // Not: data.response_en gelecekte content_en güncellemesi için kullanılabilir
+
+                // Kaynakları ekle
+                if (data.rag_used && sources.length > 0) {
+                  const sourcesText = formatSources(sources);
+                  fullContent += sourcesText;
+                  updateLastMessage(fullContent);
+                }
+
+                // content_en güncelle (store'a kaydet)
+                // Not: updateLastMessage sadece content güncelliyor
+                // content_en için ayrı bir store action gerekebilir
+              } else if (data.type === 'error') {
+                updateLastMessage(`❌ Hata: ${data.message}`);
+              }
+            } catch (e) {
+              // JSON parse hatası - atla
+            }
+          }
+        }
+      }
+
+    } catch (error) {
+      console.error('Streaming error:', error);
+      // Eğer streaming başlamadıysa (boş mesaj henüz eklenmemişse), yeni mesaj ekle
+      // Streaming başladıysa, mevcut boş mesajı güncelle
+      if (streamingStarted) {
+        updateLastMessage('❌ Bir hata oluştu. Lütfen tekrar deneyin.');
+      } else {
+        showMessage('❌ Bir hata oluştu. Lütfen tekrar deneyin.');
+      }
+    } finally {
+      setIsLoading(false);
+      setIsStreaming(false);
+      // Streaming bitince son halini göster - force ile scroll
+      scrollToBottom(true);
+    }
+  };
+
+  // Normal (non-streaming) API çağrısı
+  const sendToAPINormal = async (userMessage: string, report?: SymptomReport) => {
+    setIsLoading(true);
+
+    try {
+      const history = messages.slice(-10).map(m => ({
+        role: m.role,
+        content: m.content,
+        content_en: m.content_en
       }));
 
       let responseText = '';
-      let responseEn: string | undefined = undefined;  // Drift önleme için
+      let responseEn: string | undefined = undefined;
       let isEmergency = false;
 
       if (useRag) {
-        // RAG endpoint'ini kullan
         const ragBody = {
           message: userMessage,
           history,
@@ -242,32 +328,22 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
 
         const response = await fetch(`${API_URL}/rag/chat`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(ragBody)
         });
 
-        if (!response.ok) {
-          throw new Error('RAG API hatası');
-        }
+        if (!response.ok) throw new Error('RAG API hatası');
 
         const data = await response.json();
         responseText = data.response;
-        responseEn = data.response_en;  // İngilizce cevabı sakla (drift önleme)
+        responseEn = data.response_en;
 
-        // Kaynakları ekle (varsa)
-        if (data.rag_used && data.sources && data.sources.length > 0) {
+        if (data.rag_used && data.sources?.length > 0) {
           responseText += formatSources(data.sources);
         }
       } else {
-        // Normal chat endpoint'ini kullan
-        const body: any = {
-          message: userMessage,
-          history
-        };
+        const body: any = { message: userMessage, history };
 
-        // Eğer symptom report varsa, context olarak ekle
         if (report) {
           body.symptom_context = {
             region: report.region,
@@ -285,30 +361,34 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
 
         const response = await fetch(`${API_URL}/chat`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body)
         });
 
-        if (!response.ok) {
-          throw new Error('API hatası');
-        }
+        if (!response.ok) throw new Error('API hatası');
 
         const data = await response.json();
         responseText = data.response;
-        responseEn = data.response_en;  // Normal chat de response_en döner
+        responseEn = data.response_en;
         isEmergency = data.is_emergency;
       }
 
-      // Streaming ile mesajı göster (content_en ile - drift önleme)
-      await streamMessage(responseText, isEmergency, responseEn);
+      showMessage(responseText, isEmergency, responseEn);
 
     } catch (error) {
       console.error('Chat error:', error);
-      await streamMessage('❌ Bir hata oluştu. Lütfen tekrar deneyin.');
+      showMessage('❌ Bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // API'ye gönder - RAG modunda streaming, normal modda standart
+  const sendToAPI = async (userMessage: string, report?: SymptomReport) => {
+    if (useRag) {
+      await sendToAPIWithStreaming(userMessage);
+    } else {
+      await sendToAPINormal(userMessage, report);
     }
   };
 
@@ -319,7 +399,7 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
 
     setInput('');
     addMessage({ role: 'user', content: text });
-    scrollToBottom(true); // Kullanıcı mesajında her zaman scroll
+    scrollToBottom(true);
     await sendToAPI(text);
   };
 
@@ -333,13 +413,11 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
 
   // Yeni şikayet
   const handleNewComplaint = () => {
-    initialMessageSent.current = false; // Yeni şikayet için ref'i sıfırla
+    initialMessageSent.current = false;
     if (isDirectChatMode) {
-      // Direkt chat modunda: sadece mesajları temizle ve yeni hoş geldin mesajı göster
       resetSymptomSelection();
       useAppStore.getState().clearMessages();
     } else {
-      // 3D model modunda: başa dön
       resetSymptomSelection();
       setCurrentStep('body_selection');
     }
@@ -420,7 +498,7 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
       </div>
 
       {/* Messages */}
-      <div 
+      <div
         ref={messagesContainerRef}
         onScroll={handleScroll}
         className="flex-1 overflow-y-auto p-4 space-y-4"
@@ -443,9 +521,12 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-xl">🏥</span>
                   <span className="font-medium text-slate-700">Sağlık Asistanı</span>
+                  {isStreaming && message === messages[messages.length - 1] && (
+                    <span className="inline-block w-2 h-4 bg-primary-500 animate-pulse ml-1"></span>
+                  )}
                 </div>
               )}
-              <div 
+              <div
                 className={message.role === 'user' ? '' : 'text-slate-700'}
                 dangerouslySetInnerHTML={{ __html: formatMessage(message.content) }}
               />

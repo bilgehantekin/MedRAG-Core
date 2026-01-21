@@ -138,6 +138,17 @@ Tarayıcıda: **http://localhost:3000**
 
 ## 📝 Sürüm Geçmişi
 
+### v4.2 (Ocak 2026) - Performance Optimizasyonu & Streaming UX
+- ✨ FAISS IVF index aktivasyonu (1000+ döküman için hızlı arama)
+- ✨ Inverted keyword index ile O(1) keyword lookup (O(N) tarama yerine)
+- ✨ SSE streaming optimizasyonu (10ms delay, 8-word chunks)
+- ✨ RequestProfiler ile detaylı timing breakdown (t_translate_in, t_llm, t_retrieve vb.)
+- ✨ Döküman duplikasyonu önleme (index diskten yüklendiyse JSON atlanıyor)
+- ✨ Deep merge ile timing metriklerinin birleştirilmesi
+- ✨ Streaming sırasında otomatik scroll (UX iyileştirmesi)
+- 🐛 Keyword score hesaplamasında sıfıra bölme hatası düzeltildi
+- 🐛 Yüksek match score'larında division by zero koruması eklendi
+
 ### v4.1 (Ocak 2026) - Hedefli OpenFDA ETL & Veri Optimizasyonu
 - ✨ `fetch_openfda_targeted.py` - TURKISH_MEDICINE_DICTIONARY bazlı hedefli OpenFDA veri çekme
 - ✨ Sadece Türkiye'de kullanılan ilaçların canonical isimleri için API sorgusu

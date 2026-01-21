@@ -1,6 +1,11 @@
 """
 Medical Knowledge Base Module
 Tıbbi bilgi kaynaklarını yönetme ve yükleme
+
+Performance Optimizations:
+- Category pre-filtering for faster search
+- Retrieval result caching
+- Profiling support
 """
 
 import json
@@ -9,6 +14,11 @@ from typing import List, Dict, Optional, Tuple
 from pathlib import Path
 
 from app.rag.vector_store import VectorStore
+from app.rag.performance import (
+    RequestProfiler,
+    get_retrieval_cache,
+    predict_category
+)
 
 # Chunking constants
 MAX_CHUNK_CHARS = 1500  # ~375 tokens (approx 4 chars/token)
@@ -34,11 +44,20 @@ class MedicalKnowledgeBase:
         Args:
             vector_store: Kullanılacak vector store (None ise yeni oluşturulur)
         """
-        self.vector_store = vector_store or VectorStore()
         self.data_dir = Path(__file__).parent.parent.parent / "data" / "medical_knowledge"
         self.categories = set()
         self._loaded_files: set = set()  # Tekrarlı yükleme önleme
         self._tr_drug_allowlist: set = set()  # TR'de geçerli ilaç isimleri
+
+        # Vector store - kaydedilmiş index varsa oradan yükle
+        if vector_store:
+            self.vector_store = vector_store
+        else:
+            index_dir = self.data_dir / "vector_index"
+            if index_dir.exists():
+                self.vector_store = VectorStore(index_path=str(index_dir))
+            else:
+                self.vector_store = VectorStore()
 
     def _to_bool(self, v) -> bool:
         """
@@ -913,6 +932,16 @@ class MedicalKnowledgeBase:
         - *_medlineplus.json (enriched hariç): Ara dosyalar
         - *_clean_en.json: Ara dosyalar
         """
+        # Eğer index zaten diskten yüklendiyse, JSON'lardan tekrar yükleme yapma
+        existing_docs = len(self.vector_store.documents)
+        if existing_docs > 0:
+            print(f"ℹ️  Index zaten {existing_docs} döküman içeriyor, JSON yüklemesi atlanıyor")
+            # Categories'i vector_store'dan rebuild et
+            for doc in self.vector_store.documents:
+                cat = doc.get("metadata", {}).get("category", "general")
+                self.categories.add(cat)
+            return existing_docs
+
         if not self.data_dir.exists():
             print(f"⚠️  Veri klasörü bulunamadı: {self.data_dir}")
             return 0
@@ -972,54 +1001,31 @@ class MedicalKnowledgeBase:
         else:
             print(f"⚠️  medications_openfda_only_tr.json: dosya bulunamadı, atlanıyor")
 
+        # IVF index rebuild (>1000 dok varsa) ve kaydet
+        if total_loaded > 0:
+            rebuilt = self.vector_store.rebuild_index_if_needed()
+            if rebuilt:
+                print("💾 IVF index kaydediliyor...")
+                self.save()
+
         return total_loaded
     
     def _keyword_search(self, query_terms: set, top_k: int = 10) -> List[Dict]:
         """
-        Keyword-based document retrieval from stored metadata.
-        Finds documents where query terms match stored keywords.
+        O(#terms) keyword-based document retrieval using inverted index.
+        Uses VectorStore's keyword_index for fast lookup instead of O(N) scan.
         """
-        matches = []
+        # Use VectorStore's fast inverted index lookup
+        return self.vector_store.get_docs_by_keywords(query_terms, top_k=top_k)
 
-        # Search through all stored documents
-        for doc in self.vector_store.documents:
-            metadata = doc.get("metadata", {})
-            keywords = metadata.get("keywords", [])
-
-            if not keywords:
-                continue
-
-            # Normalize keywords
-            keywords_normalized = set()
-            for kw in keywords:
-                if isinstance(kw, str):
-                    keywords_normalized.add(self._normalize_text(kw))
-
-            # Check for matches
-            match_score = 0
-            for qt in query_terms:
-                if qt in keywords_normalized:
-                    match_score += 2  # Exact match
-                else:
-                    for kw in keywords_normalized:
-                        if qt in kw:
-                            match_score += 1
-                            break
-
-            if match_score > 0:
-                matches.append({
-                    "text": doc.get("text", ""),
-                    "metadata": metadata,
-                    "score": 0.5 - (match_score * 0.1),  # Convert to distance-like score (lower is better)
-                    "keyword_matched": True,
-                    "id": doc.get("id", "")
-                })
-
-        # Sort by match score and return top_k
-        matches.sort(key=lambda x: x["score"])
-        return matches[:top_k]
-
-    def search(self, query: str, top_k: int = 5, category: Optional[str] = None) -> List[Dict]:
+    def search(
+        self,
+        query: str,
+        top_k: int = 5,
+        category: Optional[str] = None,
+        profiler: Optional[RequestProfiler] = None,
+        use_cache: bool = True
+    ) -> List[Dict]:
         """
         Hybrid search: Vector similarity + keyword retrieval
 
@@ -1030,7 +1036,19 @@ class MedicalKnowledgeBase:
             query: Arama sorgusu (İngilizce veya Türkçe)
             top_k: Döndürülecek sonuç sayısı
             category: Belirli bir kategoride ara (symptoms, diseases, etc.)
+            profiler: Optional profiler for timing
+            use_cache: Whether to use retrieval cache
         """
+        # Check retrieval cache first
+        cache_key = f"{query}:{top_k}:{category}"
+        if use_cache:
+            retrieval_cache = get_retrieval_cache()
+            cached_results = retrieval_cache.get(cache_key)
+            if cached_results is not None:
+                if profiler:
+                    profiler.add_timing("t_retrieve", 0.5)  # Cache hit
+                return cached_results
+
         # Normalize query for keyword matching
         query_normalized = self._normalize_text(query)
         query_terms = set(query_normalized.split())
@@ -1043,9 +1061,26 @@ class MedicalKnowledgeBase:
                       "information", "tell", "me"}
         meaningful_terms = {t for t in query_terms if t not in stop_words and len(t) >= 3}
 
-        # 1. Vector search
+        # Auto-detect category if not provided (pre-filtering optimization)
+        search_category = category
+        if not search_category:
+            predicted = predict_category(query)
+            if predicted:
+                search_category = predicted
+                if profiler:
+                    print(f"  → Auto-detected category: {predicted}")
+
+        # 1. Vector search with optional profiler
         fetch_k = max(top_k * 2, 10)
-        vector_results = self.vector_store.search(query, top_k=fetch_k)
+        if profiler:
+            with profiler.time("t_retrieve"):
+                vector_results = self.vector_store.search(
+                    query, top_k=fetch_k, category=search_category, profiler=profiler
+                )
+        else:
+            vector_results = self.vector_store.search(
+                query, top_k=fetch_k, category=search_category
+            )
 
         # 2. Keyword search - sadece ilaç adı gibi kısa sorgularda çalıştır (hız optimizasyonu)
         # "başım ağrıyor ne yapayım" gibi semptom sorularında keyword taraması atlanır
@@ -1059,7 +1094,11 @@ class MedicalKnowledgeBase:
                 any(t in self._tr_drug_allowlist for t in tokens)
             )
             if looks_like_drug_query:
-                keyword_results = self._keyword_search(meaningful_terms, top_k=top_k)
+                if profiler:
+                    with profiler.time("t_keyword"):
+                        keyword_results = self._keyword_search(meaningful_terms, top_k=top_k)
+                else:
+                    keyword_results = self._keyword_search(meaningful_terms, top_k=top_k)
 
         # 3. Merge results, prioritizing keyword matches
         # doc_id ile dedupe - text[:200] chunking sonrası hatalı olabilir
@@ -1088,11 +1127,18 @@ class MedicalKnowledgeBase:
         # Sort by score
         merged.sort(key=lambda x: x.get("score", float("inf")))
 
-        # Kategori filtresi
-        if category:
+        # Kategori filtresi (if explicit category was provided but not used in search)
+        if category and category != search_category:
             merged = [r for r in merged if r["metadata"].get("category") == category]
 
-        return merged[:top_k]
+        results = merged[:top_k]
+
+        # Cache the results
+        if use_cache:
+            retrieval_cache = get_retrieval_cache()
+            retrieval_cache.set(cache_key, results)
+
+        return results
     
     def get_context_for_query(self, query: str, max_tokens: int = 2500, search_results: Optional[List[Dict]] = None) -> str:
         """

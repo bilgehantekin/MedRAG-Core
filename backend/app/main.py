@@ -54,7 +54,6 @@ app = FastAPI(
     version="3.0.0",
     lifespan=lifespan
 )
-
 # RAG Router'ı dahil et (opsiyonel - RAG kuruluysa)
 try:
     from app.rag.router import router as rag_router

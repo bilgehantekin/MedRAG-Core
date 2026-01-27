@@ -19,3 +19,9 @@ Pillow>=10.0.0
 opencv-python-headless>=4.8.0
 python-multipart>=0.0.6
 aiofiles>=23.0.0
+
+# Vision Pipeline Dependencies (Drug Image Analysis)
+ultralytics>=8.0.0
+pytesseract>=0.3.10
+chromadb>=0.4.0
+openai>=1.0.0

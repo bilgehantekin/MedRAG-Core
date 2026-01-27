@@ -29,6 +29,7 @@ Chatbot'a doğrudan yazarak şikayetlerinizi kendi cümlelerinizle anlatın.
 
 ### Chatbot Özellikleri
 - ✅ **RAG (Retrieval-Augmented Generation)** - Tıbbi bilgi tabanı ile zenginleştirilmiş yanıtlar
+- ✅ **İlaç Görsel Analizi** - Fotoğraftan ilaç tanıma ve bilgi sunma (OCR + Groq LLM)
 - ✅ Türkçe ilaç ismi tanıma (117+ ilaç, typo düzeltme, ek kırpma)
 - ✅ Çoklu kelime ilaç tespiti (tylol hot, aferin forte)
 - ✅ Sağlık dışı soruları filtreleme (hard/soft ayrımı)
@@ -38,12 +39,12 @@ Chatbot'a doğrudan yazarak şikayetlerinizi kendi cümlelerinizle anlatın.
 
 ## 🛠️ Teknoloji Stack
 
-| Frontend | Backend | RAG |
-|----------|---------|-----|
-| React 18 + TypeScript | FastAPI | FAISS Vector Store |
-| Three.js (@react-three/fiber) | Groq LLM (Llama 3.3) | Sentence Transformers |
-| Zustand | Deep Translator | Medical Knowledge Base |
-| Tailwind CSS | Pydantic | Semantic Search |
+| Frontend | Backend | RAG | Vision |
+|----------|---------|-----|--------|
+| React 18 + TypeScript | FastAPI | FAISS Vector Store | Tesseract OCR |
+| Three.js (@react-three/fiber) | Groq LLM (Llama 3.3) | Sentence Transformers | OpenCV |
+| Zustand | Deep Translator | Medical Knowledge Base | PIL/Pillow |
+| Tailwind CSS | Pydantic | Semantic Search | Drug Database (32 ilaç) |
 
 ## 📁 Proje Yapısı
 
@@ -57,12 +58,17 @@ medical_chatbot/
 │   │   ├── medicine_utils.py    # İlaç işleme yardımcı fonksiyonları
 │   │   ├── domain.py            # Domain sınıflandırma
 │   │   ├── prompts.py           # LLM prompt şablonları
-│   │   └── rag/                 # RAG Modülü
-│   │       ├── router.py            # RAG API endpoint'leri
-│   │       ├── rag_chain.py         # RAG zinciri ve LLM entegrasyonu
-│   │       ├── knowledge_base.py    # Tıbbi bilgi tabanı (3-doküman chunking)
-│   │       ├── vector_store.py      # FAISS vektör deposu
-│   │       └── embeddings.py        # Sentence Transformers
+│   │   ├── vision_router.py     # İlaç görsel analizi endpoint'leri
+│   │   ├── rag/                 # RAG Modülü
+│   │   │   ├── router.py            # RAG API endpoint'leri
+│   │   │   ├── rag_chain.py         # RAG zinciri ve LLM entegrasyonu
+│   │   │   ├── knowledge_base.py    # Tıbbi bilgi tabanı (3-doküman chunking)
+│   │   │   ├── vector_store.py      # FAISS vektör deposu
+│   │   │   └── embeddings.py        # Sentence Transformers
+│   │   └── vision/              # Vision Modülü (İlaç Görsel Analizi)
+│   │       └── data/
+│   │           └── drug_knowledge_base/
+│   │               └── drugs.json   # Türkçe ilaç veritabanı (32 ilaç)
 │   ├── scripts/
 │   │   ├── etl/                         # ETL Pipeline
 │   │   │   ├── fetch_openfda_targeted.py    # Hedefli OpenFDA veri çekme
@@ -82,9 +88,10 @@ medical_chatbot/
 │   └── src/
 │       ├── components/
 │       │   ├── HumanModel/      # 3D insan modeli
-│       │   ├── ChatPanel/       # Sohbet paneli
+│       │   ├── ChatPanel/       # Sohbet paneli (+ görsel yükleme)
 │       │   └── SymptomPanel/    # Semptom seçimi
 │       ├── store/               # Zustand state management
+│       ├── types/               # TypeScript tip tanımları
 │       └── data/                # Vücut bölgeleri verisi
 └── docs/screenshots/
 ```
@@ -100,6 +107,12 @@ cd backend
 python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 echo "GROQ_API_KEY=your_key" > .env
+
+# Tesseract OCR kurulumu (İlaç görsel analizi için)
+# macOS:
+brew install tesseract tesseract-lang
+# Ubuntu/Debian:
+# sudo apt-get install tesseract-ocr tesseract-ocr-tur
 ```
 
 ### 3. Frontend
@@ -127,6 +140,10 @@ Tarayıcıda: **http://localhost:3000**
 | POST /rag/chat | RAG destekli sohbet endpoint'i |
 | POST /rag/search | Bilgi tabanında arama |
 | GET /rag/stats | RAG istatistikleri |
+| POST /vision/analyze-image | İlaç görseli analizi (base64) |
+| POST /vision/analyze-upload | İlaç görseli analizi (file upload) |
+| GET /vision/health | Vision servisi sağlık kontrolü |
+| GET /vision/drugs | İlaç veritabanı listesi |
 | GET /health | API sağlık kontrolü |
 | GET /models | Mevcut Groq modelleri |
 
@@ -137,6 +154,18 @@ Tarayıcıda: **http://localhost:3000**
 - **Teşhis Engeli:** LLM teşhis koymamak üzere yapılandırılmış
 
 ## 📝 Sürüm Geçmişi
+
+### v5.0 (Ocak 2026) - İlaç Görsel Analizi (Vision Module)
+- ✨ **İlaç Fotoğrafından Tanıma** - Kullanıcı ilaç kutusu fotoğrafı yükleyerek bilgi alabilir
+- ✨ Tesseract OCR ile metin çıkarma (Türkçe + İngilizce dil desteği)
+- ✨ OpenCV ile görsel ön işleme (6 farklı işleme varyantı)
+- ✨ Akıllı ilaç eşleştirme algoritması (fuzzy matching, OCR hata düzeltme)
+- ✨ 32 Türkçe ilaç veritabanı (Parol, Nurofen, Augmentin, Aspirin vb.)
+- ✨ Groq LLM ile bağlamsal ilaç bilgisi yanıtları
+- ✨ Frontend'de görsel yükleme UI (önizleme, iptal, analiz)
+- ✨ Kullanıcı sorusu desteği (görsel + soru kombinasyonu)
+- ✨ `/vision/analyze-image` ve `/vision/analyze-upload` endpoint'leri
+- ✨ Vision health check endpoint'i (`/vision/health`)
 
 ### v4.2 (Ocak 2026) - Performance Optimizasyonu & Streaming UX
 - ✨ FAISS IVF index aktivasyonu (1000+ döküman için hızlı arama)

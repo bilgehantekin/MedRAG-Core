@@ -117,6 +117,7 @@ export interface ChatMessage {
   timestamp: Date;
   symptomContext?: SymptomReport;
   isEmergency?: boolean;
+  imageUrl?: string;  // İlaç görseli için base64 URL
 }
 
 // Etkileşim modu

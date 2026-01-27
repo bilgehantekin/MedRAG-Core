@@ -5,11 +5,31 @@ import { SymptomReport } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
+// Image analysis response type
+interface ImageAnalysisResponse {
+  success: boolean;
+  drug_name?: string;
+  active_ingredients?: string[];
+  dosage_form?: string;
+  strength?: string;
+  manufacturer?: string;
+  explanation?: string;
+  confidence?: string;
+  warnings?: string[];
+  disclaimer?: string;
+  error?: string;
+  processing_time_ms?: number;
+}
+
 export function ChatPanel() {
   const [input, setInput] = useState('');
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const initialMessageSent = useRef(false);
   const isUserScrolledUp = useRef(false);
 
@@ -392,8 +412,153 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
     }
   };
 
+  // Resim seçme
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+      if (!validTypes.includes(file.type)) {
+        alert('Lütfen geçerli bir resim dosyası seçin (JPEG, PNG, WebP)');
+        return;
+      }
+
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('Dosya boyutu 10MB\'dan küçük olmalıdır');
+        return;
+      }
+
+      setSelectedImage(file);
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Resmi iptal et
+  const handleCancelImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  // Resmi analiz et
+  const analyzeImage = async () => {
+    if (!selectedImage || isAnalyzingImage) return;
+
+    setIsAnalyzingImage(true);
+
+    // Add user message with image (and optional question)
+    const userQuestion = input.trim();
+    const messageContent = userQuestion
+      ? `📷 İlaç görseli yüklendi\n\n"${userQuestion}"`
+      : `📷 İlaç görseli yüklendi: ${selectedImage.name}`;
+
+    addMessage({
+      role: 'user',
+      content: messageContent,
+      imageUrl: imagePreview || undefined
+    });
+    setInput(''); // Clear input after adding message
+    scrollToBottom(true);
+
+    try {
+      // Convert to base64
+      const reader = new FileReader();
+      const base64Promise = new Promise<string>((resolve) => {
+        reader.onloadend = () => {
+          const base64 = (reader.result as string).split(',')[1];
+          resolve(base64);
+        };
+        reader.readAsDataURL(selectedImage);
+      });
+
+      const base64Data = await base64Promise;
+
+      // Send to API with optional user question
+      const userQuestion = input.trim() || undefined;
+      const response = await fetch(`${API_URL}/vision/analyze-image`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          image_base64: base64Data,
+          format: selectedImage.type.split('/')[1] || 'jpeg',
+          user_question: userQuestion
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('API hatası');
+      }
+
+      const data: ImageAnalysisResponse = await response.json();
+
+      // Format response
+      let responseText = '';
+
+      if (data.success && data.drug_name) {
+        responseText = `**📦 İlaç Tespit Edildi: ${data.drug_name}**\n\n`;
+
+        if (data.active_ingredients && data.active_ingredients.length > 0) {
+          responseText += `**Etken Madde:** ${data.active_ingredients.join(', ')}\n`;
+        }
+
+        if (data.dosage_form) {
+          responseText += `**Form:** ${data.dosage_form}\n`;
+        }
+
+        if (data.strength) {
+          responseText += `**Doz:** ${data.strength}\n`;
+        }
+
+        if (data.manufacturer) {
+          responseText += `**Üretici:** ${data.manufacturer}\n`;
+        }
+
+        if (data.explanation) {
+          responseText += `\n**Açıklama:**\n${data.explanation}\n`;
+        }
+
+        if (data.warnings && data.warnings.length > 0) {
+          responseText += `\n**⚠️ Uyarılar:**\n`;
+          data.warnings.forEach(w => {
+            responseText += `• ${w}\n`;
+          });
+        }
+
+        if (data.confidence) {
+          responseText += `\n_Güven: ${data.confidence}_`;
+        }
+      } else {
+        responseText = data.error || 'İlaç görselinden bilgi alınamadı. Lütfen daha net bir görsel deneyin.';
+      }
+
+      showMessage(responseText);
+
+    } catch (error) {
+      console.error('Image analysis error:', error);
+      showMessage('❌ Görsel analizi sırasında bir hata oluştu. Lütfen tekrar deneyin.');
+    } finally {
+      setIsAnalyzingImage(false);
+      handleCancelImage();
+    }
+  };
+
   // Mesaj gönder
   const handleSend = async () => {
+    // If image is selected, analyze it instead
+    if (selectedImage) {
+      await analyzeImage();
+      return;
+    }
+
     const text = input.trim();
     if (!text || isLoading || isStreaming) return;
 
@@ -526,6 +691,16 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
                   )}
                 </div>
               )}
+              {/* Show image if present */}
+              {message.imageUrl && (
+                <div className="mb-2">
+                  <img
+                    src={message.imageUrl}
+                    alt="Yüklenen ilaç görseli"
+                    className="max-w-[200px] rounded-lg border border-white/20"
+                  />
+                </div>
+              )}
               <div
                 className={message.role === 'user' ? '' : 'text-slate-700'}
                 dangerouslySetInnerHTML={{ __html: formatMessage(message.content) }}
@@ -558,30 +733,83 @@ Ne kadar detay verirseniz, size o kadar doğru bilgi verebilirim. Şikayetiniz n
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Image Preview */}
+      {imagePreview && (
+        <div className="px-4 py-2 border-t bg-slate-50">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <img
+                src={imagePreview}
+                alt="Seçilen görsel"
+                className="w-16 h-16 object-cover rounded-lg border border-slate-200"
+              />
+              <button
+                onClick={handleCancelImage}
+                className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full
+                           flex items-center justify-center text-xs hover:bg-red-600"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-slate-700">İlaç görseli seçildi</p>
+              <p className="text-xs text-slate-500">Göndermek için butona tıklayın</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Input */}
       <div className="p-4 border-t bg-slate-50">
         <div className="flex gap-3">
+          {/* Hidden file input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/jpg,image/webp"
+            onChange={handleImageSelect}
+            className="hidden"
+          />
+
+          {/* Image upload button */}
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isLoading || isStreaming || isAnalyzingImage}
+            className="px-3 py-3 bg-slate-200 text-slate-600 rounded-xl hover:bg-slate-300
+                       disabled:opacity-50 disabled:cursor-not-allowed transition"
+            title="İlaç görseli yükle"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </button>
+
           <textarea
             ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={isStreaming ? "Yanıt yazılıyor..." : "Sorunuzu yazın..."}
+            placeholder={isStreaming ? "Yanıt yazılıyor..." : imagePreview ? "İlaç hakkında soru sorun (opsiyonel)..." : "Sorunuzu yazın veya ilaç görseli yükleyin..."}
             rows={1}
-            disabled={isStreaming}
+            disabled={isStreaming || isAnalyzingImage}
             className="flex-1 px-4 py-3 border border-slate-200 rounded-xl resize-none
                        focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
                        disabled:bg-slate-100 disabled:cursor-not-allowed"
           />
           <button
             onClick={handleSend}
-            disabled={!input.trim() || isLoading || isStreaming}
+            disabled={(!input.trim() && !selectedImage) || isLoading || isStreaming || isAnalyzingImage}
             className="px-5 py-3 bg-primary-600 text-white rounded-xl hover:bg-primary-700
                        disabled:opacity-50 disabled:cursor-not-allowed transition"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-            </svg>
+            {isAnalyzingImage ? (
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            ) : (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              </svg>
+            )}
           </button>
         </div>
       </div>
